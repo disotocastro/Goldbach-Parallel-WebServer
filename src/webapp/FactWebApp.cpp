@@ -61,6 +61,8 @@ bool FactWebApp::serveHomepage(HttpRequest& httpRequest
     << "  <h1>" << title << "</h1>\n"
     << "  <form method=\"get\" action=\"/fact\">\n"
     << "    <label for=\"number\">Number</label>\n"
+    // TODO: Estos valores number, tienen que ser strings, ya que number
+    // solo admite un valor, luego cambiar la expresion regular de abajo
     << "    <input type=\"number\" name=\"number\" required/>\n"
     << "    <button type=\"submit\">Factorize</button>\n"
     << "  </form>\n"
@@ -84,6 +86,7 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   // TODO(you): Use arbitrary precision for numbers larger than int64_t
   // TODO(you): Modularize this method
   std::smatch matches;
+  // TODO: Cambiar esta expresion regular
   std::regex inQuery("^/fact(/|\\?number=)(\\d+)$");
   if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
     assert(matches.length() >= 3);

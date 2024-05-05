@@ -69,6 +69,10 @@ class HttpServer : public TcpServer {
   /// the request, the not found page will be served.
   std::vector<HttpApp*> applications;
 
+  
+  // TODO: Crear los punteros y vectores a las instancias que componen la cadena
+  // de producción nueva
+
  public:
   /// Constructor
   HttpServer();

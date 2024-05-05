@@ -15,8 +15,10 @@ int main(int argc, char* argv[]) {
   HttpServer httpServer;
   // Create a factorization web application, and other apps if you want
   FactWebApp factWebApp;
+  // TODO: GoldWebApp goldWebApp;
   // Register the web application(s) with the web server
   httpServer.chainWebApp(&factWebApp);
+  // TODO: httpServer.goldWebApp(&goldWebApp);
   // Run the web server
   return httpServer.run(argc, argv);
 }

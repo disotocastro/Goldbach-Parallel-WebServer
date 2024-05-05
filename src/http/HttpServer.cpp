@@ -46,8 +46,14 @@ int HttpServer::run(int argc, char* argv[]) {
       this->startApps();
       stopApps = true;
 
+      // TODO: Crear instancias de la cadena de producción
+      // TODO: Definir comunicacion, los elementos de la cadena de producción
+
+
+      // TODO: Iniciar comunicacion, los elementos de la cadena de producción 
+
       // Start waiting for connections
-      // TODO(you): Log the main thread id
+      // TODO: Log the main thread id
       this->listenForConnections(this->port);
       const NetworkAddress& address = this->getNetworkAddress();
       Log::append(Log::INFO, "webserver", "Listening on " + address.getIP()
@@ -63,6 +69,12 @@ int HttpServer::run(int argc, char* argv[]) {
     }
   } catch (const std::runtime_error& error) {
     std::cerr << "error: " << error.what() << std::endl;
+
+    /**
+     * Cuando el programa se vaya a detener, este necesita recibir una nueva
+     * consulta para que se detenga por completo.
+     * TODO: Agregar: WAIT TO FINISH
+    */
   }
 
   // If applications were started
@@ -113,11 +125,18 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
 }
 
 void HttpServer::handleClientConnection(Socket& client) {
-  // TODO(you): Make this method concurrent. Store client connections (sockets)
+  // TODO: Make this method concurrent. Store client connections (sockets)
   // into a collection (e.g thread-safe queue) and stop in web server
 
   // TODO(you): Move following loop to a consumer HttpConnectionHandler class
 
+
+  /**
+   * 
+   * TODO: Este while que está aquí abajo, tiene que pasarse a la clase 
+   * " HTTPConnectionHandler.c " y pasar todo este while. 
+   * 
+  */
   // While the same client asks for HTTP requests in the same connection
   while (true) {
     // Create an object that parses the HTTP request from the socket

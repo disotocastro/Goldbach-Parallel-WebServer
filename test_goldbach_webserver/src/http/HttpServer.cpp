@@ -26,6 +26,12 @@ HttpServer::HttpServer() {
 HttpServer::~HttpServer() {
 }
 
+// Método para hacer singlenton el servidor, solo existe una instancia de él
+HttpServer& HttpServer::getInstance() {
+  static HttpServer httpServer;
+  return httpServer;
+}
+
 void HttpServer::listenForever(const char* port) {
   return TcpServer::listenForever(port);
 }

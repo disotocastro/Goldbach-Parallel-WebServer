@@ -56,6 +56,12 @@ is sent to the client.
 */
 class HttpServer : public TcpServer {
   DISABLE_COPY(HttpServer);
+  // Singleton server with private constructor and destructor
+  private:
+    /// Constructor
+    HttpServer();
+    /// Destructor
+    ~HttpServer();
 
  protected:
   /// Lookup criteria for searching network information about this host
@@ -74,10 +80,6 @@ class HttpServer : public TcpServer {
   // de producción nueva
 
  public:
-  /// Constructor
-  HttpServer();
-  /// Destructor
-  ~HttpServer();
   /// Registers a web application to the chain
   void chainWebApp(HttpApp* application);
   /// Start the web server for listening client connections and HTTP requests
@@ -90,6 +92,9 @@ class HttpServer : public TcpServer {
   /// For each accepted connection request, the virtual onConnectionAccepted()
   /// will be called. Inherited classes must override that method
   void listenForever(const char* port);
+
+  // Instance for a singleton server
+  static HttpServer& getInstance();
 
  protected:
   /// Analyze the command line arguments

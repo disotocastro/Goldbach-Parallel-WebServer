@@ -3,16 +3,25 @@
 
 #ifdef WEBSERVER
 
+#include <iostream>
+#include <csignal>
+
 #include "HttpServer.hpp"
 #include "FactWebApp.hpp"
+#include "Log.hpp"
 
-// TODO(you): Register a signal handler for Ctrl+C and kill, and stop the server
-// TODO(you): Make your signal handler to print the thread id running it
+// TODO: Register a signal handler for Ctrl+C and kill, and stop the server
+// TODO: Make your signal handler to print the thread id running it
+void signalHandler(int signal);
 
 /// Start the web server
 int main(int argc, char* argv[]) {
-  // Create the web server
-  HttpServer httpServer;
+  // (Ctrl+C)
+  signal(SIGINT, signalHandler);
+  // (kill)
+  signal(SIGTERM, signalHandler);
+  // Create the web server singleton
+  HttpServer& httpServer = HttpServer::getInstance();
   // Create a factorization web application, and other apps if you want
   FactWebApp factWebApp;
   // TODO: GoldWebApp goldWebApp;
@@ -22,5 +31,15 @@ int main(int argc, char* argv[]) {
   // Run the web server
   return httpServer.run(argc, argv);
 }
+
+void signalHandler(int signal) { 
+  std::cout << "\n\nSignal " << signal << " by thread ID:  "
+  // TODO: Completar esto: << std::this_thread::get_id()
+  << std::endl<< std::endl;
+  HttpServer::getInstance().stop();
+  Log::append(Log::INFO, "webserver", "stopping server connection");
+  exit(signal);
+} 
+
 
 #endif  // WEBSERVER

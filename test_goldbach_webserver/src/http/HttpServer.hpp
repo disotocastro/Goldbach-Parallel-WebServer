@@ -112,14 +112,7 @@ class HttpServer : public TcpServer {
   void stopApps();
   /// This method is called each time a client connection request is accepted.
   void handleClientConnection(Socket& client) override;
-  /// Called each time an HTTP request is received. Web server should analyze
-  /// the request object and assemble a response with the response object.
-  /// Finally send the response calling the httpResponse.send() method.
-  /// @return true on success and the server will continue handling further
-  /// HTTP requests, or false if server should stop accepting requests from
-  /// this client (e.g: HTTP/1.0)
-  virtual bool handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse);
+
 };
 
 #endif  // HTTPSERVER_H

@@ -1,9 +1,12 @@
+#include <string>
+
 #include "HttpConnectionHandler.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "HttpApp.hpp"
+#include "HttpApp.hpp"
+#include "NetworkAddress.hpp"
 #include "Log.hpp"
-
 
 // TODO: Metodo RUN, que llame a consumeforever ✔
 int HttpConnectionHandler::run() {
@@ -31,7 +34,6 @@ void HttpConnectionHandler::consume(Socket client) {
     HttpResponse httpResponse(client);
 
     // Give subclass a chance to respond the HTTP request
-    // TODO: ARREGLAR ESTYE THIS
     const bool handled = this->handleHttpRequest(httpRequest, httpResponse);
 
     // If subclass did not handle the request or the client used HTTP/1.0
@@ -47,8 +49,8 @@ void HttpConnectionHandler::consume(Socket client) {
   }
 }
 
-// TODO: Move the following methods to your HttpConnectionHandler
-bool HttpServer::handleHttpRequest(HttpRequest& httpRequest,
+// TODO: Move the following methods to your HttpConnectionHandler ✔
+bool HttpConnectionHandler::handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) {
   // Print IP and port from client
   const NetworkAddress& address = httpRequest.getNetworkAddress();
@@ -64,10 +66,11 @@ bool HttpServer::handleHttpRequest(HttpRequest& httpRequest,
   return this->route(httpRequest, httpResponse);
 }
 
-// TODO: Provide HttpConnectionHandler access to the array of web apps
-
-bool HttpServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
+// TODO: Provide HttpConnectionHandler access to the array of web apps ✔
+bool HttpConnectionHandler::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
   // Traverse the chain of applications
+  // TODO: ARREGLAR ERROR APLICATIONS DE DONDE VIENE?
+  // TODO: Es necesario mover el chain aca tmb? o los copiamos
   for (size_t index = 0; index < this->applications.size(); ++index) {
     // If this application handles the request
     HttpApp* app = this->applications[index];
@@ -80,12 +83,11 @@ bool HttpServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
   return this->serveNotFound(httpRequest, httpResponse);
 }
 
-bool HttpServer::serveNotFound(HttpRequest& httpRequest
+bool HttpConnectionHandler::serveNotFound(HttpRequest& httpRequest
   , HttpResponse& httpResponse) {
   (void)httpRequest;
 
   // Set HTTP response metadata (headers)
-  // TODO: ARREGLAR ESTE ERROR?R?
   httpResponse.setStatusCode(404);
   httpResponse.setHeader("Server", "AttoServer v1.0");
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");

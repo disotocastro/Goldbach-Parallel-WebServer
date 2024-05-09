@@ -81,6 +81,9 @@ int HttpServer::run(int argc, char* argv[]) {
     /**
      * Cuando el programa se vaya a detener, este necesita recibir una nueva
      * consulta para que se detenga por completo.
+     * 
+     * 
+     * Para terminar, se tiene que mandar otro socket y despues caerse
      * TODO: Agregar: WAIT TO FINISH
     */
   }
@@ -143,61 +146,3 @@ void HttpServer::handleClientConnection(Socket& client) {
   this->socketsQueue->enqueue(client);
 }
 
-// TODO: Move the following methods to your HttpConnectionHandler
-
-bool HttpServer::handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse) {
-  // Print IP and port from client
-  const NetworkAddress& address = httpRequest.getNetworkAddress();
-  Log::append(Log::INFO, "connection",
-    std::string("connection established with client ") + address.getIP()
-    + " port " + std::to_string(address.getPort()));
-
-  // Print HTTP request
-  Log::append(Log::INFO, "request", httpRequest.getMethod()
-    + ' ' + httpRequest.getURI()
-    + ' ' + httpRequest.getHttpVersion());
-
-  return this->route(httpRequest, httpResponse);
-}
-
-// TODO(you): Provide HttpConnectionHandler access to the array of web apps
-
-bool HttpServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
-  // Traverse the chain of applications
-  for (size_t index = 0; index < this->applications.size(); ++index) {
-    // If this application handles the request
-    HttpApp* app = this->applications[index];
-    if (app->handleHttpRequest(httpRequest, httpResponse)) {
-      return true;
-    }
-  }
-
-  // Unrecognized request
-  return this->serveNotFound(httpRequest, httpResponse);
-}
-
-bool HttpServer::serveNotFound(HttpRequest& httpRequest
-  , HttpResponse& httpResponse) {
-  (void)httpRequest;
-
-  // Set HTTP response metadata (headers)
-  httpResponse.setStatusCode(404);
-  httpResponse.setHeader("Server", "AttoServer v1.0");
-  httpResponse.setHeader("Content-type", "text/html; charset=ascii");
-
-  // Build the body of the response
-  std::string title = "Not found";
-  httpResponse.body() << "<!DOCTYPE html>\n"
-    << "<html lang=\"en\">\n"
-    << "  <meta charset=\"ascii\"/>\n"
-    << "  <title>" << title << "</title>\n"
-    << "  <style>body {font-family: monospace} h1 {color: red}</style>\n"
-    << "  <h1>" << title << "</h1>\n"
-    << "  <p>The requested resouce was not found on this server.</p>\n"
-    << "  <hr><p><a href=\"/\">Homepage</a></p>\n"
-    << "</html>\n";
-
-  // Send the response to the client (user agent)
-  return httpResponse.send();
-}

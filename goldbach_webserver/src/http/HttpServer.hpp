@@ -8,6 +8,10 @@
 #include "TcpServer.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
+#include "Queue.hpp"
+#include "Thread.hpp"
+#include "HttpConnectionHandler.hpp"
+
 
 #define DEFAULT_PORT "8080"
 
@@ -56,12 +60,29 @@ is sent to the client.
 */
 class HttpServer : public TcpServer {
   DISABLE_COPY(HttpServer);
+  // Singleton server with private constructor and destructor
+  private:
+    /// Constructor
+    HttpServer();
+    /// Destructor
+    ~HttpServer();
 
  protected:
   /// Lookup criteria for searching network information about this host
   struct addrinfo hints;
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
+  // MAX NUMBER OF CONNECTIONS
+  int64_t handlers = std::thread::hardware_concurrency();
+  std::vector<HttpConnectionHandler*> vectorHandlers;
+
+  void createThreads();
+  
+  void stopConnection();
+
+
+
+
   /// Chain of registered web applications. Each time an incoming HTTP request
   /// is received, the request is provided to each application of this chain.
   /// If an application detects the request is for it, the application will
@@ -69,15 +90,14 @@ class HttpServer : public TcpServer {
   /// the request, the not found page will be served.
   std::vector<HttpApp*> applications;
 
+
+  // Cola de sockets
+  Queue<Socket>* socketsQueue; 
   
   // TODO: Crear los punteros y vectores a las instancias que componen la cadena
   // de producción nueva
 
  public:
-  /// Constructor
-  HttpServer();
-  /// Destructor
-  ~HttpServer();
   /// Registers a web application to the chain
   void chainWebApp(HttpApp* application);
   /// Start the web server for listening client connections and HTTP requests
@@ -91,6 +111,9 @@ class HttpServer : public TcpServer {
   /// will be called. Inherited classes must override that method
   void listenForever(const char* port);
 
+  // Instance for a singleton server
+  static HttpServer& getInstance();
+
  protected:
   /// Analyze the command line arguments
   /// @return true if program can continue execution, false otherwise
@@ -103,22 +126,7 @@ class HttpServer : public TcpServer {
   void stopApps();
   /// This method is called each time a client connection request is accepted.
   void handleClientConnection(Socket& client) override;
-  /// Called each time an HTTP request is received. Web server should analyze
-  /// the request object and assemble a response with the response object.
-  /// Finally send the response calling the httpResponse.send() method.
-  /// @return true on success and the server will continue handling further
-  /// HTTP requests, or false if server should stop accepting requests from
-  /// this client (e.g: HTTP/1.0)
-  virtual bool handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse);
-  /// Route, that provide an answer according to the URI value
-  /// For example, home page is handled different than a number
-  bool route(HttpRequest& httpRequest, HttpResponse& httpResponse);
-  /// Sends a page for a non found resouce in this server. This method is called
-  /// if none of the registered web applications handled the request.
-  /// If you want to override this method, create a web app, e.g NotFoundWebApp
-  /// that reacts to all URIs, and chain it as the last web app
-  bool serveNotFound(HttpRequest& httpRequest, HttpResponse& httpResponse);
+
 };
 
 #endif  // HTTPSERVER_H

@@ -3,12 +3,14 @@
 #include <cassert>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 #include "HttpApp.hpp"
 #include "HttpServer.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "Log.hpp"
+#include "Queue.hpp"
 #include "NetworkAddress.hpp"
 #include "Socket.hpp"
 
@@ -24,6 +26,12 @@ HttpServer::HttpServer() {
 }
 
 HttpServer::~HttpServer() {
+}
+
+// Método para hacer singlenton el servidor, solo existe una instancia de él
+HttpServer& HttpServer::getInstance() {
+  static HttpServer httpServer;
+  return httpServer;
 }
 
 void HttpServer::listenForever(const char* port) {
@@ -45,19 +53,19 @@ int HttpServer::run(int argc, char* argv[]) {
       // Start all web applications
       this->startApps();
       stopApps = true;
-
-      // TODO: Crear instancias de la cadena de producción
-      // TODO: Definir comunicacion, los elementos de la cadena de producción
-
-
-      // TODO: Iniciar comunicacion, los elementos de la cadena de producción 
-
       // Start waiting for connections
-      // TODO: Log the main thread id
       this->listenForConnections(this->port);
       const NetworkAddress& address = this->getNetworkAddress();
       Log::append(Log::INFO, "webserver", "Listening on " + address.getIP()
         + " port " + std::to_string(address.getPort()));
+
+      // TODO: Crear instancias de la cadena de producción ✔
+      // TODO: Definir comunicacion, los elementos de la cadena de producción ✔
+      // TODO: Iniciar comunicacion, los elementos de la cadena de producción ✔
+      socketsQueue = new Queue<Socket>();
+      // Crear el vector de los handlers
+      this->vectorHandlers.resize(this->handlers);
+      createThreads();        
 
       // Accept all client connections. The main process will get blocked
       // running this method and will not return. When HttpServer::stop() is
@@ -69,12 +77,7 @@ int HttpServer::run(int argc, char* argv[]) {
     }
   } catch (const std::runtime_error& error) {
     std::cerr << "error: " << error.what() << std::endl;
-
-    /**
-     * Cuando el programa se vaya a detener, este necesita recibir una nueva
-     * consulta para que se detenga por completo.
-     * TODO: Agregar: WAIT TO FINISH
-    */
+    deleteThreads();
   }
 
   // If applications were started
@@ -117,10 +120,26 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
     }
   }
 
-  if (argc >= 2) {
-    this->port = argv[1];
-  }
-
+  /**
+   * Mandejar los argumentos del servidor
+   * 
+   * Si no se ingresan de manera correcta, se cierra el programa y 
+   * se imprime el uso de este mismo
+   * 
+  */
+    try {
+      if (argc == 3) {
+        this->port = argv[1];
+        this->handlers = atoi(argv[2]);
+      } else if (argc==2) {
+          this->port = argv[1];
+      }
+    } catch(const std::exception& e) {
+      Log::append(Log::INFO, "webserver", "stopping server connection");
+      std::cerr << e.what() << '\n';
+      std::cout << usage; // TODO: end line?
+      exit(EXIT_FAILURE);
+    }
   return true;
 }
 
@@ -128,103 +147,39 @@ void HttpServer::handleClientConnection(Socket& client) {
   // TODO: Make this method concurrent. Store client connections (sockets)
   // into a collection (e.g thread-safe queue) and stop in web server
 
-  // TODO(you): Move following loop to a consumer HttpConnectionHandler class
-
-
   /**
-   * 
-   * TODO: Este while que está aquí abajo, tiene que pasarse a la clase 
-   * " HTTPConnectionHandler.c " y pasar todo este while. 
+   * Se encolan los sockets
    * 
   */
-  // While the same client asks for HTTP requests in the same connection
-  while (true) {
-    // Create an object that parses the HTTP request from the socket
-    HttpRequest httpRequest(client);
+  this->socketsQueue->enqueue(client);
+}
 
-    // If the request is not valid or an error happened
-    if (!httpRequest.parse()) {
-      // Non-valid requests are normal after a previous valid request. Do not
-      // close the connection yet, because the valid request may take time to
-      // be processed. Just stop waiting for more requests
-      break;
-    }
-
-    // A complete HTTP client request was received. Create an object for the
-    // server responds to that client's request
-    HttpResponse httpResponse(client);
-
-    // Give subclass a chance to respond the HTTP request
-    const bool handled = this->handleHttpRequest(httpRequest, httpResponse);
-
-    // If subclass did not handle the request or the client used HTTP/1.0
-    if (!handled || httpRequest.getHttpVersion() == "HTTP/1.0") {
-      // The socket will not be more used, close the connection
-      client.close();
-      break;
-    }
-
-    // This version handles just one client request per connection
-    // TODO(you): Remove this break after parallelizing this method
-    break;
+void HttpServer::createThreads() {
+  for (int64_t i = 0; i < this->handlers; i++) {
+    // CREA UN HANDLER 
+    this->vectorHandlers[i] = new HttpConnectionHandler(&this->applications);
+    this->vectorHandlers[i]->setConsumingQueue(this->socketsQueue);
+    this->vectorHandlers[i]->startThread();
   }
 }
 
-// TODO(you): Move the following methods to your HttpConnectionHandler
-
-bool HttpServer::handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse) {
-  // Print IP and port from client
-  const NetworkAddress& address = httpRequest.getNetworkAddress();
-  Log::append(Log::INFO, "connection",
-    std::string("connection established with client ") + address.getIP()
-    + " port " + std::to_string(address.getPort()));
-
-  // Print HTTP request
-  Log::append(Log::INFO, "request", httpRequest.getMethod()
-    + ' ' + httpRequest.getURI()
-    + ' ' + httpRequest.getHttpVersion());
-
-  return this->route(httpRequest, httpResponse);
-}
-
-// TODO(you): Provide HttpConnectionHandler access to the array of web apps
-
-bool HttpServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
-  // Traverse the chain of applications
-  for (size_t index = 0; index < this->applications.size(); ++index) {
-    // If this application handles the request
-    HttpApp* app = this->applications[index];
-    if (app->handleHttpRequest(httpRequest, httpResponse)) {
-      return true;
-    }
+void HttpServer::deleteThreads() {
+  /**
+   * Si cuando llega la condicion de parada aun quedan sockets sin consumir
+   * en la cola, se vacian.
+   *
+   * luego para cada Thread, se le hace join y se elimina
+   *
+   * Cuando el programa se vaya a detener, este necesita recibir una nueva
+   * consulta para que se detenga por completo.
+  */
+  for (size_t i = 0; i < handlers; i++) {
+    this->socketsQueue->enqueue(Socket());
+  } 
+  // Join
+  for (size_t i = 0; i < handlers; i++) {
+    this->vectorHandlers[i]->waitToFinish();
+    delete this->vectorHandlers[i];
   }
-
-  // Unrecognized request
-  return this->serveNotFound(httpRequest, httpResponse);
-}
-
-bool HttpServer::serveNotFound(HttpRequest& httpRequest
-  , HttpResponse& httpResponse) {
-  (void)httpRequest;
-
-  // Set HTTP response metadata (headers)
-  httpResponse.setStatusCode(404);
-  httpResponse.setHeader("Server", "AttoServer v1.0");
-  httpResponse.setHeader("Content-type", "text/html; charset=ascii");
-
-  // Build the body of the response
-  std::string title = "Not found";
-  httpResponse.body() << "<!DOCTYPE html>\n"
-    << "<html lang=\"en\">\n"
-    << "  <meta charset=\"ascii\"/>\n"
-    << "  <title>" << title << "</title>\n"
-    << "  <style>body {font-family: monospace} h1 {color: red}</style>\n"
-    << "  <h1>" << title << "</h1>\n"
-    << "  <p>The requested resouce was not found on this server.</p>\n"
-    << "  <hr><p><a href=\"/\">Homepage</a></p>\n"
-    << "</html>\n";
-
-  // Send the response to the client (user agent)
-  return httpResponse.send();
+  delete this->socketsQueue;
 }

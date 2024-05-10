@@ -77,15 +77,7 @@ int HttpServer::run(int argc, char* argv[]) {
     }
   } catch (const std::runtime_error& error) {
     std::cerr << "error: " << error.what() << std::endl;
-
-    /**
-     * Cuando el programa se vaya a detener, este necesita recibir una nueva
-     * consulta para que se detenga por completo.
-     * 
-     * 
-     * Para terminar, se tiene que mandar otro socket y despues caerse
-     * TODO: Agregar: WAIT TO FINISH
-    */
+    deleteThreads();
   }
 
   // If applications were started
@@ -169,4 +161,25 @@ void HttpServer::createThreads() {
     this->vectorHandlers[i]->setConsumingQueue(this->socketsQueue);
     this->vectorHandlers[i]->startThread();
   }
+}
+
+void HttpServer::deleteThreads() {
+  /**
+   * Si cuando llega la condicion de parada aun quedan sockets sin consumir
+   * en la cola, se vacian.
+   *
+   * luego para cada Thread, se le hace join y se elimina
+   *
+   * Cuando el programa se vaya a detener, este necesita recibir una nueva
+   * consulta para que se detenga por completo.
+  */
+  for (size_t i = 0; i < handlers; i++) {
+    this->socketsQueue->enqueue(Socket());
+  } 
+  // Join
+  for (size_t i = 0; i < handlers; i++) {
+    this->vectorHandlers[i]->waitToFinish();
+    delete this->vectorHandlers[i];
+  }
+  delete this->socketsQueue;
 }

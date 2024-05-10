@@ -53,19 +53,19 @@ int HttpServer::run(int argc, char* argv[]) {
       // Start all web applications
       this->startApps();
       stopApps = true;
-
-      // TODO: Crear instancias de la cadena de producción
-      // TODO: Definir comunicacion, los elementos de la cadena de producción
-
-
-      // TODO: Iniciar comunicacion, los elementos de la cadena de producción 
-
       // Start waiting for connections
-      // TODO: Log the main thread id
       this->listenForConnections(this->port);
       const NetworkAddress& address = this->getNetworkAddress();
       Log::append(Log::INFO, "webserver", "Listening on " + address.getIP()
         + " port " + std::to_string(address.getPort()));
+
+      // TODO: Crear instancias de la cadena de producción ✔
+      // TODO: Definir comunicacion, los elementos de la cadena de producción ✔
+      // TODO: Iniciar comunicacion, los elementos de la cadena de producción ✔
+      socketsQueue = new Queue<Socket>();
+      // Crear el vector de los handlers
+      this->vectorHandlers.resize(this->handlers);
+      createThreads();        
 
       // Accept all client connections. The main process will get blocked
       // running this method and will not return. When HttpServer::stop() is
@@ -128,10 +128,26 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
     }
   }
 
-  if (argc >= 2) {
-    this->port = argv[1];
-  }
-
+  /**
+   * Mandejar los argumentos del servidor
+   * 
+   * Si no se ingresan de manera correcta, se cierra el programa y 
+   * se imprime el uso de este mismo
+   * 
+  */
+    try {
+      if (argc == 3) {
+        this->port = argv[1];
+        this->handlers = atoi(argv[2]);
+      } else if (argc==2) {
+          this->port = argv[1];
+      }
+    } catch(const std::exception& e) {
+      Log::append(Log::INFO, "webserver", "stopping server connection");
+      std::cerr << e.what() << '\n';
+      std::cout << usage; // TODO: end line?
+      exit(EXIT_FAILURE);
+    }
   return true;
 }
 
@@ -146,3 +162,11 @@ void HttpServer::handleClientConnection(Socket& client) {
   this->socketsQueue->enqueue(client);
 }
 
+void HttpServer::createThreads() {
+  for (int64_t i = 0; i < this->handlers; i++) {
+    // CREA UN HANDLER 
+    this->vectorHandlers[i] = new HttpConnectionHandler(&this->applications);
+    this->vectorHandlers[i]->setConsumingQueue(this->socketsQueue);
+    this->vectorHandlers[i]->startThread();
+  }
+}

@@ -9,6 +9,9 @@
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "Queue.hpp"
+#include "Thread.hpp"
+#include "HttpConnectionHandler.hpp"
+
 
 #define DEFAULT_PORT "8080"
 
@@ -69,12 +72,19 @@ class HttpServer : public TcpServer {
   struct addrinfo hints;
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
+  // MAX NUMBER OF CONNECTIONS
+  int64_t handlers = std::thread::hardware_concurrency();
+  std::vector<HttpConnectionHandler*> vectorHandlers;
+
+  void createThreads();
+
+
+
   /// Chain of registered web applications. Each time an incoming HTTP request
   /// is received, the request is provided to each application of this chain.
   /// If an application detects the request is for it, the application will
   /// call the httpResponse.send() and the chain stops. If no web app serves
   /// the request, the not found page will be served.
-
   std::vector<HttpApp*> applications;
 
 

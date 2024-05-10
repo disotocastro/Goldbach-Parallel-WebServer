@@ -8,6 +8,11 @@
 #include "NetworkAddress.hpp"
 #include "Log.hpp"
 
+
+HttpConnectionHandler::HttpConnectionHandler (std::vector<HttpApp*>* WebApps) {
+  this->applications = WebApps;
+}  
+
 // TODO: Metodo RUN, que llame a consumeforever ✔
 int HttpConnectionHandler::run() {
   this->consumeForever();
@@ -71,9 +76,9 @@ bool HttpConnectionHandler::route(HttpRequest& httpRequest, HttpResponse& httpRe
   // Traverse the chain of applications
   // TODO: ARREGLAR ERROR APLICATIONS DE DONDE VIENE?
   // TODO: Es necesario mover el chain aca tmb? o los copiamos
-  for (size_t index = 0; index < this->applications.size(); ++index) {
+  for (size_t index = 0; index < (*(this->applications)).size(); ++index) {
     // If this application handles the request
-    HttpApp* app = this->applications[index];
+    HttpApp* app = (*(this->applications))[index];
     if (app->handleHttpRequest(httpRequest, httpResponse)) {
       return true;
     }

@@ -74,6 +74,7 @@ class HttpServer : public TcpServer {
   /// If an application detects the request is for it, the application will
   /// call the httpResponse.send() and the chain stops. If no web app serves
   /// the request, the not found page will be served.
+
   std::vector<HttpApp*> applications;
 
 

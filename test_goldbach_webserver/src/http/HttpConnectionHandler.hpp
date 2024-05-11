@@ -23,11 +23,7 @@ class HttpConnectionHandler : public Consumer <Socket> {
   /// If you want to override this method, create a web app, e.g NotFoundWebApp
   /// that reacts to all URIs, and chain it as the last web app
   bool serveNotFound(HttpRequest& httpRequest, HttpResponse& httpResponse);
-  /// if none of the registered web applications handled the request.
-  /// If you want to override this method, create a web app, e.g NotFoundWebApp
-  /// that reacts to all URIs, and chain it as the last web app
-  bool serveNotFound(HttpRequest& httpRequest, HttpResponse& httpResponse);
-
+  
   /// Called each time an HTTP request is received. Web server should analyze
   /// the request object and assemble a response with the response object.
   /// Finally send the response calling the httpResponse.send() method.

@@ -8,6 +8,7 @@
 #include <string>
 
 #include "FactWebApp.hpp"
+#include "FactSolver.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 
@@ -52,6 +53,8 @@ bool FactWebApp::serveHomepage(HttpRequest& httpRequest
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
   // Build the body of the response
+
+
   std::string title = "Prime factorization";
   httpResponse.body() << "<!DOCTYPE html>\n"
     << "<html lang=\"en\">\n"
@@ -86,6 +89,7 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   // TODO(you): Modularize this method
   std::smatch matches;
   // TODO: Cambiar esta expresion regular
+  //http://localhost:8080/fact/fact?number=44%2C+5%2C+6%2C+7%2C+3
   std::regex inQuery("^/fact(/|\\?number=)(\\d+)$");
   if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
     assert(matches.length() >= 3);

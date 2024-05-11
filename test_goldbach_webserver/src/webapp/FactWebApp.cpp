@@ -28,12 +28,12 @@ void FactWebApp::stop() {
 bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) {
   // If the home page was asked
-  if (httpRequest.getMethod() == "GET" && httpRequest.getURI() == "/") {
+  if (httpRequest.getMethod() == "GET" && httpRequest.getURI() == "/fact") {
     return this->serveHomepage(httpRequest, httpResponse);
   }
 
   // If the request starts with "fact/" is for this web app
-  if (httpRequest.getURI().rfind("/fact", 0) == 0) {
+  if (httpRequest.getURI().rfind("/fact/fact", 0) == 0) {
     return this->serveFactorization(httpRequest, httpResponse);
   }
 
@@ -59,11 +59,10 @@ bool FactWebApp::serveHomepage(HttpRequest& httpRequest
     << "  <title>" << title << "</title>\n"
     << "  <style>body {font-family: monospace}</style>\n"
     << "  <h1>" << title << "</h1>\n"
-    << "  <form method=\"get\" action=\"/fact\">\n"
+    << "  <form method=\"get\" action=\"/fact/fact\">\n"
     << "    <label for=\"number\">Number</label>\n"
-    // TODO: Estos valores number, tienen que ser strings, ya que number
-    // solo admite un valor, luego cambiar la expresion regular de abajo
-    << "    <input type=\"number\" name=\"number\" required/>\n"
+          //TODO:luego cambiar la expresion regular de abajo
+    << "    <input type=\"arrays\" name=\"number\" required/>\n"
     << "    <button type=\"submit\">Factorize</button>\n"
     << "  </form>\n"
     << "</html>\n";

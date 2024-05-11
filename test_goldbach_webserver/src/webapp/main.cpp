@@ -7,6 +7,7 @@
 #include <csignal>
 
 #include "HttpServer.hpp"
+#include "GoldWebApp.hpp"
 #include "FactWebApp.hpp"
 #include "Log.hpp"
 
@@ -24,9 +25,12 @@ int main(int argc, char* argv[]) {
   HttpServer& httpServer = HttpServer::getInstance();
   // Create a factorization web application, and other apps if you want
   FactWebApp factWebApp;
+  GoldWebApp goldWebApp;
+
   // TODO: GoldWebApp goldWebApp;
   // Register the web application(s) with the web server
   httpServer.chainWebApp(&factWebApp);
+  httpServer.chainWebApp(&goldWebApp);
   // TODO: httpServer.goldWebApp(&goldWebApp);
   // Run the web server
   return httpServer.run(argc, argv);

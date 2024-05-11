@@ -77,6 +77,7 @@ class HttpServer : public TcpServer {
   std::vector<HttpConnectionHandler*> vectorHandlers;
 
   void createThreads();
+  void deleteThreads();
   
   void stopConnection();
 

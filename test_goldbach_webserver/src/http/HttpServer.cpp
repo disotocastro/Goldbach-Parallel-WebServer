@@ -173,11 +173,11 @@ void HttpServer::deleteThreads() {
    * Cuando el programa se vaya a detener, este necesita recibir una nueva
    * consulta para que se detenga por completo.
   */
-  for (size_t i = 0; i < handlers; i++) {
+  for (int i = 0; i < handlers; i++) {
     this->socketsQueue->enqueue(Socket());
   } 
   // Join
-  for (size_t i = 0; i < handlers; i++) {
+  for (int i = 0; i < handlers; i++) {
     this->vectorHandlers[i]->waitToFinish();
     delete this->vectorHandlers[i];
   }

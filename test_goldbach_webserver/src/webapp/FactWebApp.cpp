@@ -90,10 +90,13 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   std::smatch matches;
   // TODO: Cambiar esta expresion regular
   //http://localhost:8080/fact/fact?number=44%2C+5%2C+6%2C+7%2C+3
+
+  
   std::regex inQuery("^/fact(/|\\?number=)(\\d+)$");
   if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
     assert(matches.length() >= 3);
     const int64_t number = std::stoll(matches[2]);
+    
 
     // TODO(you): Factorization must not be done by factorization threads
     // Build the body of the response

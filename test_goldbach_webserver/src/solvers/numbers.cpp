@@ -6,7 +6,7 @@
 #include <numbers.hpp>
 
 
-NumbersArray_t* readNumbers( std::vector<int64_t>& inputNumbers) {
+NumbersArray_t* readNumbers(int64_t* numberArray, int64_t numberArraySize) {
  
   // Tamaño inicial del arreglo
   int64_t size = 10;
@@ -20,8 +20,8 @@ NumbersArray_t* readNumbers( std::vector<int64_t>& inputNumbers) {
   numbers->counterPrimes = 0;
 
   // Lee los números de la entrada estándar y los almacena en la lista
-   
-  for (size_t i = 0; i < inputNumbers.size(); i++) {
+  
+  for (int64_t i = 0; i < numberArraySize; i++) {
       // Verifica si se necesita expandir el tamaño del arreglo
       if (numbers->counterNumbers >= size) {
         size = size * 2;
@@ -30,17 +30,17 @@ NumbersArray_t* readNumbers( std::vector<int64_t>& inputNumbers) {
       }
       // Crea un nuevo objeto `Numbers_t` para almacenar el número leído
       numbers->GoldbachSumsArray[numbers->counterNumbers] =
-          new_number(inputNumbers[i]);
+          new_number(numberArray[i]);
 
       // Si el número es negativo, se convierte en positivo para determinar el
       // más grande
-      if (inputNumbers[i] < 0) {
-        inputNumbers[i] = -inputNumbers[i];
+      if (numberArray[i] < 0) {
+        numberArray[i] = -numberArray[i];
       }
 
       // Actualiza el valor del número más grande leído
-      if (inputNumbers[i] > numbers->largestNumber) {
-        numbers->largestNumber = inputNumbers[i];
+      if (numberArray[i] > numbers->largestNumber) {
+        numbers->largestNumber = numberArray[i];
       }
       // Incrementa el contador de números leídos
       numbers->counterNumbers++;

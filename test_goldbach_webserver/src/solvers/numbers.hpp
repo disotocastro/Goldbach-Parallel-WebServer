@@ -4,7 +4,7 @@
 #define NUMBERS_HPP
 
 #include <cstdint> 
-#include <vector>
+
 
 /**
  * @brief Estructura para representar un número y sus sumas de Goldbach.
@@ -41,7 +41,7 @@ Numbers_t* new_number(int64_t newNumber);
  * @brief Lee los números de la entrada estándar y los almacena en un arreglo.
  * @return Puntero a la estructura NumbersArray_t que contiene los números leídos.
  */
-NumbersArray_t* readNumbers( std::vector<int64_t>& inputNumbers);
+NumbersArray_t* readNumbers(int64_t* inputNumbers, int64_t numberArraySize);
 
 /**
  * @brief Libera la memoria asignada a la lista de números.

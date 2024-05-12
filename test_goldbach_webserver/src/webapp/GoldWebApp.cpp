@@ -110,11 +110,11 @@ bool GoldWebApp::serveFactorization(HttpRequest& httpRequest
       << "  <h1>" << title << "</h1>\n" ;
       GoldSolver goldbach = GoldSolver(numbersVector);
         
-    for (size_t i = 0; i < numbersVector.size(); i++) {
-      std::string resultado =  goldbach.stringSums[i];
-      httpResponse.body()
-        << " <h1>" << resultado << "</h1>\n";
-    }
+      for (size_t i = 0; i < numbersVector.size(); i++) {
+        std::string resultado =  goldbach.stringSums[i];
+        httpResponse.body()
+          << " <h1>" << resultado << "</h1>\n";
+      }
       httpResponse.body()
       << "</html>\n";
 

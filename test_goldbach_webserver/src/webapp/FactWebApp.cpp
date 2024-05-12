@@ -89,24 +89,11 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
     }
     // El 7 es la longitud de "number="
     std::string numbersString = httpRequest.getURI().substr(pos + 7); 
+    // Vector de numeros enteros con los numeros del URI
+    std::vector<int64_t> numbersVector = fillVector(numbersString);
+    // Vector de Strings con el resultado de cada facto
+    std::vector<std::string> results = getResults(numbersVector);
 
-    // Elimina los caracteres especiales '%2C' que representan comas
-    while (true) {
-        size_t commaPos = numbersString.find("%2C");
-        if (commaPos == std::string::npos) break;
-        numbersString.replace(commaPos, 3, " ");
-    }
-
-    // Ahora leemos los números uno por uno desde el stringstream
-    std::istringstream iss(numbersString);
-    int number;
-    std::vector<int64_t> numbersVector;
-    while (iss >> number) {
-        numbersVector.push_back(number);
-    }
-
-    // TODO(you): Factorization must not be done by factorization threads
-    // Build the body of the response
     std::string title = "Prime factorization";
     httpResponse.body() << "<!DOCTYPE html>\n"
       << "<html lang=\"en\">\n"
@@ -118,16 +105,14 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
       << "    .small {font-size: 0.8em; color: black}\n"
       << "  </style>\n"
       << "  <h1>" << title << "</h1>\n" ;
-      FactSolver Factorizacion;
-      std::vector<std::string> results = Factorizacion.FactorizeVector(numbersVector);
-      
-    for (size_t i = 0; i < numbersVector.size(); i++) {
-      std::string numero = std::to_string(numbersVector[i]);
-      std::string resultado = results[i];
-      httpResponse.body()
-        << "  <h2 class=\"blue\">" << numero 
-        << ": <span class=\"small\">" << resultado << "</span></h2>\n";
-    }
+
+      for (size_t i = 0; i < numbersVector.size(); i++) {
+        std::string numero = std::to_string(numbersVector[i]);
+        std::string resultado = results[i];
+        httpResponse.body()
+          << "  <h2 class=\"blue\">" << numero 
+          << ": <span class=\"small\">" << resultado << "</span></h2>\n";
+      }
       httpResponse.body()
       << "</html>\n";
   } else {
@@ -146,4 +131,31 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
 
   // Send the response to the client (user agent)
   return httpResponse.send();
+}
+
+std::vector<int64_t> FactWebApp::fillVector(std::string numbersString) {
+  std::vector<int64_t> numbersVector;
+  // Elimina los caracteres especiales '%2C' que representan comas
+  while (true) {
+      size_t commaPos = numbersString.find("%2C");
+      if (commaPos == std::string::npos) break;
+      numbersString.replace(commaPos, 3, " ");
+  }
+
+  // Ahora leemos los números uno por uno desde el stringstream
+  std::istringstream iss(numbersString);
+  int number;
+  while (iss >> number) {
+      numbersVector.push_back(number);
+  }
+
+  return numbersVector;
+}
+
+std::vector<std::string> FactWebApp::getResults(
+                                           std::vector<int64_t> numbersVector) {
+  FactSolver Factorizacion;
+  std::vector<std::string> results = Factorizacion.FactorizeVector(numbersVector);
+
+  return results;
 }

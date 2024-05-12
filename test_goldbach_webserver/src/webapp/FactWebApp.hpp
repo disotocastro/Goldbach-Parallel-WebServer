@@ -4,6 +4,8 @@
 #define FACTWEBAPP_HPP
 
 #include "HttpApp.hpp"
+#include <vector>
+#include <string>
 
 /**
 @brief A web application that calculates prime factors
@@ -37,6 +39,12 @@ class FactWebApp : public HttpApp {
   /// @return true if the factorization was handled, false if it must be
   /// handled by another application
   bool serveFactorization(HttpRequest& httpRequest, HttpResponse& httpResponse);
+
+  std::vector<std::string> getResults(
+                                              std::vector<int64_t> numbersVector);
+
+  std::vector<int64_t> fillVector(std::string numbersString);
+
 };
 
 #endif  // FACTWEBAPP_HPP

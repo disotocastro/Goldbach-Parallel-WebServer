@@ -37,8 +37,7 @@ int main(int argc, char* argv[]) {
 }
 
 void signalHandler(int signal) { 
-  std::cout << "\n\nSignal " << signal << " by thread ID:  "
-  // TODO: Completar esto: << std::this_thread::get_id()
+  std::cout << "\n\nSignal " << signal << " by thread ID:  " << std::this_thread::get_id()
   << std::endl<< std::endl;
   HttpServer::getInstance().stop();
   Log::append(Log::INFO, "webserver", "stopping server connection");

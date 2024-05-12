@@ -8,6 +8,7 @@
 #include <string>
 
 #include "GoldWebApp.hpp"
+#include "GoldSolver.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 
@@ -58,11 +59,11 @@ bool GoldWebApp::serveHomepage(HttpRequest& httpRequest
     << "  <title>" << title << "</title>\n"
     << "  <style>body {font-family: monospace}</style>\n"
     << "  <h1>" << title << "</h1>\n"
-    << "  <form method=\"get\" action=\"/fact\">\n"
+    << "  <form method=\"get\" action=\"/gold/gold\">\n"
     << "    <label for=\"number\">Number</label>\n"
     // TODO: Estos valores number, tienen que ser strings, ya que number
     // solo admite un valor, luego cambiar la expresion regular de abajo
-    << "    <input type=\"number\" name=\"number\" required/>\n"
+    << "    <input type=\"arrays\" name=\"number\" required/>\n"
     << "    <button type=\"submit\">Get sums</button>\n"
     << "  </form>\n"
     << "</html>\n";
@@ -78,45 +79,46 @@ bool GoldWebApp::serveFactorization(HttpRequest& httpRequest
   // Set HTTP response metadata (headers)
   httpResponse.setHeader("Server", "AttoServer v1.0");
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
-
-  std::string uri = httpRequest.getURI();
-  // Eliminar "http://localhost:8080/fact/fact?number="
-  size_t pos = uri.find("number=");
-  if (pos != std::string::npos) {
-    uri = uri.substr(pos + 7); 
+  if (size_t pos = httpRequest.getURI().find("number=")) {
+    std::string numbersString = httpRequest.getURI().substr(pos + 7); 
     // Uniformar el URI para que el separador sea espacio
     std::regex coma("%..");  // símbolo porcentaje y dos caracteres cualquiera
-    std::string nuevoUri = std::regex_replace(uri, coma, " ");
+    std::string nuevoUri = std::regex_replace(numbersString, coma, " ");
     // Expresión regular para buscar números enteros
     std::regex patron("-?[0-9]+");
     std::smatch matches;
     std::string::const_iterator ini = nuevoUri.begin();
     std::string::const_iterator fin = nuevoUri.end();
-    std::vector<int> all_numbers; // Vector para almacenar todos los números
+    std::vector<int64_t> numbersVector; // Vector para almacenar todos los números
     // Buscar números en el URI modificado
     while (std::regex_search(ini, fin, matches, patron)) {
       int valor = std::stoi(matches[0].str());
-      all_numbers.push_back(valor);
+      numbersVector.push_back(valor);
       ini = matches.suffix().first;
     }
   
-    // TODO(you): Factorization must not be done by factorization threads
-    // Build the body of the response
-    std::string title = "Goldbach Sums ";
+    std::string title = " Goldbach Sums";
     httpResponse.body() << "<!DOCTYPE html>\n"
       << "<html lang=\"en\">\n"
       << "  <meta charset=\"ascii\"/>\n"
       << "  <title>" << title << "</title>\n"
-      << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
-      << "  <h1>" << title << "</h1>\n"
-      << "  <h2>200</h2>\n"
-      << "  <p>200 = 2<sup>3</sup> 5<sup>2</sup></p>\n"
-      << "  <h2 class=\"err\">-3</h2>\n"
-      << "  <p>-3: invalid number</p>\n"
-      << "  <h2>13</h2>\n"
-      << "  <p>-13 is prime</p>\n"
-      << "  <hr><p><a href=\"/\">Back</a></p>\n"
+      << "  <style>\n"
+      << "    body {font-family: monospace}\n"
+      << "    .blue {color: blue}\n"
+      << "    .small {font-size: 0.8em; color: black}\n"
+      << "  </style>\n"
+      << "  <h1>" << title << "</h1>\n" ;
+      GoldSolver goldbach = GoldSolver(numbersVector);
+        
+    for (size_t i = 0; i < numbersVector.size(); i++) {
+      std::string resultado =  goldbach.stringSums[i];
+      httpResponse.body()
+        << " <h1>" << resultado << "</h1>\n";
+    }
+      httpResponse.body()
       << "</html>\n";
+
+    
     } else {
     // Build the body for an invalid request
     std::string title = "Invalid request";

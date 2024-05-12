@@ -51,7 +51,7 @@ bool GoldWebApp::serveHomepage(HttpRequest& httpRequest
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
   // Build the body of the response
-  std::string title = "Prime factorization";
+  std::string title = "Goldbach sums";
   httpResponse.body() << "<!DOCTYPE html>\n"
     << "<html lang=\"en\">\n"
     << "  <meta charset=\"ascii\"/>\n"
@@ -79,21 +79,30 @@ bool GoldWebApp::serveFactorization(HttpRequest& httpRequest
   httpResponse.setHeader("Server", "AttoServer v1.0");
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
-  // If a number was asked in the form "/fact/1223"
-  // or "/fact?number=1223"
-  // TODO(you): URI can be a multi-value list, e.g: 100,2784,-53,200771728
-  // TODO(you): Use arbitrary precision for numbers larger than int64_t
-  // TODO(you): Modularize this method
-  std::smatch matches;
-  // TODO: Cambiar esta expresion regular
-  std::regex inQuery("^/fact(/|\\?number=)(\\d+)$");
-  if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
-    assert(matches.length() >= 3);
-    const int64_t number = std::stoll(matches[2]);
-
+  std::string uri = httpRequest.getURI();
+  // Eliminar "http://localhost:8080/fact/fact?number="
+  size_t pos = uri.find("number=");
+  if (pos != std::string::npos) {
+    uri = uri.substr(pos + 7); 
+    // Uniformar el URI para que el separador sea espacio
+    std::regex coma("%..");  // símbolo porcentaje y dos caracteres cualquiera
+    std::string nuevoUri = std::regex_replace(uri, coma, " ");
+    // Expresión regular para buscar números enteros
+    std::regex patron("-?[0-9]+");
+    std::smatch matches;
+    std::string::const_iterator ini = nuevoUri.begin();
+    std::string::const_iterator fin = nuevoUri.end();
+    std::vector<int> all_numbers; // Vector para almacenar todos los números
+    // Buscar números en el URI modificado
+    while (std::regex_search(ini, fin, matches, patron)) {
+      int valor = std::stoi(matches[0].str());
+      all_numbers.push_back(valor);
+      ini = matches.suffix().first;
+    }
+  
     // TODO(you): Factorization must not be done by factorization threads
     // Build the body of the response
-    std::string title = "Prime factorization of " + std::to_string(number);
+    std::string title = "Goldbach Sums ";
     httpResponse.body() << "<!DOCTYPE html>\n"
       << "<html lang=\"en\">\n"
       << "  <meta charset=\"ascii\"/>\n"
@@ -108,7 +117,7 @@ bool GoldWebApp::serveFactorization(HttpRequest& httpRequest
       << "  <p>-13 is prime</p>\n"
       << "  <hr><p><a href=\"/\">Back</a></p>\n"
       << "</html>\n";
-  } else {
+    } else {
     // Build the body for an invalid request
     std::string title = "Invalid request";
     httpResponse.body() << "<!DOCTYPE html>\n"
@@ -117,7 +126,7 @@ bool GoldWebApp::serveFactorization(HttpRequest& httpRequest
       << "  <title>" << title << "</title>\n"
       << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
       << "  <h1 class=\"err\">" << title << "</h1>\n"
-      << "  <p>Invalid request for factorization</p>\n"
+      << "  <p>Invalid request for Goldbach sums</p>\n"
       << "  <hr><p><a href=\"/\">Back</a></p>\n"
       << "</html>\n";
   }

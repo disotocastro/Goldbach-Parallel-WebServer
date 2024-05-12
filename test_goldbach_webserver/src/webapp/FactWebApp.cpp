@@ -64,7 +64,6 @@ bool FactWebApp::serveHomepage(HttpRequest& httpRequest
     << "  <h1>" << title << "</h1>\n"
     << "  <form method=\"get\" action=\"/fact/fact\">\n"
     << "    <label for=\"number\">Number</label>\n"
-          //TODO:luego cambiar la expresion regular de abajo
     << "    <input type=\"arrays\" name=\"number\" required/>\n"
     << "    <button type=\"submit\">Factorize</button>\n"
     << "  </form>\n"
@@ -108,26 +107,27 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
 
     // TODO(you): Factorization must not be done by factorization threads
     // Build the body of the response
-    std::string title = "Prime factorization of " + std::to_string(number);
+    std::string title = "Prime factorization";
     httpResponse.body() << "<!DOCTYPE html>\n"
       << "<html lang=\"en\">\n"
       << "  <meta charset=\"ascii\"/>\n"
       << "  <title>" << title << "</title>\n"
-      << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
+      << "  <style>\n"
+      << "    body {font-family: monospace}\n"
+      << "    .blue {color: blue}\n"
+      << "    .small {font-size: 0.8em; color: black}\n"
+      << "  </style>\n"
       << "  <h1>" << title << "</h1>\n" ;
-
       FactSolver Factorizacion;
       std::vector<std::string> results = Factorizacion.FactorizeVector(numbersVector);
       
-      for (size_t i = 0; i < numbersVector.size(); i++) {
-        // std::cout << "Number:" << numbersVector[i] << std::endl;
-        // std::cout << "Factorazation:" << results[i] << std::endl;
-        std::string numero = std::to_string(numbersVector[i]);
-        std::string resultado = results[i];
-        httpResponse.body()
-        << "  <h2>" << numero << "</h2> "
-        << "  <h3>" << resultado << "</h3>\n";
-      }
+    for (size_t i = 0; i < numbersVector.size(); i++) {
+      std::string numero = std::to_string(numbersVector[i]);
+      std::string resultado = results[i];
+      httpResponse.body()
+        << "  <h2 class=\"blue\">" << numero 
+        << ": <span class=\"small\">" << resultado << "</span></h2>\n";
+    }
       httpResponse.body()
       << "</html>\n";
   } else {

@@ -1,4 +1,5 @@
-// Copyright 2021 Jeisson Hidalgo-Cespedes. Universidad de Costa Rica. CC BY 4.0
+// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes 
+// Universidad de Costa Rica. CC BY 4.0
 
 #include <algorithm>
 #include <cassert>
@@ -53,8 +54,6 @@ bool FactWebApp::serveHomepage(HttpRequest& httpRequest
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
   // Build the body of the response
-
-
   std::string title = "Prime factorization";
   httpResponse.body() << "<!DOCTYPE html>\n"
     << "<html lang=\"en\">\n"
@@ -155,7 +154,6 @@ std::vector<int64_t> FactWebApp::fillVector(std::string numbersString) {
 std::vector<std::string> FactWebApp::getResults(
                                            std::vector<int64_t> numbersVector) {
   FactSolver Factorizacion;
-  std::vector<std::string> results = Factorizacion.FactorizeVector(numbersVector);
-
-  return results;
+  std::vector<std::string> results;
+  return results = Factorizacion.FactorizeVector(numbersVector);
 }

@@ -82,21 +82,29 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   httpResponse.setHeader("Server", "AttoServer v1.0");
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
-  // If a number was asked in the form "/fact/1223"
-  // or "/fact?number=1223"
-  // TODO(you): URI can be a multi-value list, e.g: 100,2784,-53,200771728
-  // TODO(you): Use arbitrary precision for numbers larger than int64_t
-  // TODO(you): Modularize this method
-  std::smatch matches;
-  // TODO: Cambiar esta expresion regular
-  //http://localhost:8080/fact/fact?number=44%2C+5%2C+6%2C+7%2C+3
+  // Se exctrae del URI los numeros y se almacenan en un vector
+  if (size_t pos = httpRequest.getURI().find("number=")) {
+   if (pos == std::string::npos) {
+        std::cerr << "No se encontraron números en la URL." << std::endl;
+        return 1;
+    }
+    // El 7 es la longitud de "number="
+    std::string numbersString = httpRequest.getURI().substr(pos + 7); 
 
-  
-  std::regex inQuery("^/fact(/|\\?number=)(\\d+)$");
-  if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
-    assert(matches.length() >= 3);
-    const int64_t number = std::stoll(matches[2]);
-    
+    // Elimina los caracteres especiales '%2C' que representan comas
+    while (true) {
+        size_t commaPos = numbersString.find("%2C");
+        if (commaPos == std::string::npos) break;
+        numbersString.replace(commaPos, 3, " ");
+    }
+
+    // Ahora leemos los números uno por uno desde el stringstream
+    std::istringstream iss(numbersString);
+    int number;
+    std::vector<int64_t> numbersVector;
+    while (iss >> number) {
+        numbersVector.push_back(number);
+    }
 
     // TODO(you): Factorization must not be done by factorization threads
     // Build the body of the response
@@ -106,14 +114,21 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
       << "  <meta charset=\"ascii\"/>\n"
       << "  <title>" << title << "</title>\n"
       << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
-      << "  <h1>" << title << "</h1>\n"
-      << "  <h2>200</h2>\n"
-      << "  <p>200 = 2<sup>3</sup> 5<sup>2</sup></p>\n"
-      << "  <h2 class=\"err\">-3</h2>\n"
-      << "  <p>-3: invalid number</p>\n"
-      << "  <h2>13</h2>\n"
-      << "  <p>-13 is prime</p>\n"
-      << "  <hr><p><a href=\"/\">Back</a></p>\n"
+      << "  <h1>" << title << "</h1>\n" ;
+
+      FactSolver Factorizacion;
+      std::vector<std::string> results = Factorizacion.FactorizeVector(numbersVector);
+      
+      for (size_t i = 0; i < numbersVector.size(); i++) {
+        // std::cout << "Number:" << numbersVector[i] << std::endl;
+        // std::cout << "Factorazation:" << results[i] << std::endl;
+        std::string numero = std::to_string(numbersVector[i]);
+        std::string resultado = results[i];
+        httpResponse.body()
+        << "  <h2>" << numero << "</h2> "
+        << "  <h3>" << resultado << "</h3>\n";
+      }
+      httpResponse.body()
       << "</html>\n";
   } else {
     // Build the body for an invalid request

@@ -1,18 +1,18 @@
 // Copyright 2024 William Morales <william.moralesfuentes@ucr.ac.cr>
 
-#ifndef GOLDBACH_SOLVER_HPP
-#define GOLDBACH_SOLVER_HPP
+#ifndef GOLDBACHSOLVER_HPP
+#define GOLDBACHSOLVER_HPP
 
 #include <cstdint>
 #include <numbers.hpp>
 
-class goldbach_solver {
+class GoldbachSolver {
 
     public:
 
-        goldbach_solver(int64_t* inputNumbers, int64_t inputNumbersCount);
+        GoldbachSolver(int64_t* inputNumbers, int64_t inputNumbersCount);
 
-        ~goldbach_solver();
+        ~GoldbachSolver();
 
         /**
          * @brief Encuentra los números primos hasta el número más grande en la lista.
@@ -51,7 +51,5 @@ class goldbach_solver {
         NumbersArray_t* numbers;
 
 };
-
-
 
 #endif

@@ -1,18 +1,21 @@
 // Copyright 2024 William Morales <william.moralesfuentes@ucr.ac.cr>
 
-#ifndef GOLDBACHSOLVER_HPP
-#define GOLDBACHSOLVER_HPP
+#ifndef GOLDSOLVER_HPP
+#define GOLDSOLVER_HPP
 
 #include <cstdint>
 #include <numbers.hpp>
+#include <vector>
+#include <string>
 
-class GoldbachSolver {
+
+class GoldSolver {
 
     public:
 
-        GoldbachSolver(int64_t* inputNumbers, int64_t inputNumbersCount);
+        GoldSolver( std::vector<int64_t>& inputNumbers);
 
-        ~GoldbachSolver();
+        ~GoldSolver();
 
         /**
          * @brief Encuentra los números primos hasta el número más grande en la lista.
@@ -48,8 +51,14 @@ class GoldbachSolver {
          */
         void goldbach(NumbersArray_t* NumbersArray);
 
+        void create_strings();
+
         NumbersArray_t* numbers;
 
+        std::vector<std::string> stringSums;
+
 };
+
+
 
 #endif

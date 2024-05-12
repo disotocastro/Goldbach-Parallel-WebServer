@@ -80,6 +80,7 @@ bool GoldWebApp::serveFactorization(HttpRequest& httpRequest
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
   std::string uri = httpRequest.getURI();
+  
   // Eliminar "http://localhost:8080/fact/fact?number="
   size_t pos = uri.find("number=");
   if (pos != std::string::npos) {
@@ -92,11 +93,13 @@ bool GoldWebApp::serveFactorization(HttpRequest& httpRequest
     std::smatch matches;
     std::string::const_iterator ini = nuevoUri.begin();
     std::string::const_iterator fin = nuevoUri.end();
-    std::vector<int> all_numbers; // Vector para almacenar todos los números
+
+    std::vector<int> numbersVector; // Vector para almacenar todos los números
+    
     // Buscar números en el URI modificado
     while (std::regex_search(ini, fin, matches, patron)) {
       int valor = std::stoi(matches[0].str());
-      all_numbers.push_back(valor);
+      numbersVector.push_back(valor);
       ini = matches.suffix().first;
     }
   

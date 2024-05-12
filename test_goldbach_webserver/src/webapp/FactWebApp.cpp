@@ -43,7 +43,6 @@ bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
 }
 
 // TODO(you): Fix code redundancy in the following methods
-
 bool FactWebApp::serveHomepage(HttpRequest& httpRequest
   , HttpResponse& httpResponse) {
   (void)httpRequest;
@@ -53,8 +52,6 @@ bool FactWebApp::serveHomepage(HttpRequest& httpRequest
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
   // Build the body of the response
-
-
   std::string title = "Prime factorization";
   httpResponse.body() << "<!DOCTYPE html>\n"
     << "<html lang=\"en\">\n"
@@ -68,10 +65,10 @@ bool FactWebApp::serveHomepage(HttpRequest& httpRequest
     << "    <button type=\"submit\">Factorize</button>\n"
     << "  </form>\n"
     << "</html>\n";
-
   // Send the response to the client (user agent)
   return httpResponse.send();
 }
+
 
 bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   , HttpResponse& httpResponse) {
@@ -85,7 +82,7 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   if (size_t pos = httpRequest.getURI().find("number=")) {
    if (pos == std::string::npos) {
         std::cerr << "No se encontraron números en la URL." << std::endl;
-        return 1;
+        return EXIT_FAILURE;
     }
     // El 7 es la longitud de "number="
     std::string numbersString = httpRequest.getURI().substr(pos + 7); 
@@ -105,8 +102,6 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
         numbersVector.push_back(number);
     }
 
-    // TODO(you): Factorization must not be done by factorization threads
-    // Build the body of the response
     std::string title = "Prime factorization";
     httpResponse.body() << "<!DOCTYPE html>\n"
       << "<html lang=\"en\">\n"
@@ -118,16 +113,17 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
       << "    .small {font-size: 0.8em; color: black}\n"
       << "  </style>\n"
       << "  <h1>" << title << "</h1>\n" ;
+
       FactSolver Factorizacion;
       std::vector<std::string> results = Factorizacion.FactorizeVector(numbersVector);
       
-    for (size_t i = 0; i < numbersVector.size(); i++) {
-      std::string numero = std::to_string(numbersVector[i]);
-      std::string resultado = results[i];
-      httpResponse.body()
-        << "  <h2 class=\"blue\">" << numero 
-        << ": <span class=\"small\">" << resultado << "</span></h2>\n";
-    }
+      for (size_t i = 0; i < numbersVector.size(); i++) {
+        std::string numero = std::to_string(numbersVector[i]);
+        std::string resultado = results[i];
+        httpResponse.body()
+          << "  <h2 class=\"blue\">" << numero 
+          << ": <span class=\"small\">" << resultado << "</span></h2>\n";
+      }
       httpResponse.body()
       << "</html>\n";
   } else {

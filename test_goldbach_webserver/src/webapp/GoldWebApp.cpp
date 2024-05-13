@@ -6,6 +6,7 @@
 #include <regex>
 #include <stdexcept>
 #include <string>
+#include <cstring>
 
 #include "GoldWebApp.hpp"
 #include "GoldSolver.hpp"
@@ -42,7 +43,6 @@ bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
   return false;
 }
 
-// TODO: Fix code redundancy in the following methods
 bool GoldWebApp::serveHomepage(HttpRequest& httpRequest
   , HttpResponse& httpResponse) {
   (void)httpRequest;
@@ -52,7 +52,7 @@ bool GoldWebApp::serveHomepage(HttpRequest& httpRequest
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
   // Build the body of the response
-  std::string title = "Goldbach sums";
+  std::string title = "Goldbach sums ";
   httpResponse.body() << "<!DOCTYPE html>\n"
     << "<html lang=\"en\">\n"
     << "  <meta charset=\"ascii\"/>\n"
@@ -61,8 +61,6 @@ bool GoldWebApp::serveHomepage(HttpRequest& httpRequest
     << "  <h1>" << title << "</h1>\n"
     << "  <form method=\"get\" action=\"/gold/gold\">\n"
     << "    <label for=\"number\">Number</label>\n"
-    // TODO: Estos valores number, tienen que ser strings, ya que number
-    // solo admite un valor, luego cambiar la expresion regular de abajo
     << "    <input type=\"arrays\" name=\"number\" required/>\n"
     << "    <button type=\"submit\">Get sums</button>\n"
     << "  </form>\n"
@@ -75,6 +73,9 @@ bool GoldWebApp::serveHomepage(HttpRequest& httpRequest
 bool GoldWebApp::serveFactorization(HttpRequest& httpRequest
   , HttpResponse& httpResponse) {
   (void)httpRequest;
+  std::string str = "";
+  int longitud = 0;
+  bool hayError = false;
 
   // Set HTTP response metadata (headers)
   httpResponse.setHeader("Server", "AttoServer v1.0");
@@ -92,34 +93,42 @@ bool GoldWebApp::serveFactorization(HttpRequest& httpRequest
     std::vector<int64_t> numbersVector; // Vector para almacenar todos los números
     // Buscar números en el URI modificado
     while (std::regex_search(ini, fin, matches, patron)) {
-      int valor = std::stoi(matches[0].str());
+      str = matches.str(); 
+      longitud = str.size();
+      if (longitud > 19) {
+        hayError = true;
+        break;
+      }
+      int valor = std::stoll(matches[0].str());
       numbersVector.push_back(valor);
       ini = matches.suffix().first;
     }
-  
-    std::string title = " Goldbach Sums";
-    httpResponse.body() << "<!DOCTYPE html>\n"
-      << "<html lang=\"en\">\n"
-      << "  <meta charset=\"ascii\"/>\n"
-      << "  <title>" << title << "</title>\n"
-      << "  <style>\n"
-      << "    body {font-family: monospace}\n"
-      << "    .blue {color: blue}\n"
-      << "    .small {font-size: 0.8em; color: black}\n"
-      << "  </style>\n"
-      << "  <h1>" << title << "</h1>\n" ;
-      GoldSolver goldbach = GoldSolver(numbersVector);
-        
-      for (size_t i = 0; i < numbersVector.size(); i++) {
-        std::string resultado =  goldbach.stringSums[i];
+    if (!hayError) {
+      std::string title = " Goldbach Sums";
+      httpResponse.body() << "<!DOCTYPE html>\n"
+        << "<html lang=\"en\">\n"
+        << "  <meta charset=\"ascii\"/>\n"
+        << "  <title>" << title << "</title>\n"
+        << "  <style>\n"
+        << "    body {font-family: monospace}\n"
+        << "    .blue {color: blue}\n"
+        << "    .small {font-size: 0.8em; color: black}\n"
+        << "  </style>\n"
+        << "  <h1>" << title << "</h1>\n" ;
+        GoldSolver goldbach = GoldSolver(numbersVector);
+            
+        for (size_t i = 0; i < numbersVector.size(); i++) {
+          std::string resultado =  goldbach.stringSums[i];
+          httpResponse.body()
+            << " <h1>" << resultado << "</h1>\n";
+        }
         httpResponse.body()
-          << " <h1>" << resultado << "</h1>\n";
-      }
-      httpResponse.body()
-      << "</html>\n";
-
-    
+        << "</html>\n";
+        }
     } else {
+      hayError = true;
+  }
+  if (hayError) {
     // Build the body for an invalid request
     std::string title = "Invalid request";
     httpResponse.body() << "<!DOCTYPE html>\n"
@@ -132,7 +141,6 @@ bool GoldWebApp::serveFactorization(HttpRequest& httpRequest
       << "  <hr><p><a href=\"/\">Back</a></p>\n"
       << "</html>\n";
   }
-
   // Send the response to the client (user agent)
   return httpResponse.send();
 }

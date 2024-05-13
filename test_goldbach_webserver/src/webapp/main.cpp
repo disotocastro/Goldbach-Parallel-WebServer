@@ -35,7 +35,7 @@ void signalHandler(int signal) {
   << std::this_thread::get_id() << std::endl<< std::endl;
   HttpServer::getInstance().stop();
   Log::append(Log::INFO, "webserver", "stopping server connection");
-  exit(signal);
+  // exit(signal);
 }
 
 #endif  // WEBSERVER

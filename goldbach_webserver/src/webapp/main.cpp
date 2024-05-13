@@ -7,13 +7,11 @@
 #include <csignal>
 
 #include "HttpServer.hpp"
+#include "GoldWebApp.hpp"
 #include "FactWebApp.hpp"
 #include "Log.hpp"
 
-// TODO: Register a signal handler for Ctrl+C and kill, and stop the server
-// TODO: Make your signal handler to print the thread id running it
 void signalHandler(int signal);
-
 /// Start the web server
 int main(int argc, char* argv[]) {
   // (Ctrl+C)
@@ -24,22 +22,21 @@ int main(int argc, char* argv[]) {
   HttpServer& httpServer = HttpServer::getInstance();
   // Create a factorization web application, and other apps if you want
   FactWebApp factWebApp;
-  // TODO: GoldWebApp goldWebApp;
+  GoldWebApp goldWebApp;
   // Register the web application(s) with the web server
   httpServer.chainWebApp(&factWebApp);
-  // TODO: httpServer.goldWebApp(&goldWebApp);
+  httpServer.chainWebApp(&goldWebApp);
   // Run the web server
   return httpServer.run(argc, argv);
 }
 
-void signalHandler(int signal) { 
+void signalHandler(int signal) {
   std::cout << "\n\nSignal " << signal << " by thread ID:  "
-  // TODO: Completar esto: << std::this_thread::get_id()
-  << std::endl<< std::endl;
+  << std::this_thread::get_id() << std::endl<< std::endl;
   HttpServer::getInstance().stop();
   Log::append(Log::INFO, "webserver", "stopping server connection");
-  exit(signal);
-} 
-
+  // exit(signal);
+}
 
 #endif  // WEBSERVER
+

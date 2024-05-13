@@ -142,7 +142,6 @@ void FactWebApp::sendErrorResponse(HttpResponse& httpResponse) {
     << "</html>\n";
 }
 
-
 std::vector<int64_t> FactWebApp::fillVector(std::string numbersString) {
   std::vector<int64_t> numbersVector;
   // Elimina los caracteres especiales '%2C' que representan comas

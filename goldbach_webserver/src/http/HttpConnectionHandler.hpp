@@ -9,9 +9,23 @@
 
 class HttpConnectionHandler : public Consumer <Socket> {
  public:
+
+    /**
+     * @brief Constructor de la clase HttpConnectionHandler.
+     * @param WebApps Puntero a un vector de punteros a objetos HttpApp.
+     */
   explicit HttpConnectionHandler(std::vector<HttpApp*>* WebApps);
 
+   /**
+     * @brief Método para ejecutar la conexión HTTP.
+     * @return Entero que indica el estado de la ejecución.
+     */
   int run() override;
+
+   /**
+     * @brief Método para consumir un socket.
+     * @param client Socket que se va a consumir.
+     */
   void consume(Socket client) override;
 
   /// Route, that provide an answer according to the URI value
@@ -23,11 +37,7 @@ class HttpConnectionHandler : public Consumer <Socket> {
   /// If you want to override this method, create a web app, e.g NotFoundWebApp
   /// that reacts to all URIs, and chain it as the last web app
   bool serveNotFound(HttpRequest& httpRequest, HttpResponse& httpResponse);
-  /// if none of the registered web applications handled the request.
-  /// If you want to override this method, create a web app, e.g NotFoundWebApp
-  /// that reacts to all URIs, and chain it as the last web app
-  bool serveNotFound(HttpRequest& httpRequest, HttpResponse& httpResponse);
-
+  
   /// Called each time an HTTP request is received. Web server should analyze
   /// the request object and assemble a response with the response object.
   /// Finally send the response calling the httpResponse.send() method.
@@ -38,7 +48,8 @@ class HttpConnectionHandler : public Consumer <Socket> {
                                HttpResponse& httpResponse);
 
     
-  protected:     
+  protected:  
+    /// Puntero a un vector de punteros a objetos HttpApp.   
     std::vector<HttpApp*>* applications;
 };
 

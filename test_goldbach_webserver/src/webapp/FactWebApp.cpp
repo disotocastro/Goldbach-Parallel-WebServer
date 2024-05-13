@@ -80,7 +80,7 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   httpResponse.setHeader("Server", "AttoServer v1.0");
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
-  // Se exctrae del URI los numeros y se almacenan en un vector
+  // Se extrae del URI los numeros y se almacenan en un vector
   if (size_t pos = httpRequest.getURI().find("number=")) {
    if (pos == std::string::npos) {
         std::cerr << "No se encontraron números en la URL." << std::endl;
@@ -90,49 +90,56 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
     std::string numbersString = httpRequest.getURI().substr(pos + 7); 
     // Vector de numeros enteros con los numeros del URI
     std::vector<int64_t> numbersVector = fillVector(numbersString);
-    // Vector de Strings con el resultado de cada facto
+    // Vector de Strings con el resultado de cada factorización
     std::vector<std::vector<int64_t>> factorResults = getResults(numbersVector);
-
     std::vector<std::string> results = FactorizeToString(factorResults);
 
-    std::string title = "Prime factorization";
-    httpResponse.body() << "<!DOCTYPE html>\n"
-      << "<html lang=\"en\">\n"
-      << "  <meta charset=\"ascii\"/>\n"
-      << "  <title>" << title << "</title>\n"
-      << "  <style>\n"
-      << "    body {font-family: monospace}\n"
-      << "    .blue {color: blue}\n"
-      << "    .small {font-size: 0.8em; color: black}\n"
-      << "  </style>\n"
-      << "  <h1>" << title << "</h1>\n" ;
+    sendSuccessResponse(httpResponse, numbersVector, results);
 
-      for (size_t i = 0; i < numbersVector.size(); i++) {
-        std::string numero = std::to_string(numbersVector[i]);
-        std::string resultado = results[i];
-        httpResponse.body()
-          << "  <h2 class=\"blue\">" << numero 
-          << ": <span class=\"small\">" << resultado << "</span></h2>\n";
-      }
-      httpResponse.body()
-      << "</html>\n";
   } else {
-    // Build the body for an invalid request
-    std::string title = "Invalid request";
-    httpResponse.body() << "<!DOCTYPE html>\n"
-      << "<html lang=\"en\">\n"
-      << "  <meta charset=\"ascii\"/>\n"
-      << "  <title>" << title << "</title>\n"
-      << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
-      << "  <h1 class=\"err\">" << title << "</h1>\n"
-      << "  <p>Invalid request for factorization</p>\n"
-      << "  <hr><p><a href=\"/\">Back</a></p>\n"
-      << "</html>\n";
+    sendErrorResponse(httpResponse);
   }
-
-  // Send the response to the client (user agent)
   return httpResponse.send();
 }
+
+void FactWebApp::sendSuccessResponse(HttpResponse& httpResponse, const std::vector<int64_t>& numbersVector, const std::vector<std::string>& results) {
+  std::string title = "Prime factorization";
+  httpResponse.body() << "<!DOCTYPE html>\n"
+    << "<html lang=\"en\">\n"
+    << "  <meta charset=\"ascii\"/>\n"
+    << "  <title>" << title << "</title>\n"
+    << "  <style>\n"
+    << "    body {font-family: monospace}\n"
+    << "    .blue {color: blue}\n"
+    << "    .small {font-size: 0.8em; color: black}\n"
+    << "  </style>\n"
+    << "  <h1>" << title << "</h1>\n" ;
+
+  for (size_t i = 0; i < numbersVector.size(); i++) {
+    std::string numero = std::to_string(numbersVector[i]);
+    std::string resultado = results[i];
+    httpResponse.body()
+      << "  <h2 class=\"blue\">" << numero 
+      << ": <span class=\"small\">" << resultado << "</span></h2>\n";
+  }
+  httpResponse.body()
+    << "</html>\n";
+}
+
+void FactWebApp::sendErrorResponse(HttpResponse& httpResponse) {
+  // Build the body for an invalid request
+  std::string title = "Invalid request";
+  httpResponse.body() << "<!DOCTYPE html>\n"
+    << "<html lang=\"en\">\n"
+    << "  <meta charset=\"ascii\"/>\n"
+    << "  <title>" << title << "</title>\n"
+    << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
+    << "  <h1 class=\"err\">" << title << "</h1>\n"
+    << "  <p>Invalid request for factorization</p>\n"
+    << "  <hr><p><a href=\"/\">Back</a></p>\n"
+    << "</html>\n";
+}
+
 
 std::vector<int64_t> FactWebApp::fillVector(std::string numbersString) {
   std::vector<int64_t> numbersVector;
@@ -165,17 +172,14 @@ std::vector<std::string> FactWebApp::FactorizeToString
   (std::vector<std::vector<int64_t>> generalFactors) {
 
   std::vector<std::string> factorizations;
-
   for (size_t i = 0; i < generalFactors.size(); i++) {
 
     std::vector<int64_t> factors = generalFactors[i];
-
     // Contar los exponentes de los factores
     std::unordered_map<int64_t, int> exponentCount;
     for (int64_t factor : factors) {
       exponentCount[factor]++;
     }
-
     // Construir la cadena de factorización
     std::string factorization;
     for (auto index = exponentCount.begin(); 
@@ -186,7 +190,6 @@ std::vector<std::string> FactWebApp::FactorizeToString
       }
       factorization += " * ";
     }
-    
     // Eliminar los últimos caracteres " * " si están presentes
     if (!factorization.empty()) {
       factorization.pop_back();
@@ -195,6 +198,5 @@ std::vector<std::string> FactWebApp::FactorizeToString
 
     factorizations.push_back(factorization);
   }
-
   return factorizations;
 }

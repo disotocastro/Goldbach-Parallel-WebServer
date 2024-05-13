@@ -56,7 +56,8 @@ class FactWebApp : public HttpApp {
    * @param numbersVector The vector of numbers to factorize
    * @return A vector of strings with the factorization results
    */
-  std::vector<std::vector<int64_t>> getResults(std::vector<int64_t> numbersVector);
+  std::vector<std::vector<int64_t>> getResults
+    (std::vector<int64_t> numbersVector);
 
   /**
    * @brief Fill a vector of integers from a string representation.
@@ -65,13 +66,32 @@ class FactWebApp : public HttpApp {
    */
   std::vector<int64_t> fillVector(std::string numbersString);
 
-  /**
-     * @brief Factorize a number into its prime factors 
-     * and return the result as a string.
-     * @param number The number to factorize.
-     * @return A string representing the factorization of the input number.
-     */
-    std::vector<std::string> FactorizeToString(std::vector<std::vector<int64_t>>);
+  void sendErrorResponse(HttpResponse& httpResponse);
+
+  void sendSuccessResponse(HttpResponse& httpResponse, 
+    const std::vector<int64_t>& numbersVector, 
+    const std::vector<std::string>& results);
+
+                                                                
+
+
+/**
+ * @brief This function takes a list of lists of integers where each inner list 
+ represents a set of factors to be factorized.
+ * It calculates the prime factorization for each set of factors and returns 
+ a vector of strings representing the factorizations.
+ * 
+ * @param generalFactors A vector of vectors of integers representing sets of 
+ factors to be factorized.
+ * @return A vector of strings representing the prime factorizations of the i
+ nput sets of factors.
+ * 
+ * The returned factorizations are in the format "p^e * q^f * ...", 
+ where p, q, etc. are prime factors and e, f, etc. are their corresponding 
+ exponents.
+ */
+    std::vector<std::string> FactorizeToString
+        (std::vector<std::vector<int64_t>>);
 
 };
 

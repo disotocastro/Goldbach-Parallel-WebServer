@@ -2,19 +2,19 @@
 
 #include <GoldSolver.hpp>
 #include <numbers.hpp>
-#include <cstdint>   
-#include <cstdlib>  
-#include <iostream>  
+#include <cstdint>
+#include <cstdlib>
+#include <iostream>
 #include <vector>  
 
-GoldSolver::GoldSolver( std::vector<int64_t>& inputNumbers){
+GoldSolver::GoldSolver(std::vector<int64_t>& inputNumbers) {
   numbers = readNumbers(inputNumbers);
   prime_numbers(numbers);
   goldbach(numbers);
   create_strings();
 }
 
-GoldSolver::~GoldSolver(){
+GoldSolver::~GoldSolver() {
   free_memory(numbers);
 }
 

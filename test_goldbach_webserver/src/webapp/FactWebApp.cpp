@@ -1,4 +1,4 @@
-// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes 
+// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
 // Universidad de Costa Rica. CC BY 4.0
 
 #include <algorithm>
@@ -87,7 +87,7 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
         return 1;
     }
     // El 7 es la longitud de "number="
-    std::string numbersString = httpRequest.getURI().substr(pos + 7); 
+    std::string numbersString = httpRequest.getURI().substr(pos + 7);
     // Vector de numeros enteros con los numeros del URI
     std::vector<int64_t> numbersVector = fillVector(numbersString);
     // Vector de Strings con el resultado de cada factorización
@@ -102,7 +102,9 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   return httpResponse.send();
 }
 
-void FactWebApp::sendSuccessResponse(HttpResponse& httpResponse, const std::vector<int64_t>& numbersVector, const std::vector<std::string>& results) {
+void FactWebApp::sendSuccessResponse(HttpResponse& httpResponse
+                                    , const std::vector<int64_t>& numbersVector
+                                    , const std::vector<std::string>& results) {
   std::string title = "Prime factorization";
   httpResponse.body() << "<!DOCTYPE html>\n"
     << "<html lang=\"en\">\n"
@@ -170,10 +172,8 @@ std::vector<std::vector<int64_t>> FactWebApp::getResults(
 
 std::vector<std::string> FactWebApp::FactorizeToString
   (std::vector<std::vector<int64_t>> generalFactors) {
-
   std::vector<std::string> factorizations;
   for (size_t i = 0; i < generalFactors.size(); i++) {
-
     std::vector<int64_t> factors = generalFactors[i];
     // Contar los exponentes de los factores
     std::unordered_map<int64_t, int> exponentCount;
@@ -182,7 +182,7 @@ std::vector<std::string> FactWebApp::FactorizeToString
     }
     // Construir la cadena de factorización
     std::string factorization;
-    for (auto index = exponentCount.begin(); 
+    for (auto index = exponentCount.begin();
       index != exponentCount.end(); ++index) {
       factorization += std::to_string(index->first);
       if (index->second > 1) {

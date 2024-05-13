@@ -4,14 +4,16 @@
 
 #include "HttpConnectionHandler.hpp"
 #include "HttpRequest.hpp"
+#include "HttpResponse.hpp"
 #include "HttpApp.hpp"
 #include "HttpApp.hpp"
 #include "NetworkAddress.hpp"
 #include "Log.hpp"
 
+
 HttpConnectionHandler::HttpConnectionHandler (std::vector<HttpApp*>* WebApps) {
   this->applications = WebApps;
-}
+}  
 
 int HttpConnectionHandler::run() {
   this->consumeForever();
@@ -49,7 +51,6 @@ void HttpConnectionHandler::consume(Socket client) {
   }
 }
 
-// TODO: Move the following methods to your HttpConnectionHandler ✔
 bool HttpConnectionHandler::handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) {
   // Print IP and port from client
@@ -66,11 +67,8 @@ bool HttpConnectionHandler::handleHttpRequest(HttpRequest& httpRequest,
   return this->route(httpRequest, httpResponse);
 }
 
-// TODO: Provide HttpConnectionHandler access to the array of web apps ✔
 bool HttpConnectionHandler::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
   // Traverse the chain of applications
-  // TODO: ARREGLAR ERROR APLICATIONS DE DONDE VIENE?
-  // TODO: Es necesario mover el chain aca tmb? o los copiamos
   for (size_t index = 0; index < (*(this->applications)).size(); ++index) {
     // If this application handles the request
     HttpApp* app = (*(this->applications))[index];

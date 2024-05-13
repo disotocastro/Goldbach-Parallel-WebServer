@@ -87,9 +87,9 @@ class FactWebApp : public HttpApp {
    * @param numbersVector The vector of numbers that were factorized.
    * @param results The vector of strings containing the factorization results.
    */
-  void sendSuccessResponse(HttpResponse& httpResponse,
-                                     const std::vector<int64_t>& numbersVector,
-                                     const std::vector<std::string>& results);                                                              
+  void sendSuccessResponse(HttpResponse& httpResponse
+                                     , const std::vector<int64_t>& numbersVector
+                                     , const std::vector<std::string>& results);                                                    
   /**
    * @brief This function takes a list of lists of integers where each inner 
    *  list represents a set of factors to be factorized.

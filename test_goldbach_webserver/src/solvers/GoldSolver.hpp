@@ -10,14 +10,12 @@
 
 
 class GoldSolver {
-
     public:
         /**
         * @brief Constructor para GoldSolver.
         * @param inputNumbers Vector de números de entrada.
         */
         GoldSolver( std::vector<int64_t>& inputNumbers);
-
         /**
         * @brief Destructor para GoldSolver.
         */

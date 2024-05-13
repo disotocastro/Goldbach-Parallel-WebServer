@@ -5,12 +5,9 @@
 #include <stdlib.h>
 #include <numbers.hpp>
 
-
 NumbersArray_t* readNumbers( std::vector<int64_t>& inputNumbers) {
- 
   // Tamaño inicial del arreglo
   int64_t size = 10;
-
   /// Crear el arreglo para almacenar los numeros.
   NumbersArray_t* numbers = (NumbersArray_t*)malloc(sizeof(NumbersArray_t));
   numbers->GoldbachSumsArray = (Numbers_t**)malloc(size * (sizeof(Numbers_t*)));
@@ -20,7 +17,6 @@ NumbersArray_t* readNumbers( std::vector<int64_t>& inputNumbers) {
   numbers->counterPrimes = 0;
 
   // Lee los números de la entrada estándar y los almacena en la lista
-   
   for (size_t i = 0; i < inputNumbers.size(); i++) {
       // Verifica si se necesita expandir el tamaño del arreglo
       if (numbers->counterNumbers >= size) {
@@ -44,9 +40,7 @@ NumbersArray_t* readNumbers( std::vector<int64_t>& inputNumbers) {
       }
       // Incrementa el contador de números leídos
       numbers->counterNumbers++;
-    
   }
-
   return numbers;
 }
 

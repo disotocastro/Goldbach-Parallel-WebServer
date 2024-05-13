@@ -1,8 +1,11 @@
+// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
+// Universidad de Costa Rica. CC BY 4.0
 #ifndef GOLDWEBAPP_HPP
 #define GOLDWEBAPP_HPP
 
 #include "HttpApp.hpp"
 #include <vector>
+#include <string>
 
 /**
  * @brief A web application that calculates Goldbach sums.
@@ -72,19 +75,17 @@ class GoldWebApp : public HttpApp {
    * @param numbersVector A vector containing the numbers to process.
    * @param httpResponse The HTTP response object.
   */
-  void sendSuccessResponse(const std::vector<int64_t>& numbersVector, 
+  void sendSuccessResponse(const std::vector<int64_t>& numbersVector,
                            HttpResponse& httpResponse);
-                           
   /**
    * @brief Extracts numbers from the URI of the HTTP request.
    * @param httpRequest The HTTP request object.
    * @param numbersVector A vector to store the extracted numbers.
    * @return true if the numbers were successfully extracted, false otherwise.
    */
-  bool getNumbersFromURI(HttpRequest& httpRequest, 
-                       std::vector<int64_t>& numbersVector,int longitud, 
-                       std::string str);
-
+  bool getNumbersFromURI(HttpRequest& httpRequest
+                        , std::vector<int64_t>& numbersVector, int longitud
+                        , std::string str);
 };
 
 #endif  // GOLDWEBAPP_HPP

@@ -1,4 +1,4 @@
-// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes 
+// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
 // Universidad de Costa Rica. CC BY 4.0
 
 #ifndef FACTWEBAPP_HPP
@@ -23,7 +23,6 @@ class FactWebApp : public HttpApp {
   ~FactWebApp();
   /// Called by the web server when the web server is started
   void start() override;
-  
   /// Handle HTTP requests.
   /// @param httpRequest The HTTP request to handle
   /// @param httpResponse The HTTP response to fill
@@ -88,13 +87,12 @@ class FactWebApp : public HttpApp {
    * @param numbersVector The vector of numbers that were factorized.
    * @param results The vector of strings containing the factorization results.
    */
-  void sendSuccessResponse(HttpResponse& httpResponse, 
-                                     const std::vector<int64_t>& numbersVector, 
-                                     const std::vector<std::string>& results);
-                                                                
+  void sendSuccessResponse(HttpResponse& httpResponse,
+                                     const std::vector<int64_t>& numbersVector,
+                                     const std::vector<std::string>& results);                                                              
   /**
-   * @brief This function takes a list of lists of integers where each inner list 
-   represents a set of factors to be factorized.
+   * @brief This function takes a list of lists of integers where each inner 
+   *  list represents a set of factors to be factorized.
    * It calculates the prime factorization for each set of factors and returns 
    a vector of strings representing the factorizations.
    * 
@@ -109,7 +107,6 @@ class FactWebApp : public HttpApp {
   */
   std::vector<std::string> FactorizeToString 
                                             (std::vector<std::vector<int64_t>>);
-
 };
 
 #endif  // FACTWEBAPP_HPP

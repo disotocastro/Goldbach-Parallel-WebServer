@@ -70,12 +70,14 @@ bool GoldWebApp::serveHomepage(HttpRequest& httpRequest
   return httpResponse.send();
 }
 
-bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest, HttpResponse& httpResponse) {
+bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest,
+                               HttpResponse& httpResponse) {
   (void)httpRequest;
   std::string str = "";
   int longitud = 0;
   bool hayError = false;
 
+  // Set HTTP response metadata (headers)
   httpResponse.setHeader("Server", "AttoServer v1.0");
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
@@ -90,14 +92,14 @@ bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest, HttpResponse& httpRespo
   } else {
     sendErrorResponse(httpResponse);
   }
-
   return httpResponse.send();
 }
 
-bool GoldWebApp::getNumbersFromURI(HttpRequest& httpRequest, 
-                                   std::vector<int64_t>& numbersVector, int longitud, std::string str) {
+bool GoldWebApp::getNumbersFromURI(HttpRequest& httpRequest,
+                                   std::vector<int64_t>& numbersVector,
+                                   int longitud, std::string str) {
   if (size_t pos = httpRequest.getURI().find("number=")) {
-    std::string numbersString = httpRequest.getURI().substr(pos + 7); 
+    std::string numbersString = httpRequest.getURI().substr(pos + 7);
     // Uniformar el URI para que el separador sea espacio
     std::regex coma("%..");  // símbolo porcentaje y dos caracteres cualquiera
     std::string nuevoUri = std::regex_replace(numbersString, coma, " ");
@@ -108,10 +110,10 @@ bool GoldWebApp::getNumbersFromURI(HttpRequest& httpRequest,
     std::string::const_iterator fin = nuevoUri.end();
     // Buscar números en el URI modificado
     while (std::regex_search(ini, fin, matches, patron)) {
-      str = matches.str(); 
+      str = matches.str();
       longitud = str.size();
       if (longitud > 19) {
-        return false; // Hay un error, número demasiado grande
+        return false;   // Hay un error, número demasiado grande
       }
       int valor = std::stoll(matches[0].str());
       numbersVector.push_back(valor);
@@ -119,11 +121,11 @@ bool GoldWebApp::getNumbersFromURI(HttpRequest& httpRequest,
     }
     return true;
   } else {
-    return false; // Hay un error, no se encontró la cadena "number="
+    return false;   // Hay un error, no se encontró la cadena "number="
   }
 }
 
-void GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector, 
+void GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector,
                                      HttpResponse& httpResponse) {
   std::string title = " Goldbach Sums";
   httpResponse.body() << "<!DOCTYPE html>\n"
@@ -136,8 +138,8 @@ void GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector,
                       << "    .small {font-size: 0.8em; color: black}\n"
                       << "  </style>\n"
                       << "  <h1>" << title << "</h1>\n";
-  std::vector<int64_t> numbersTemp = numbersVector; 
-  GoldSolver goldbach = GoldSolver(numbersTemp);  
+  std::vector<int64_t> numbersTemp = numbersVector;
+  GoldSolver goldbach = GoldSolver(numbersTemp);
 
   for (size_t i = 0; i < numbersVector.size(); i++) {
     std::string resultado =  goldbach.stringSums[i];
@@ -153,7 +155,7 @@ void GoldWebApp::sendErrorResponse(HttpResponse& httpResponse) {
                       << "<html lang=\"en\">\n"
                       << "  <meta charset=\"ascii\"/>\n"
                       << "  <title>" << title << "</title>\n"
-                      << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
+        << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
                       << "  <h1 class=\"err\">" << title << "</h1>\n"
                       << "  <p>Invalid request for Goldbach sums</p>\n"
                       << "  <hr><p><a href=\"/\">Back</a></p>\n"

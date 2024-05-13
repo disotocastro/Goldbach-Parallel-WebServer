@@ -39,12 +39,10 @@ void GoldSolver::prime_numbers(NumbersArray_t* NumbersArray) {
   int64_t maxPrimeCount = NumbersArray->largestNumber / 2;
   // Se reserva memoria para almacenar los números primos
   primeNumbers = (int64_t*)calloc(maxPrimeCount, sizeof(int64_t));
-
   if (primeNumbers == NULL) {
     // Manejo de errores en caso de fallo de asignación de memoria
     // return NULL;
   }
-
   primeNumbers[0] = 2;
   int64_t indexArray = 1;
   for (int64_t number = 3; number < NumbersArray->largestNumber; number += 2) {
@@ -164,7 +162,6 @@ void GoldSolver::goldbach_odd(NumbersArray_t* NumbersArray, int64_t index) {
   NumbersArray->GoldbachSumsArray[index]->goldbachSums = goldbachSums;
   NumbersArray->GoldbachSumsArray[index]->sums_counter = goldbachSumsCounter;
 }
-
 void GoldSolver::create_strings(){
   ///< Cadena temporal para almacenar la suma actual de Goldbach.
   std::string currentSum; 
@@ -186,7 +183,7 @@ void GoldSolver::create_strings(){
       for (int64_t j = 0; j < n; j++){
         // Agrega la suma de Goldbach para números pares
         if ((SumsArray[i]->number % 2) == 0) {
-          currentSum += "" + 
+          currentSum += "" +
               std::to_string(SumsArray[i]->goldbachSums[0][j]) + " ";
           currentSum += "+ " + std::to_string(SumsArray[i]->goldbachSums[1][j]);
           if (j == (SumsArray[i]->sums_counter) - 1) {
@@ -194,7 +191,7 @@ void GoldSolver::create_strings(){
            currentSum += ", ";
           }
          // Agrega la suma de Goldbach para números impares
-        }else{ 
+        }else{
           currentSum += "" 
               + std::to_string(SumsArray[i]->goldbachSums[0][j]) + " ";
           currentSum += "+ " 

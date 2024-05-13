@@ -1,25 +1,23 @@
+// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes 
+// Universidad de Costa Rica. CC BY 4.0
 #include <string>
 
 #include "HttpConnectionHandler.hpp"
 #include "HttpRequest.hpp"
-#include "HttpResponse.hpp"
 #include "HttpApp.hpp"
 #include "HttpApp.hpp"
 #include "NetworkAddress.hpp"
 #include "Log.hpp"
 
-
 HttpConnectionHandler::HttpConnectionHandler (std::vector<HttpApp*>* WebApps) {
   this->applications = WebApps;
-}  
+}
 
-// TODO: Metodo RUN, que llame a consumeforever ✔
 int HttpConnectionHandler::run() {
   this->consumeForever();
   return EXIT_SUCCESS;
 }
 
-// TODO: Move following loop to a consumer HttpConnectionHandler class ✔
 void HttpConnectionHandler::consume(Socket client) {
   // While the same client asks for HTTP requests in the same connection
   while (true) {

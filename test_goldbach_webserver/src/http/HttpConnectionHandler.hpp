@@ -9,9 +9,23 @@
 
 class HttpConnectionHandler : public Consumer <Socket> {
  public:
+
+    /**
+     * @brief Constructor de la clase HttpConnectionHandler.
+     * @param WebApps Puntero a un vector de punteros a objetos HttpApp.
+     */
   explicit HttpConnectionHandler(std::vector<HttpApp*>* WebApps);
 
+   /**
+     * @brief Método para ejecutar la conexión HTTP.
+     * @return Entero que indica el estado de la ejecución.
+     */
   int run() override;
+
+   /**
+     * @brief Método para consumir un socket.
+     * @param client Socket que se va a consumir.
+     */
   void consume(Socket client) override;
 
   /// Route, that provide an answer according to the URI value
@@ -34,7 +48,8 @@ class HttpConnectionHandler : public Consumer <Socket> {
                                HttpResponse& httpResponse);
 
     
-  protected:     
+  protected:  
+    /// Puntero a un vector de punteros a objetos HttpApp.   
     std::vector<HttpApp*>* applications;
 };
 

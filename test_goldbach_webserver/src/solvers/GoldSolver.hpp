@@ -12,14 +12,22 @@
 class GoldSolver {
 
     public:
-
+        /**
+        * @brief Constructor para GoldSolver.
+        * @param inputNumbers Vector de números de entrada.
+        */
         GoldSolver( std::vector<int64_t>& inputNumbers);
 
+        /**
+        * @brief Destructor para GoldSolver.
+        */
         ~GoldSolver();
 
         /**
-         * @brief Encuentra los números primos hasta el número más grande en la lista.
-         * @param NumbersArray Puntero a la estructura NumbersArray_t que contiene los números.
+         * @brief Encuentra los números primos hasta 
+         * el número más grande en la lista.
+         * @param NumbersArray Puntero a la estructura NumbersArray_t 
+         * que contiene los números.
          */
         void prime_numbers(NumbersArray_t* numbers_read);
 
@@ -32,14 +40,16 @@ class GoldSolver {
 
         /**
          * @brief Calcula las sumas de Goldbach para números impares.
-         * @param NumbersArray Puntero a la estructura NumbersArray_t que contiene los números.
+         * @param NumbersArray Puntero a la estructura NumbersArray_t 
+         * que contiene los números.
          * @param index Índice del número en el arreglo.
          */
         void goldbach_odd(NumbersArray_t* NumbersArray, int64_t index);
 
         /**
          * @brief Calcula las sumas de Goldbach para números pares.
-         * @param NumbersArray Puntero a la estructura NumbersArray_t que contiene los números.
+         * @param NumbersArray Puntero a la estructura NumbersArray_t 
+         * que contiene los números.
          * @param index Índice del número en el arreglo.
          */
         void goldbach_pair(NumbersArray_t* NumbersArray, int64_t index);
@@ -51,10 +61,17 @@ class GoldSolver {
          */
         void goldbach(NumbersArray_t* NumbersArray);
 
+        /**
+         * @brief Crea cadenas de texto representando las sumas de Goldbach.
+         */
         void create_strings();
 
         NumbersArray_t* numbers;
 
+        /**
+        * @brief Vector para almacenar las representaciones de 
+        * cadena de las sumas de Goldbach.
+        */
         std::vector<std::string> stringSums;
 
 };

@@ -74,15 +74,30 @@ class HttpServer : public TcpServer {
   const char* port = DEFAULT_PORT;
   // MAX NUMBER OF CONNECTIONS
   int64_t handlers = std::thread::hardware_concurrency();
+
+
+
+  /**
+   * @brief Vector de punteros a objetos HttpConnectionHandler.
+   */
   std::vector<HttpConnectionHandler*> vectorHandlers;
 
+  /**
+   * @brief Crea hilos para manejar conexiones HTTP.
+   *
+   * Esta función crea hilos para manejar conexiones HTTP. Los hilos se asocian
+   * con los objetos HttpConnectionHandler almacenados en el vector vectorHandlers.
+   */
   void createThreads();
+
+
+  /**
+   * @brief Elimina los hilos creados para manejar conexiones HTTP.
+   *
+   * Esta función elimina los hilos previamente creados para manejar conexiones HTTP.
+   */
   void deleteThreads();
   
-  void stopConnection();
-
-
-
 
   /// Chain of registered web applications. Each time an incoming HTTP request
   /// is received, the request is provided to each application of this chain.

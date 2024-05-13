@@ -45,7 +45,8 @@ NumbersArray_t* readNumbers( std::vector<int64_t>& inputNumbers);
 
 /**
  * @brief Libera la memoria asignada a la lista de números.
- * @param NumbersArray Puntero a la estructura NumbersArray_t que contiene los números.
+ * @param NumbersArray Puntero a la estructura NumbersArray_t 
+ * que contiene los números.
  */
 void free_memory(NumbersArray_t* numbers);
 

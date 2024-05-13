@@ -73,6 +73,7 @@ bool GoldWebApp::serveHomepage(HttpRequest& httpRequest
 bool GoldWebApp::serveFactorization(HttpRequest& httpRequest
   , HttpResponse& httpResponse) {
   (void)httpRequest;
+  
   std::string str = "";
   int longitud = 0;
   bool hayError = false;
@@ -90,7 +91,8 @@ bool GoldWebApp::serveFactorization(HttpRequest& httpRequest
     std::smatch matches;
     std::string::const_iterator ini = nuevoUri.begin();
     std::string::const_iterator fin = nuevoUri.end();
-    std::vector<int64_t> numbersVector; // Vector para almacenar todos los números
+    // Vector para almacenar todos los números
+    std::vector<int64_t> numbersVector; 
     // Buscar números en el URI modificado
     while (std::regex_search(ini, fin, matches, patron)) {
       str = matches.str(); 

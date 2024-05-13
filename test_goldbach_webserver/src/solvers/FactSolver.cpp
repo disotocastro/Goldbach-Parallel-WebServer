@@ -1,40 +1,15 @@
 #include "FactSolver.hpp"
 
-std::string FactSolver::FactorizeToString(int64_t number) {
-    // Obtener los factores del número
-    std::vector<int64_t> factors = GetFactors(number);
 
-    // Contar los exponentes de los factores
-    std::unordered_map<int64_t, int> exponentCount;
-    for (int64_t factor : factors) {
-        exponentCount[factor]++;
-    }
 
-    // Construir la cadena de factorización
-    std::string factorization;
-    for (auto index = exponentCount.begin();
-             index != exponentCount.end(); ++index) {
-        factorization += std::to_string(index->first);
-        if (index->second > 1) {
-            factorization += "^" + std::to_string(index->second);
-        }
-        factorization += " * ";
-    }
-    // Eliminar los últimos caracteres " * " si están presentes
-    if (!factorization.empty()) {
-        factorization.pop_back();
-        factorization.pop_back();
-    }
-
-    return factorization;
-}
-
-std::vector<std::string> FactSolver::FactorizeVector
+std::vector<std::vector<int64_t>> FactSolver::FactorizeVector
         (const std::vector<int64_t>& numbers) {
-    std::vector<std::string> factorizations;
+
+    std::vector<std::vector<int64_t>> factorizations;
+
     // Factorizar cada número en la lista
     for (int64_t number : numbers) {
-        factorizations.push_back(FactorizeToString(number));
+        factorizations.push_back(GetFactors(number));
     }
     return factorizations;
 }

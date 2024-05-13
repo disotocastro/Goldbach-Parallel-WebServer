@@ -91,7 +91,9 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
     // Vector de numeros enteros con los numeros del URI
     std::vector<int64_t> numbersVector = fillVector(numbersString);
     // Vector de Strings con el resultado de cada facto
-    std::vector<std::string> results = getResults(numbersVector);
+    std::vector<std::vector<int64_t>> factorResults = getResults(numbersVector);
+
+    std::vector<std::string> results = FactorizeToString(factorResults);
 
     std::string title = "Prime factorization";
     httpResponse.body() << "<!DOCTYPE html>\n"
@@ -151,9 +153,48 @@ std::vector<int64_t> FactWebApp::fillVector(std::string numbersString) {
   return numbersVector;
 }
 
-std::vector<std::string> FactWebApp::getResults(
+std::vector<std::vector<int64_t>> FactWebApp::getResults(
                                            std::vector<int64_t> numbersVector) {
   FactSolver Factorizacion;
-  std::vector<std::string> results;
+  std::vector<std::vector<int64_t>> results;
   return results = Factorizacion.FactorizeVector(numbersVector);
+}
+
+
+std::vector<std::string> FactWebApp::FactorizeToString
+  (std::vector<std::vector<int64_t>> generalFactors) {
+
+  std::vector<std::string> factorizations;
+
+  for (size_t i = 0; i < generalFactors.size(); i++) {
+
+    std::vector<int64_t> factors = generalFactors[i];
+
+    // Contar los exponentes de los factores
+    std::unordered_map<int64_t, int> exponentCount;
+    for (int64_t factor : factors) {
+      exponentCount[factor]++;
+    }
+
+    // Construir la cadena de factorización
+    std::string factorization;
+    for (auto index = exponentCount.begin(); 
+      index != exponentCount.end(); ++index) {
+      factorization += std::to_string(index->first);
+      if (index->second > 1) {
+        factorization += "^" + std::to_string(index->second);
+      }
+      factorization += " * ";
+    }
+    
+    // Eliminar los últimos caracteres " * " si están presentes
+    if (!factorization.empty()) {
+      factorization.pop_back();
+      factorization.pop_back();
+    }
+
+    factorizations.push_back(factorization);
+  }
+
+  return factorizations;
 }

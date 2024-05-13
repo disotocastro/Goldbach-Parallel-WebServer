@@ -56,7 +56,7 @@ class FactWebApp : public HttpApp {
    * @param numbersVector The vector of numbers to factorize
    * @return A vector of strings with the factorization results
    */
-  std::vector<std::string> getResults(std::vector<int64_t> numbersVector);
+  std::vector<std::vector<int64_t>> getResults(std::vector<int64_t> numbersVector);
 
   /**
    * @brief Fill a vector of integers from a string representation.
@@ -64,6 +64,14 @@ class FactWebApp : public HttpApp {
    * @return A vector of integers.
    */
   std::vector<int64_t> fillVector(std::string numbersString);
+
+  /**
+     * @brief Factorize a number into its prime factors 
+     * and return the result as a string.
+     * @param number The number to factorize.
+     * @return A string representing the factorization of the input number.
+     */
+    std::vector<std::string> FactorizeToString(std::vector<std::vector<int64_t>>);
 
 };
 

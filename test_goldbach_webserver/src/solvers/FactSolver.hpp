@@ -12,13 +12,6 @@
  */
 class FactSolver {
 public:
-    /**
-     * @brief Factorize a number into its prime factors 
-     * and return the result as a string.
-     * @param number The number to factorize.
-     * @return A string representing the factorization of the input number.
-     */
-    std::string FactorizeToString(int64_t number);
 
     /**
      * @brief Factorize a vector of numbers into their prime factors 
@@ -27,7 +20,7 @@ public:
      * @return A vector of strings representing the factorizations 
      * of the input numbers.
      */
-    std::vector<std::string> FactorizeVector
+   std::vector<std::vector<int64_t>> FactorizeVector
                 (const std::vector<int64_t>& numbers);
 
      /**

@@ -4,7 +4,6 @@
 #include <cassert>
 #include <iostream>
 #include <regex>
-#include <vector>
 #include <stdexcept>
 #include <string>
 #include <cstring>
@@ -73,111 +72,90 @@ bool GoldWebApp::serveHomepage(HttpRequest& httpRequest
 
 bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest, HttpResponse& httpResponse) {
   (void)httpRequest;
-  std::vector<int64_t> numbersVector;
+  std::string str = "";
+  int longitud = 0;
   bool hayError = false;
-  // Parse the HTTP request and extract numbers
-  numbersVector = parseHttpRequest(httpRequest, hayError);
-  // If there was an error parsing the request, return an error response
-  if (hayError) {
-    return sendErrorResponse(httpResponse);
-  }
-  // Build and send the successful response with Goldbach sums
-  return sendSuccessResponse(numbersVector, httpResponse);
-}
 
-std::vector<int64_t> GoldWebApp::parseHttpRequest(HttpRequest& httpRequest, bool& hayError) {
-  std::vector<int64_t> numbersVector;
-  std::string numbersString = "";
-  size_t pos = httpRequest.getURI().find("number=");
-  // If "number=" was found in the URI, extract the numbers string
-  if (pos != std::string::npos) {
-    numbersString = httpRequest.getURI().substr(pos + 7);
-    // Convert the string of numbers into a vector of integers
-    std::regex numberRegex("-?[0-9]+");
-    std::smatch matches;
-    std::string::const_iterator ini = numbersString.begin();
-    std::string::const_iterator fin = numbersString.end();
-    // Extract numbers from the string using regular expressions
-    while (std::regex_search(ini, fin, matches, numberRegex)) {
-      std::string numberStr = matches.str();
-      int64_t number = std::stoll(numberStr);
-      // Check if the number exceeds the maximum allowed size
-      if (numberStr.size() > 19) {
-          hayError = true;
-          return numbersVector;
-      }
-      numbersVector.push_back(number);
-      ini = matches.suffix().first;
-    }
-  }
-
-  if (numbersVector.empty()) {
-    hayError = true;
-  }
-  return numbersVector;
-}
-
-std::vector<int64_t> GoldWebApp::extractNumbers(const std::string& numbersString, bool& hayError) {
-  std::vector<int64_t> numbersVector;
-  std::regex numberRegex("-?[0-9]+");
-  std::smatch matches;
-  std::string::const_iterator ini = numbersString.begin();
-  std::string::const_iterator fin = numbersString.end();
-  // Extract numbers from the string using regular expressions
-  while (std::regex_search(ini, fin, matches, numberRegex)) {
-    std::string numberStr = matches.str();
-    int64_t number = std::stoll(numberStr);
-    // Check if the number exceeds the maximum allowed size
-    if (numberStr.size() > 19) {
-      hayError = true;
-      return numbersVector;
-    }
-    numbersVector.push_back(number);
-    ini = matches.suffix().first;
-  }
-  return numbersVector;
-}
-
-bool GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector, HttpResponse& httpResponse) {
   httpResponse.setHeader("Server", "AttoServer v1.0");
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
+  std::vector<int64_t> numbersVector;
+  // Obtener los números del URI
+  if (!getNumbersFromURI(httpRequest, numbersVector, longitud, str)) {
+    hayError = true;
+  }
+
+  if (!hayError) {
+    sendSuccessResponse(numbersVector, httpResponse);
+  } else {
+    sendErrorResponse(httpResponse);
+  }
+
+  return httpResponse.send();
+}
+
+bool GoldWebApp::getNumbersFromURI(HttpRequest& httpRequest, 
+                                   std::vector<int64_t>& numbersVector, int longitud, std::string str) {
+  if (size_t pos = httpRequest.getURI().find("number=")) {
+    std::string numbersString = httpRequest.getURI().substr(pos + 7); 
+    // Uniformar el URI para que el separador sea espacio
+    std::regex coma("%..");  // símbolo porcentaje y dos caracteres cualquiera
+    std::string nuevoUri = std::regex_replace(numbersString, coma, " ");
+    // Expresión regular para buscar números enteros
+    std::regex patron("-?[0-9]+");
+    std::smatch matches;
+    std::string::const_iterator ini = nuevoUri.begin();
+    std::string::const_iterator fin = nuevoUri.end();
+    // Buscar números en el URI modificado
+    while (std::regex_search(ini, fin, matches, patron)) {
+      str = matches.str(); 
+      longitud = str.size();
+      if (longitud > 19) {
+        return false; // Hay un error, número demasiado grande
+      }
+      int valor = std::stoll(matches[0].str());
+      numbersVector.push_back(valor);
+      ini = matches.suffix().first;
+    }
+    return true;
+  } else {
+    return false; // Hay un error, no se encontró la cadena "number="
+  }
+}
+
+void GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector, 
+                                     HttpResponse& httpResponse) {
   std::string title = " Goldbach Sums";
   httpResponse.body() << "<!DOCTYPE html>\n"
-                       << "<html lang=\"en\">\n"
-                       << "  <meta charset=\"ascii\"/>\n"
-                       << "  <title>" << title << "</title>\n"
-                       << "  <style>\n"
-                       << "    body {font-family: monospace}\n"
-                       << "    .blue {color: blue}\n"
-                       << "    .small {font-size: 0.8em; color: black}\n"
-                       << "  </style>\n"
-                       << "  <h1>" << title << "</h1>\n";
-  // Create a copy of numbersVector
-  std::vector<int64_t> numbersTemp = numbersVector;
-  // Calculate Goldbach sums and add them to the HTML response
-  GoldSolver goldbach = GoldSolver(numbersTemp);
-  for (size_t i = 0; i < numbersTemp.size(); i++) {
-    std::string resultado = goldbach.stringSums[i];
+                      << "<html lang=\"en\">\n"
+                      << "  <meta charset=\"ascii\"/>\n"
+                      << "  <title>" << title << "</title>\n"
+                      << "  <style>\n"
+                      << "    body {font-family: monospace}\n"
+                      << "    .blue {color: blue}\n"
+                      << "    .small {font-size: 0.8em; color: black}\n"
+                      << "  </style>\n"
+                      << "  <h1>" << title << "</h1>\n";
+  std::vector<int64_t> numbersTemp = numbersVector; 
+  GoldSolver goldbach = GoldSolver(numbersTemp);  
+
+  for (size_t i = 0; i < numbersVector.size(); i++) {
+    std::string resultado =  goldbach.stringSums[i];
     httpResponse.body() << " <h1>" << resultado << "</h1>\n";
   }
   httpResponse.body() << "</html>\n";
-  return httpResponse.send();
 }
 
-bool GoldWebApp::sendErrorResponse(HttpResponse& httpResponse) {
-  httpResponse.setHeader("Server", "AttoServer v1.0");
-  httpResponse.setHeader("Content-type", "text/html; charset=ascii");
+void GoldWebApp::sendErrorResponse(HttpResponse& httpResponse) {
   // Build the body for an invalid request
   std::string title = "Invalid request";
   httpResponse.body() << "<!DOCTYPE html>\n"
-                       << "<html lang=\"en\">\n"
-                       << "  <meta charset=\"ascii\"/>\n"
-                       << "  <title>" << title << "</title>\n"
-                       << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
-                       << "  <h1 class=\"err\">" << title << "</h1>\n"
-                       << "  <p>Invalid request for Goldbach sums</p>\n"
-                       << "  <hr><p><a href=\"/\">Back</a></p>\n"
-                       << "</html>\n";
-  return httpResponse.send();
+                      << "<html lang=\"en\">\n"
+                      << "  <meta charset=\"ascii\"/>\n"
+                      << "  <title>" << title << "</title>\n"
+                      << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
+                      << "  <h1 class=\"err\">" << title << "</h1>\n"
+                      << "  <p>Invalid request for Goldbach sums</p>\n"
+                      << "  <hr><p><a href=\"/\">Back</a></p>\n"
+                      << "</html>\n";
 }

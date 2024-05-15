@@ -1,93 +1,104 @@
-# concurrente24a_critical_race_condition
+# Análisis del proyecto
 
+## Introducción
+El propósito principal del presente documento es analizar y plantear la conversión de un servidor serializado a un servidor concurrente, como parte del proyecto del curso CI-0117 - Programación Paralela y Concurrente de la Universidad de Costa Rica. En este proyecto, nos proponemos transformar un servidor que maneja conexiones de manera secuencial en uno que pueda gestionar múltiples conexiones concurrentemente, mejorando así su eficiencia y capacidad de respuesta. El servidor estará destinado a proporcionar dos servicios principales a los usuarios: factorización prima de números y sumas de Goldbach. Ambos servicios serán accesibles a través de conexiones serializadas, lo que permitirá a los clientes enviar solicitudes al servidor y recibir respuestas de manera eficiente. El proyecto ha sido llevado a cabo por un equipo de tres personas, quienes hemos trabajado en conjunto para diseñar, implementar y probar la solución propuesta. En este documento, se detallarán los requisitos del sistema, los casos de uso, el diseño de la arquitectura del servidor concurrente y las pruebas planificadas para garantizar el correcto funcionamiento del mismo.  
+## Descripción del Problema
+El proyecto consiste en la implementación de un servidor web concurrente que brinde a sus usuarios la posibilidad de ingresar una secuencia de números enteros y obtener la factorización prima y/o las sumas de Goldbach de dichos números. Es importante destacar que, para recopilar los requerimientos del proyecto, en lugar de realizar entrevistas a los clientes, se aprovechó una base de código existente. Esta base de código proporciona un servidor web serializado, complementado con un documento explicativo que detalla los objetivos y expectativas del proyecto y una serie de grabaciones de inducción para comprender el código heredado.  
+## Requisitos
+Los requisitos funcionales describen las acciones específicas que el sistema debe considerar, mientras que los requisitos no funcionales se refieren a atributos del sistema.  
 
+Los requisitos funcionales identificados son:  
+  • Debe poder aceptar dos parámetros  
+    - Uno es el puerto en el que el servidor web esperará por conexiones de clientes. Si se omite, podrá asumir el puerto 8080.  
+    - El otro indicará el número máximo de conexiones de clientes que debe permitir de 	manera concurrente. Si se omite éste, deberá asumir tantos como núcleos tenga 	disponibles la máquina donde corre el servidor.  
+  • Servicio de factorización prima  
+	  - El servidor debe ser capaz de recibir solicitudes de factorización prima de números 	enteros.  
+	  - Debe procesar las solicitudes recibidas y devolver la factorización prima de cada 	número.  
+	  - El servidor debe ser capaz de manejar múltiples solicitudes de factorización 	simultáneamente.  
+	  - La aplicación de factorización debe estar implementada en el paradigma de 	programación orientada a objetos.  
+  • Servicio de sumas de Goldbach  
+	  - El servidor debe ser capaz de recibir solicitudes de sumas de Goldbach de números 	enteros positivos y negativos. De los números positivos, debe devolver cuántas sumas 	encontró y de los negativos, además de cuántas sumas encontró deberá devolver 	explícitamente cuáles son esas 	sumas.  
+ 	  - El servidor debe manejar múltiples solicitudes de sumas de Goldbach de forma 	concurrente.  
+	  - La aplicación de sumas de Goldbach debe estar implementada en el paradigma de 	programación orientada a objetos.
+  • Conexiones concurrentes  
+	  - El servidor debe ser capaz de manejar múltiples conexiones concurrentes de clientes.  
+	  - Debe asignar recursos de manera eficiente para manejar las solicitudes de los clientes 	de manera concurrente sin bloquear el servidor.  
+	  - Debe admitir a los clientes para acceder a los servicios de factorización prima y sumas 	de Goldbach.  
+  • Manejo de errores  
+	  - El servidor debe ser robusto y capaz de manejar errores de manera adecuada, 	proporcionando mensajes de error claros y manejando situaciones inesperadas de 	manera elegante.  
+ 	  - Números mal formados, fuera de rango, o entradas mal intencionadas serán 	reportadas con mensajes de error en la página web resultado, en lugar de caerse o 	producir resultados con números incorrectos.  
+  • Interfaz de usuario  
+	  - Debe incluirse una interfaz de usuario para que los usuarios ingresen los números y 	vean los resultados de la factorización prima y las sumas de Goldbach de manera clara	y ordenada.  
+  • Finalizar el servidor  
+    - Al finalizar el servidor (con CTRL+C o el comando ` Kill` ), éste debe reaccionar a la señal y hacer la limpieza debida, deteniendo las conexiones, avisar a los hilos que terminen y liberar la memoria utilizada.  
 
-## Getting started
+Los requisitos no funcionales son:  
+  • Rendimiento  
+	  - El servidor debe ser capaz de manejar una carga de trabajo significativa sin mucha 	degradación del rendimiento.
+	  - El tiempo de respuesta para las solicitudes de los clientes debe ser rápido y predecible.  
+  • Disponibilidad  
+	  - El servidor debe estar disponible y accesible para los usuarios sin interrupción hasta 	que éste lo cierre.  
+  • Seguridad  
+	  - El servidor debe implementar medidas para protegerse de datos excesivamente 	grandes o mal intencionados que intenten degradarlo o bloquearlo.  
+  • Fiabilidad  
+	  - El servidor debe ser confiable y consistente en su comportamiento, evitando fallas 	inesperadas o comportamientos erráticos.  
+	  - Debe ser capaz de manejar correctamente situaciones de error y recuperarse de 	manera elegante.  
+  • Mantenibilidad  
+	  - El código del servidor debe ser fácil de entender, modificar y mantener.  
+	  - Debe seguir buenas prácticas de programación y diseño para facilitar la colaboración 	entre desarrolladores y futuras actualizaciones del sistema.  
+  • Usabilidad  
+	  - La interfaz de usuario debe ser intuitiva y fácil de usar para los usuarios finales.  
+  • Compatibilidad  
+	  - El servidor debe ser compatible con diferentes navegadores web y dispositivos de 	clientes.  
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+# Manual del usuario
+### I. Cómo compilar el programa
+Para compilar el programa, siga los pasos indicados a continuación desde la terminal de Linux, asegurándose de estar ubicado en la carpeta raíz del proyecto:
+<ul>
+  <li>1º. Ejecute el comando ` make clean` . Esto eliminará las carpetas bin/, build/ y doc/, limpiando el entorno de compilación previo.</li><br>
+  <li>2º. A continuación, ejecute el comando ` make` . Este comando compila y vincula los componentes localizados en la subcarpeta src/. Una vez finalizado, el ejecutable se almacenará en la subcarpeta bin/ y llevará el mismo nombre que la carpeta raíz del proyecto.  
+  </li>
+</ul>
+Las instrucciones necesarias para ejecutar estos comandos están definidas en el archivo Makefile, el cual se encuentra en la carpeta raíz del proyecto.   
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### II. Qué es y para qué sirve un Makefile
+Este archivo es fundamental para la automatización del proceso de compilación y se estructura de la siguiente manera:
+Componentes clave de un Makefile:  
+  • Reglas: Cada regla específica cómo construir un objetivo, ya sea un archivo ejecutable o un objeto, a partir de uno o más archivos fuente. También pueden incluir acciones adicionales como eliminar archivos temporales o instalar el programa.  
+  • Dependencias: Identifican los archivos que deben existir y estar actualizados para que la regla correspondiente pueda ejecutarse. Estas dependencias son esenciales para determinar qué componentes del proyecto necesitan ser recompilados tras cambios en los archivos.  
+  • Comandos: Corresponden a las instrucciones de shell que se ejecutan para construir los objetivos. Estos pueden incluir la compilación de código fuente, la vinculación de objetos, y otras tareas relacionadas.  
+  • Variables: Permiten definir y ajustar parámetros como los compiladores y las banderas de compilación, facilitando la configuración y adaptación del proceso de compilación.  
+Funciones de un Makefile:  
+  • Automatización: Optimiza el proceso de compilación asegurando que solo los componentes modificados sean recompilados, lo cual es crucial en proyectos grandes.  
+  • Eficiencia: Minimiza el tiempo de desarrollo al limitar la compilación a los elementos que realmente necesitan actualización, evitando procesos innecesarios.  
+  • Organización: Mejora la gestión del proyecto al proporcionar un conjunto claro y estructurado de instrucciones de compilación, lo que facilita la colaboración en equipos de desarrollo.  
+Este enfoque asegura una metodología eficiente y organizada para la compilación de proyectos, adaptándose tanto a necesidades individuales como colectivas en el entorno de desarrollo.   
 
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://git.ucr.ac.cr/JUAN.SOTOCASTRO/concurrente24a_critical_race_condition.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://git.ucr.ac.cr/JUAN.SOTOCASTRO/concurrente24a_critical_race_condition/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+### III. Ejecutar el programa
+Para ejecutar el programa desde lnea de comandos de linux, simplemente ingrese su nombre (sin extensión), añadiendo dos valores enteros positivos como parámetros. Si ejecuta el programa desde un directorio diferente, deberá especificar la ruta completa hasta el ejecutable. El primer parámetro determina el puerto en el que el servidor estará "escuchando" conexiones. El segundo define el número de hilos de ejecución que se utilizarán en el servidor. Estos parámetros son opcionales; si no se proporcionan, el sistema asumirá el puerto 8080 y el número de hilos equivalente al número de procesadores físicos disponibles en la computadora.  
+Por ejemplo, supongamos que el ejecutable se llama proyecto1, para iniciarlo con un puerto específico y un número determinado de hilos, desde la carpeta raiz escriba:  
+<pre>
+./bin/proyecto1:8080 4
+</pre>
+Una vez que el servidor esté activo y "escuchando", los usuarios pueden interactuar con él mediante un navegador web. Para acceder a las aplicaciones disponibles, deben escribir la siguiente dirección en la barra de direcciones del navegador:  
+    • Para la factorización prima: Ingrese ` www.localhost:8080/fact` . Se mostrará una pantalla donde deberá introducir uno o más valores enteros, separados por comas o espacios, en el campo denominado number.  
+    ![](./SolicFactPrima.png)<br>
+Después de hacer clic en el botón ` Factorizar` , los resultados se mostrarán en la misma página.  
+    ![](./ResulFactPrima.png)<br>
+    • Para las sumas de Goldbach: Ingrese ` www.localhost:8080/gold` . Aparecerá una pantalla similar en la que deberá introducir uno o más valores enteros, sean negativos o positivos, separados por comas o espacios, en el campo Number.  
+    ![](./SolicGoldSum.png)<br>
+Al hacer clic en el botón ` Get sums` , los resultados aparecerán en el navegador. El tiempo de respuesta variará dependiendo del tamaño de los números ingresados. Durante este proceso, se mostrará un indicador animado en la pestaña del navegador, señalando que el cálculo está en curso.  
+    ![](./ResulGoldSum.png)<br>
+Este método permite una interacción clara y efectiva con el servidor a través de interfaces sencillas y funciones específicas para cada tipo de cálculo requerido.  
+### IV. Finalizar el servidor  
+Para finalizar el servidor, existen dos métodos eficaces. El primero es a través de la terminal en la que se inició el servidor, donde también se reciben los mensajes de diagnóstico de su actividad. Simplemente, pulse Ctrl+C, combinando simultáneamente las teclas Control y C. El segundo método requiere determinar previamente el ID del proceso del servidor, que generalmente corresponde al nombre del ejecutable. Una vez que tenga este dato, desde otra terminal, ejecute el comando ` kill <pid>` , sustituyendo \<pid\> por el número de proceso que haya consultado.
+# Créditos
+**Proyecto:**   	Servidor web concurrente  
+**Conexiones:** 	Factorización prima serializado,<br>&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&nbsp;Sumas de Goldbach serializado  
+### Autores  
+Juan Diego Soto Castro. Correo: juan.sotocastro@ucr.ac.cr  
+William Morales Fuentes. Correo: william.moralesfuentes@ucr.ac.cr  
+Migueledo Núñez Moreno. Correo: migueledo.nunez@ucr.ac.cr   
+### Referencias y fuentes de información  
+Enunciado del proyecto: https://jeisson.ecci.ucr.ac.cr/concurrente/2022b/proyectos/webserv/  
+La definición de términos y clarificación de conceptos varios se realizó con la ayuda de ChatGPT de OpenAI, consultado el 14/05/2024.

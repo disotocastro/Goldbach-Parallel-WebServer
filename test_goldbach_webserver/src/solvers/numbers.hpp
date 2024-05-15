@@ -3,7 +3,7 @@
 #ifndef NUMBERS_HPP
 #define NUMBERS_HPP
 
-#include <cstdint> 
+#include <cstdint>
 #include <vector>
 
 /**

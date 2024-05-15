@@ -1,4 +1,5 @@
-// Copyright 2021 Jeisson Hidalgo-Cespedes. Universidad de Costa Rica. CC BY 4.0
+// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
+// Universidad de Costa Rica. CC BY 4.0
 
 #ifndef HTTPSERVER_H
 #define HTTPSERVER_H

@@ -1,4 +1,5 @@
-// TODO: Metodo CONSUME, consume(&socket)
+// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
+// Universidad de Costa Rica. CC BY 4.0
 
 #ifndef HTTPCONNECTIONHANDLER_HPP
 #define HTTPCONNECTIONHANDLER_HPP

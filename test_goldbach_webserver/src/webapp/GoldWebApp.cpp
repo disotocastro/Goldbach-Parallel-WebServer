@@ -13,6 +13,7 @@
 #include "GoldSolver.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
+#include "numbers.hpp"
 
 GoldWebApp::GoldWebApp() {}
 
@@ -140,9 +141,10 @@ void GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector,
                       << "  <h1>" << title << "</h1>\n";
   std::vector<int64_t> numbersTemp = numbersVector;
   GoldSolver goldbach = GoldSolver(numbersTemp);
+  create_strings(goldbach.numbers);
 
   for (size_t i = 0; i < numbersVector.size(); i++) {
-    std::string resultado = goldbach.stringSums[i];
+    std::string resultado = stringSums[i];
     httpResponse.body() << " <h1>" << resultado << "</h1>\n";
   }
   httpResponse.body() << "</html>\n";
@@ -161,4 +163,59 @@ void GoldWebApp::sendErrorResponse(HttpResponse& httpResponse) {
       << "  <p>Invalid request for Goldbach sums</p>\n"
       << "  <hr><p><a href=\"/\">Back</a></p>\n"
       << "</html>\n";
+}
+
+void GoldWebApp::create_strings(NumbersArray_t* numbers) {
+  ///< Cadena temporal para almacenar la suma actual de Goldbach.
+  std::string currentSum;
+  ///< Arreglo de sumas de Goldbach.
+  Numbers_t** SumsArray = numbers->GoldbachSumsArray;
+  ///< Variable temporal para almacenar el contador de sumas de Goldbach.
+  int64_t n;
+  // Itera sobre los números en el arreglo
+  for (int64_t i = 0; i < numbers->counterNumbers; i++) {
+    currentSum = "";  // Inicializa la cadena actual como vacía
+    // Verifica si se deben imprimir las sumas de Goldbach para el número actual
+    if (SumsArray[i]->printSums) {
+      // Obtiene el contador de sumas de Goldbach para el número actual
+      n = SumsArray[i]->sums_counter;
+      // Construye la cadena de sumas de Goldbach
+      currentSum += "-" + std::to_string(SumsArray[i]->number) + ": " +
+                    std::to_string(SumsArray[i]->sums_counter) + " sums: ";
+      // Itera sobre las sumas de Goldbach para el número actual
+      for (int64_t j = 0; j < n; j++) {
+        // Agrega la suma de Goldbach para números pares
+        if ((SumsArray[i]->number % 2) == 0) {
+          currentSum +=
+              "" + std::to_string(SumsArray[i]->goldbachSums[0][j]) + " ";
+          currentSum += "+ " + std::to_string(SumsArray[i]->goldbachSums[1][j]);
+          if (j == (SumsArray[i]->sums_counter) - 1) {
+          } else {
+            currentSum += ", ";
+          }
+          // Agrega la suma de Goldbach para números impares
+        } else {
+          currentSum +=
+              "" + std::to_string(SumsArray[i]->goldbachSums[0][j]) + " ";
+          currentSum +=
+              "+ " + std::to_string(SumsArray[i]->goldbachSums[1][j]) + " ";
+          currentSum += "+ " + std::to_string(SumsArray[i]->goldbachSums[2][j]);
+          if (j == (SumsArray[i]->sums_counter) - 1) {
+          } else {
+            currentSum += ", ";
+          }
+        }
+      }
+      // Agrega la cadena de sumas de Goldbach al vector de strings
+      this->stringSums.push_back(currentSum);
+
+    } else {
+      // Construye la cadena para el caso en que
+      // no se impriman las sumas de Goldbach
+      currentSum += std::to_string(SumsArray[i]->number) + ": " +
+                    std::to_string(SumsArray[i]->sums_counter) + " sums";
+      // Agrega la cadena al vector de strings
+      this->stringSums.push_back(currentSum);
+    }
+  }
 }

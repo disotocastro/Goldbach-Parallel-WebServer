@@ -58,18 +58,7 @@ class GoldSolver {
    */
   void goldbach(NumbersArray_t* NumbersArray);
 
-  /**
-   * @brief Crea cadenas de texto representando las sumas de Goldbach.
-   */
-  void create_strings();
-
   NumbersArray_t* numbers;
-
-  /**
-   * @brief Vector para almacenar las representaciones de
-   * cadena de las sumas de Goldbach.
-   */
-  std::vector<std::string> stringSums;
 };
 
 #endif

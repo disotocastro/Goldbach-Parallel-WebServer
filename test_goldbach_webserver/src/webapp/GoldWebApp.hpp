@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "HttpApp.hpp"
+#include "numbers.hpp"
 
 /**
  * @brief A web application that calculates Goldbach sums.
@@ -87,6 +88,17 @@ class GoldWebApp : public HttpApp {
   bool getNumbersFromURI(HttpRequest& httpRequest,
                          std::vector<int64_t>& numbersVector, int longitud,
                          std::string str);
+
+  /**
+   * @brief Crea cadenas de texto representando las sumas de Goldbach.
+   */
+  void create_strings(NumbersArray_t* numbers);
+
+  /**
+   * @brief Vector para almacenar las representaciones de
+   * cadena de las sumas de Goldbach.
+   */
+  std::vector<std::string> stringSums;
 };
 
 #endif  // GOLDWEBAPP_HPP

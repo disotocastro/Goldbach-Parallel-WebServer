@@ -4,9 +4,9 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "Producer-consumer"
+PROJECT_NAME           = "Servidor Web Goldabach/Factorizacion Prima"
 PROJECT_NUMBER         = 2.1.0
-PROJECT_BRIEF          = "Webserver and network simulation using the producer-consumer pattern"
+PROJECT_BRIEF          = "Servidor concurrente que atiende solicitudes para resolver sumas de Goldbach y factorizacion Prima"
 PROJECT_LOGO           =
 OUTPUT_DIRECTORY       = doc
 CREATE_SUBDIRS         = YES

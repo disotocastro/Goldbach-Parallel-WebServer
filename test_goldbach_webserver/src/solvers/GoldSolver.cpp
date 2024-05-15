@@ -1,11 +1,11 @@
 // Copyright 2024 William Morales <william.moralesfuentes@ucr.ac.cr>
 
 #include <GoldSolver.hpp>
-#include <numbers.hpp>
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
-#include <vector>  
+#include <numbers.hpp>
+#include <vector>
 
 GoldSolver::GoldSolver(std::vector<int64_t>& inputNumbers) {
   numbers = readNumbers(inputNumbers);
@@ -14,23 +14,20 @@ GoldSolver::GoldSolver(std::vector<int64_t>& inputNumbers) {
   create_strings();
 }
 
-GoldSolver::~GoldSolver() {
-  free_memory(numbers);
-}
+GoldSolver::~GoldSolver() { free_memory(numbers); }
 
 void GoldSolver::goldbach(NumbersArray_t* NumbersArray) {
-
   // Itera sobre el rango de números asignado a este hilo
   for (int64_t index = 0; index < NumbersArray->counterNumbers; index++) {
-      // Calcula las sumas de Goldbach para números pares e impares
-      if (((NumbersArray->GoldbachSumsArray[index]->number) % 2) == 0) {
-        goldbach_pair(NumbersArray, index);
-      } else {
-        goldbach_odd(NumbersArray, index);
-      }
+    // Calcula las sumas de Goldbach para números pares e impares
+    if (((NumbersArray->GoldbachSumsArray[index]->number) % 2) == 0) {
+      goldbach_pair(NumbersArray, index);
+    } else {
+      goldbach_odd(NumbersArray, index);
+    }
 
-      NumbersArray->totalSums += 
-            NumbersArray->GoldbachSumsArray[index]->sums_counter;
+    NumbersArray->totalSums +=
+        NumbersArray->GoldbachSumsArray[index]->sums_counter;
   }
 }
 
@@ -84,10 +81,12 @@ void GoldSolver::goldbach_pair(NumbersArray_t* NumbersArray, int64_t index) {
   }
 
   // Bucle para encontrar las sumas de Goldbach
-  for (int64_t i = 0; (NumbersArray->primeNumbers[i] < number) && 
-        (i < NumbersArray->counterPrimes); i++) {
-    for (int64_t j = i; (NumbersArray->primeNumbers[j] < number) && 
-          (j < NumbersArray->counterPrimes); j++) {
+  for (int64_t i = 0; (NumbersArray->primeNumbers[i] < number) &&
+                      (i < NumbersArray->counterPrimes);
+       i++) {
+    for (int64_t j = i; (NumbersArray->primeNumbers[j] < number) &&
+                        (j < NumbersArray->counterPrimes);
+         j++) {
       // Se verifica si la suma de dos números primos es igual al número dado
       if ((NumbersArray->primeNumbers[i] + NumbersArray->primeNumbers[j]) ==
           number) {
@@ -96,8 +95,8 @@ void GoldSolver::goldbach_pair(NumbersArray_t* NumbersArray, int64_t index) {
           newSize = (size * 2);
           // Si no es suficiente, se duplica el tamaño
           for (int64_t i = 0; i < 3; i++) {
-            goldbachSums[i] = (int64_t*)realloc(goldbachSums[i],
-              newSize * sizeof(int64_t));
+            goldbachSums[i] =
+                (int64_t*)realloc(goldbachSums[i], newSize * sizeof(int64_t));
           }
           size = newSize;
         }
@@ -162,44 +161,44 @@ void GoldSolver::goldbach_odd(NumbersArray_t* NumbersArray, int64_t index) {
   NumbersArray->GoldbachSumsArray[index]->goldbachSums = goldbachSums;
   NumbersArray->GoldbachSumsArray[index]->sums_counter = goldbachSumsCounter;
 }
-void GoldSolver::create_strings(){
+void GoldSolver::create_strings() {
   ///< Cadena temporal para almacenar la suma actual de Goldbach.
-  std::string currentSum; 
+  std::string currentSum;
   ///< Arreglo de sumas de Goldbach.
   Numbers_t** SumsArray = this->numbers->GoldbachSumsArray;
-   ///< Variable temporal para almacenar el contador de sumas de Goldbach.
+  ///< Variable temporal para almacenar el contador de sumas de Goldbach.
   int64_t n;
   // Itera sobre los números en el arreglo
   for (int64_t i = 0; i < this->numbers->counterNumbers; i++) {
-    currentSum = ""; // Inicializa la cadena actual como vacía
+    currentSum = "";  // Inicializa la cadena actual como vacía
     // Verifica si se deben imprimir las sumas de Goldbach para el número actual
-    if (SumsArray[i]->printSums){
+    if (SumsArray[i]->printSums) {
       // Obtiene el contador de sumas de Goldbach para el número actual
       n = SumsArray[i]->sums_counter;
       // Construye la cadena de sumas de Goldbach
-      currentSum += "-" + std::to_string(SumsArray[i]->number) + ": " + 
-          std::to_string(SumsArray[i]->sums_counter) + " sums: ";
+      currentSum += "-" + std::to_string(SumsArray[i]->number) + ": " +
+                    std::to_string(SumsArray[i]->sums_counter) + " sums: ";
       // Itera sobre las sumas de Goldbach para el número actual
-      for (int64_t j = 0; j < n; j++){
+      for (int64_t j = 0; j < n; j++) {
         // Agrega la suma de Goldbach para números pares
         if ((SumsArray[i]->number % 2) == 0) {
-          currentSum += "" +
-              std::to_string(SumsArray[i]->goldbachSums[0][j]) + " ";
+          currentSum +=
+              "" + std::to_string(SumsArray[i]->goldbachSums[0][j]) + " ";
           currentSum += "+ " + std::to_string(SumsArray[i]->goldbachSums[1][j]);
           if (j == (SumsArray[i]->sums_counter) - 1) {
           } else {
-           currentSum += ", ";
+            currentSum += ", ";
           }
-         // Agrega la suma de Goldbach para números impares
-        }else{
-          currentSum += "" 
-              + std::to_string(SumsArray[i]->goldbachSums[0][j]) + " ";
-          currentSum += "+ " 
-              + std::to_string(SumsArray[i]->goldbachSums[1][j]) + " ";
+          // Agrega la suma de Goldbach para números impares
+        } else {
+          currentSum +=
+              "" + std::to_string(SumsArray[i]->goldbachSums[0][j]) + " ";
+          currentSum +=
+              "+ " + std::to_string(SumsArray[i]->goldbachSums[1][j]) + " ";
           currentSum += "+ " + std::to_string(SumsArray[i]->goldbachSums[2][j]);
           if (j == (SumsArray[i]->sums_counter) - 1) {
           } else {
-           currentSum += ", ";
+            currentSum += ", ";
           }
         }
       }
@@ -207,14 +206,12 @@ void GoldSolver::create_strings(){
       this->stringSums.push_back(currentSum);
 
     } else {
-      // Construye la cadena para el caso en que 
-      //no se impriman las sumas de Goldbach
-      currentSum += std::to_string(SumsArray[i]->number) + ": " 
-          + std::to_string(SumsArray[i]->sums_counter) + " sums";
+      // Construye la cadena para el caso en que
+      // no se impriman las sumas de Goldbach
+      currentSum += std::to_string(SumsArray[i]->number) + ": " +
+                    std::to_string(SumsArray[i]->sums_counter) + " sums";
       // Agrega la cadena al vector de strings
       this->stringSums.push_back(currentSum);
     }
   }
 }
-
- 

@@ -1,11 +1,11 @@
 // Copyright 2024 William Morales <william.moralesfuentes@ucr.ac.cr>
 
-
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <numbers.hpp>
 
-NumbersArray_t* readNumbers( std::vector<int64_t>& inputNumbers) {
+NumbersArray_t* readNumbers(std::vector<int64_t>& inputNumbers) {
   // Tamaño inicial del arreglo
   int64_t size = 10;
   /// Crear el arreglo para almacenar los numeros.
@@ -18,28 +18,28 @@ NumbersArray_t* readNumbers( std::vector<int64_t>& inputNumbers) {
 
   // Lee los números de la entrada estándar y los almacena en la lista
   for (size_t i = 0; i < inputNumbers.size(); i++) {
-      // Verifica si se necesita expandir el tamaño del arreglo
-      if (numbers->counterNumbers >= size) {
-        size = size * 2;
-        numbers->GoldbachSumsArray = (Numbers_t**)realloc(
-            numbers->GoldbachSumsArray, (size) * sizeof(Numbers_t*));
-      }
-      // Crea un nuevo objeto `Numbers_t` para almacenar el número leído
-      numbers->GoldbachSumsArray[numbers->counterNumbers] =
-          new_number(inputNumbers[i]);
+    // Verifica si se necesita expandir el tamaño del arreglo
+    if (numbers->counterNumbers >= size) {
+      size = size * 2;
+      numbers->GoldbachSumsArray = (Numbers_t**)realloc(
+          numbers->GoldbachSumsArray, (size) * sizeof(Numbers_t*));
+    }
+    // Crea un nuevo objeto `Numbers_t` para almacenar el número leído
+    numbers->GoldbachSumsArray[numbers->counterNumbers] =
+        new_number(inputNumbers[i]);
 
-      // Si el número es negativo, se convierte en positivo para determinar el
-      // más grande
-      if (inputNumbers[i] < 0) {
-        inputNumbers[i] = -inputNumbers[i];
-      }
+    // Si el número es negativo, se convierte en positivo para determinar el
+    // más grande
+    if (inputNumbers[i] < 0) {
+      inputNumbers[i] = -inputNumbers[i];
+    }
 
-      // Actualiza el valor del número más grande leído
-      if (inputNumbers[i] > numbers->largestNumber) {
-        numbers->largestNumber = inputNumbers[i];
-      }
-      // Incrementa el contador de números leídos
-      numbers->counterNumbers++;
+    // Actualiza el valor del número más grande leído
+    if (inputNumbers[i] > numbers->largestNumber) {
+      numbers->largestNumber = inputNumbers[i];
+    }
+    // Incrementa el contador de números leídos
+    numbers->counterNumbers++;
   }
   return numbers;
 }
@@ -53,7 +53,7 @@ Numbers_t* new_number(int64_t newNumber) {
   newData->sums_counter = 0;
   newData->goldbachSums = NULL;
 
-  /** Si el número es negativo, establece la bandera de impresión de sumas y 
+  /** Si el número es negativo, establece la bandera de impresión de sumas y
   convierte el número en positivo */
   if (newNumber < 0) {
     newData->printSums = true;

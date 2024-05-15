@@ -1,23 +1,22 @@
 // Copyright 2021 Jeisson Hidalgo-Cespedes. Universidad de Costa Rica. CC BY 4.0
 
+#include "GoldWebApp.hpp"
+
 #include <algorithm>
 #include <cassert>
+#include <cstring>
 #include <iostream>
 #include <regex>
 #include <stdexcept>
 #include <string>
-#include <cstring>
 
-#include "GoldWebApp.hpp"
 #include "GoldSolver.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 
-GoldWebApp::GoldWebApp() {
-}
+GoldWebApp::GoldWebApp() {}
 
-GoldWebApp::~GoldWebApp() {
-}
+GoldWebApp::~GoldWebApp() {}
 
 void GoldWebApp::start() {
   // TODO(you): Start producers, consumers, assemblers...
@@ -28,7 +27,7 @@ void GoldWebApp::stop() {
 }
 
 bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse) {
+                                   HttpResponse& httpResponse) {
   // If the home page was asked
   if (httpRequest.getMethod() == "GET" && httpRequest.getURI() == "/gold") {
     return this->serveHomepage(httpRequest, httpResponse);
@@ -43,8 +42,8 @@ bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
   return false;
 }
 
-bool GoldWebApp::serveHomepage(HttpRequest& httpRequest
-  , HttpResponse& httpResponse) {
+bool GoldWebApp::serveHomepage(HttpRequest& httpRequest,
+                               HttpResponse& httpResponse) {
   (void)httpRequest;
 
   // Set HTTP response metadata (headers)
@@ -53,18 +52,19 @@ bool GoldWebApp::serveHomepage(HttpRequest& httpRequest
 
   // Build the body of the response
   std::string title = "Goldbach sums ";
-  httpResponse.body() << "<!DOCTYPE html>\n"
-    << "<html lang=\"en\">\n"
-    << "  <meta charset=\"ascii\"/>\n"
-    << "  <title>" << title << "</title>\n"
-    << "  <style>body {font-family: monospace}</style>\n"
-    << "  <h1>" << title << "</h1>\n"
-    << "  <form method=\"get\" action=\"/gold/gold\">\n"
-    << "    <label for=\"number\">Number</label>\n"
-    << "    <input type=\"arrays\" name=\"number\" required/>\n"
-    << "    <button type=\"submit\">Get sums</button>\n"
-    << "  </form>\n"
-    << "</html>\n";
+  httpResponse.body()
+      << "<!DOCTYPE html>\n"
+      << "<html lang=\"en\">\n"
+      << "  <meta charset=\"ascii\"/>\n"
+      << "  <title>" << title << "</title>\n"
+      << "  <style>body {font-family: monospace}</style>\n"
+      << "  <h1>" << title << "</h1>\n"
+      << "  <form method=\"get\" action=\"/gold/gold\">\n"
+      << "    <label for=\"number\">Number</label>\n"
+      << "    <input type=\"arrays\" name=\"number\" required/>\n"
+      << "    <button type=\"submit\">Get sums</button>\n"
+      << "  </form>\n"
+      << "</html>\n";
 
   // Send the response to the client (user agent)
   return httpResponse.send();
@@ -113,7 +113,7 @@ bool GoldWebApp::getNumbersFromURI(HttpRequest& httpRequest,
       str = matches.str();
       longitud = str.size();
       if (longitud > 19) {
-        return false;   // Hay un error, número demasiado grande
+        return false;  // Hay un error, número demasiado grande
       }
       int valor = std::stoll(matches[0].str());
       numbersVector.push_back(valor);
@@ -121,7 +121,7 @@ bool GoldWebApp::getNumbersFromURI(HttpRequest& httpRequest,
     }
     return true;
   } else {
-    return false;   // Hay un error, no se encontró la cadena "number="
+    return false;  // Hay un error, no se encontró la cadena "number="
   }
 }
 
@@ -142,7 +142,7 @@ void GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector,
   GoldSolver goldbach = GoldSolver(numbersTemp);
 
   for (size_t i = 0; i < numbersVector.size(); i++) {
-    std::string resultado =  goldbach.stringSums[i];
+    std::string resultado = goldbach.stringSums[i];
     httpResponse.body() << " <h1>" << resultado << "</h1>\n";
   }
   httpResponse.body() << "</html>\n";
@@ -151,13 +151,14 @@ void GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector,
 void GoldWebApp::sendErrorResponse(HttpResponse& httpResponse) {
   // Build the body for an invalid request
   std::string title = "Invalid request";
-  httpResponse.body() << "<!DOCTYPE html>\n"
-                      << "<html lang=\"en\">\n"
-                      << "  <meta charset=\"ascii\"/>\n"
-                      << "  <title>" << title << "</title>\n"
-        << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
-                      << "  <h1 class=\"err\">" << title << "</h1>\n"
-                      << "  <p>Invalid request for Goldbach sums</p>\n"
-                      << "  <hr><p><a href=\"/\">Back</a></p>\n"
-                      << "</html>\n";
+  httpResponse.body()
+      << "<!DOCTYPE html>\n"
+      << "<html lang=\"en\">\n"
+      << "  <meta charset=\"ascii\"/>\n"
+      << "  <title>" << title << "</title>\n"
+      << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
+      << "  <h1 class=\"err\">" << title << "</h1>\n"
+      << "  <p>Invalid request for Goldbach sums</p>\n"
+      << "  <hr><p><a href=\"/\">Back</a></p>\n"
+      << "</html>\n";
 }

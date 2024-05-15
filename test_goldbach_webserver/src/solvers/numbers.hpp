@@ -9,15 +9,15 @@
 /**
  * @brief Estructura para representar un número y sus sumas de Goldbach.
  */
-typedef struct  {
-  int64_t number;             /**< El número */
-  int64_t** goldbachSums;     /**< Matriz de sumas de Goldbach */
-  int64_t sums_counter;       /**< Cantidad de sumas de Goldbach */
-  bool printSums;             /**< Indicador de impresión de sumas */
+typedef struct {
+  int64_t number;         /**< El número */
+  int64_t** goldbachSums; /**< Matriz de sumas de Goldbach */
+  int64_t sums_counter;   /**< Cantidad de sumas de Goldbach */
+  bool printSums;         /**< Indicador de impresión de sumas */
 } Numbers_t;
 
 /**
- * @brief Estructura para representar una lista de números y sus sumas 
+ * @brief Estructura para representar una lista de números y sus sumas
  * de Goldbach.
  */
 typedef struct {
@@ -36,16 +36,16 @@ typedef struct {
  */
 Numbers_t* new_number(int64_t newNumber);
 
-
 /**
  * @brief Lee los números de la entrada estándar y los almacena en un arreglo.
- * @return Puntero a la estructura NumbersArray_t que contiene los números leídos.
+ * @return Puntero a la estructura NumbersArray_t que contiene los números
+ * leídos.
  */
-NumbersArray_t* readNumbers( std::vector<int64_t>& inputNumbers);
+NumbersArray_t* readNumbers(std::vector<int64_t>& inputNumbers);
 
 /**
  * @brief Libera la memoria asignada a la lista de números.
- * @param NumbersArray Puntero a la estructura NumbersArray_t 
+ * @param NumbersArray Puntero a la estructura NumbersArray_t
  * que contiene los números.
  */
 void free_memory(NumbersArray_t* numbers);

@@ -6,13 +6,12 @@
 
 #include <vector>
 
-#include "TcpServer.hpp"
+#include "HttpConnectionHandler.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "Queue.hpp"
+#include "TcpServer.hpp"
 #include "Thread.hpp"
-#include "HttpConnectionHandler.hpp"
-
 
 #define DEFAULT_PORT "8080"
 
@@ -62,11 +61,11 @@ is sent to the client.
 class HttpServer : public TcpServer {
   DISABLE_COPY(HttpServer);
   // Singleton server with private constructor and destructor
-  private:
-    /// Constructor
-    HttpServer();
-    /// Destructor
-    ~HttpServer();
+ private:
+  /// Constructor
+  HttpServer();
+  /// Destructor
+  ~HttpServer();
 
  protected:
   /// Lookup criteria for searching network information about this host
@@ -75,8 +74,6 @@ class HttpServer : public TcpServer {
   const char* port = DEFAULT_PORT;
   // MAX NUMBER OF CONNECTIONS
   int64_t handlers = std::thread::hardware_concurrency();
-
-
 
   /**
    * @brief Vector de punteros a objetos HttpConnectionHandler.
@@ -87,18 +84,18 @@ class HttpServer : public TcpServer {
    * @brief Crea hilos para manejar conexiones HTTP.
    *
    * Esta función crea hilos para manejar conexiones HTTP. Los hilos se asocian
-   * con los objetos HttpConnectionHandler almacenados en el vector vectorHandlers.
+   * con los objetos HttpConnectionHandler almacenados en el vector
+   * vectorHandlers.
    */
   void createThreads();
-
 
   /**
    * @brief Elimina los hilos creados para manejar conexiones HTTP.
    *
-   * Esta función elimina los hilos previamente creados para manejar conexiones HTTP.
+   * Esta función elimina los hilos previamente creados para manejar conexiones
+   * HTTP.
    */
   void deleteThreads();
-  
 
   /// Chain of registered web applications. Each time an incoming HTTP request
   /// is received, the request is provided to each application of this chain.
@@ -107,11 +104,8 @@ class HttpServer : public TcpServer {
   /// the request, the not found page will be served.
   std::vector<HttpApp*> applications;
 
-
   // Cola de sockets
-  Queue<Socket>* socketsQueue; 
-  
-  // TODO: Crear los punteros y vectores a las instancias que componen la cadena
+  Queue<Socket>* socketsQueue;
   // de producción nueva
 
  public:
@@ -143,7 +137,6 @@ class HttpServer : public TcpServer {
   void stopApps();
   /// This method is called each time a client connection request is accepted.
   void handleClientConnection(Socket& client) override;
-
 };
 
 #endif  // HTTPSERVER_H

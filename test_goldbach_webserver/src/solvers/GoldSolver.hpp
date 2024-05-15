@@ -5,75 +5,71 @@
 
 #include <cstdint>
 #include <numbers.hpp>
-#include <vector>
 #include <string>
-
+#include <vector>
 
 class GoldSolver {
-    public:
-        /**
-        * @brief Constructor para GoldSolver.
-        * @param inputNumbers Vector de números de entrada.
-        */
-        GoldSolver( std::vector<int64_t>& inputNumbers);
-        /**
-        * @brief Destructor para GoldSolver.
-        */
-        ~GoldSolver();
+ public:
+  /**
+   * @brief Constructor para GoldSolver.
+   * @param inputNumbers Vector de números de entrada.
+   */
+  GoldSolver(std::vector<int64_t>& inputNumbers);
+  /**
+   * @brief Destructor para GoldSolver.
+   */
+  ~GoldSolver();
 
-        /**
-         * @brief Encuentra los números primos hasta 
-         * el número más grande en la lista.
-         * @param NumbersArray Puntero a la estructura NumbersArray_t 
-         * que contiene los números.
-         */
-        void prime_numbers(NumbersArray_t* numbers_read);
+  /**
+   * @brief Encuentra los números primos hasta
+   * el número más grande en la lista.
+   * @param NumbersArray Puntero a la estructura NumbersArray_t
+   * que contiene los números.
+   */
+  void prime_numbers(NumbersArray_t* numbers_read);
 
-        /**
-         * @brief Verifica si un número dado es primo.
-         * @param number El número a verificar.
-         * @return true si el número es primo, false de lo contrario.
-         */
-        bool is_prime(int64_t number);
+  /**
+   * @brief Verifica si un número dado es primo.
+   * @param number El número a verificar.
+   * @return true si el número es primo, false de lo contrario.
+   */
+  bool is_prime(int64_t number);
 
-        /**
-         * @brief Calcula las sumas de Goldbach para números impares.
-         * @param NumbersArray Puntero a la estructura NumbersArray_t 
-         * que contiene los números.
-         * @param index Índice del número en el arreglo.
-         */
-        void goldbach_odd(NumbersArray_t* NumbersArray, int64_t index);
+  /**
+   * @brief Calcula las sumas de Goldbach para números impares.
+   * @param NumbersArray Puntero a la estructura NumbersArray_t
+   * que contiene los números.
+   * @param index Índice del número en el arreglo.
+   */
+  void goldbach_odd(NumbersArray_t* NumbersArray, int64_t index);
 
-        /**
-         * @brief Calcula las sumas de Goldbach para números pares.
-         * @param NumbersArray Puntero a la estructura NumbersArray_t 
-         * que contiene los números.
-         * @param index Índice del número en el arreglo.
-         */
-        void goldbach_pair(NumbersArray_t* NumbersArray, int64_t index);
+  /**
+   * @brief Calcula las sumas de Goldbach para números pares.
+   * @param NumbersArray Puntero a la estructura NumbersArray_t
+   * que contiene los números.
+   * @param index Índice del número en el arreglo.
+   */
+  void goldbach_pair(NumbersArray_t* NumbersArray, int64_t index);
 
-        /**
-         * @brief Función de entrada para la ejecución de la tarea de Goldbach.
-         * @param data Puntero a datos privados para la ejecución de la tarea.
-         * @return NULL
-         */
-        void goldbach(NumbersArray_t* NumbersArray);
+  /**
+   * @brief Función de entrada para la ejecución de la tarea de Goldbach.
+   * @param data Puntero a datos privados para la ejecución de la tarea.
+   * @return NULL
+   */
+  void goldbach(NumbersArray_t* NumbersArray);
 
-        /**
-         * @brief Crea cadenas de texto representando las sumas de Goldbach.
-         */
-        void create_strings();
+  /**
+   * @brief Crea cadenas de texto representando las sumas de Goldbach.
+   */
+  void create_strings();
 
-        NumbersArray_t* numbers;
+  NumbersArray_t* numbers;
 
-        /**
-        * @brief Vector para almacenar las representaciones de 
-        * cadena de las sumas de Goldbach.
-        */
-        std::vector<std::string> stringSums;
-
+  /**
+   * @brief Vector para almacenar las representaciones de
+   * cadena de las sumas de Goldbach.
+   */
+  std::vector<std::string> stringSums;
 };
-
-
 
 #endif

@@ -1,5 +1,7 @@
 // Copyright 2021 Jeisson Hidalgo-Cespedes. Universidad de Costa Rica. CC BY 4.0
 
+#include "TcpServer.hpp"
+
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -12,15 +14,14 @@
 #include <string>
 #include <utility>
 
-#include "TcpServer.hpp"
 #include "NetworkAddress.hpp"
 #include "Socket.hpp"
 
 TcpServer::TcpServer() {
   // Set initial values for searching for a suitable network address
   ::memset(&hints, 0, sizeof(hints));
-  hints.ai_flags = AI_PASSIVE;  // Fill with my local IP
-  hints.ai_family = AF_UNSPEC;  // Use IPv4 or IPv6, whichever
+  hints.ai_flags = AI_PASSIVE;      // Fill with my local IP
+  hints.ai_family = AF_UNSPEC;      // Use IPv4 or IPv6, whichever
   hints.ai_socktype = SOCK_STREAM;  // Use TCP
 }
 
@@ -47,8 +48,8 @@ void TcpServer::listenForConnections(const char* port) {
   // Get a socket for the first available address that works for the given port
   this->openConnectionRequestSocket(port);
   // Ask the operating system to enqueue connection requests on this socket
-  int error = ::listen(this->connectionRequestSocket
-    , this->connectionQueueCapacity);
+  int error =
+      ::listen(this->connectionRequestSocket, this->connectionQueueCapacity);
   // If OS was unable to start listening for connections, raise an exception
   if (error) {
     throw std::runtime_error(std::string("could not listen port ") + port);
@@ -59,12 +60,12 @@ void TcpServer::fetchAvailableAddresses(const char* port) {
   // This function is designed to be called once
   assert(this->availableAddresses == nullptr);
   // Fetch all available addresses and store results in object attributes
-  int error = ::getaddrinfo(nullptr, port, &this->hints
-    , &this->availableAddresses);
+  int error =
+      ::getaddrinfo(nullptr, port, &this->hints, &this->availableAddresses);
   // If getaddrinfo failed, raise an exception
   if (error) {
-    throw std::runtime_error(std::string("getaddrinfo: ")
-       + ::gai_strerror(error));
+    throw std::runtime_error(std::string("getaddrinfo: ") +
+                             ::gai_strerror(error));
   }
 }
 
@@ -72,21 +73,21 @@ void TcpServer::openConnectionRequestSocket(const char* port) {
   assert(this->connectionRequestSocket == -1);
   // Traverse the available addresses and select the first one that works
   for (const struct addrinfo* address = this->availableAddresses; address;
-      address = address->ai_next) {
+       address = address->ai_next) {
     // Try to open a socket using this address result
-    this->connectionRequestSocket = ::socket(address->ai_family
-      , address->ai_socktype, address->ai_protocol);
+    this->connectionRequestSocket = ::socket(
+        address->ai_family, address->ai_socktype, address->ai_protocol);
 
     // If we could open the socket
     if (this->connectionRequestSocket >= 0) {
       // Allow the socket to reuse the local IP for other connections
       int yes = 1;
-      int error = ::setsockopt(this->connectionRequestSocket, SOL_SOCKET
-        , SO_REUSEADDR, &yes, sizeof yes);
+      int error = ::setsockopt(this->connectionRequestSocket, SOL_SOCKET,
+                               SO_REUSEADDR, &yes, sizeof yes);
       if (error == 0) {
         // Bind the socket to the port we passed in to getaddrinfo()
-        error = ::bind(this->connectionRequestSocket, address->ai_addr
-          , address->ai_addrlen);
+        error = ::bind(this->connectionRequestSocket, address->ai_addr,
+                       address->ai_addrlen);
         if (error == 0) {
           // This address is OK, stop searching and use its socket
           this->selectedAddress = address;
@@ -103,8 +104,8 @@ void TcpServer::openConnectionRequestSocket(const char* port) {
     }
   }
 
-  throw std::runtime_error(std::string("no available addresses for port ")
-      + port);
+  throw std::runtime_error(std::string("no available addresses for port ") +
+                           port);
 }
 
 void TcpServer::acceptAllConnections() {
@@ -122,8 +123,8 @@ void TcpServer::acceptConnectionRequest() {
   // TODO(jhc): stop accept() and clean exit when signals (e.g. Ctrl+C) are sent
   // e.g: https://stackoverflow.com/a/35755340
   socklen_t clientAddressSize = sizeof(struct sockaddr_storage);
-  int file = ::accept(this->connectionRequestSocket
-    , client.getSockAddr(), &clientAddressSize);
+  int file = ::accept(this->connectionRequestSocket, client.getSockAddr(),
+                      &clientAddressSize);
 
   // If connection failed, raise an exception
   if (file == -1) {

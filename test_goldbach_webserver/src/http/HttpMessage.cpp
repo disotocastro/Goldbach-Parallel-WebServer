@@ -1,32 +1,28 @@
 // Copyright 2021 Jeisson Hidalgo-Cespedes. Universidad de Costa Rica. CC BY 4.0
 
+#include "HttpMessage.hpp"
+
 #include <cassert>
 #include <stdexcept>
 #include <string>
 
-#include "HttpMessage.hpp"
 #include "NetworkAddress.hpp"
 
 const char* const HttpMessage::lineSeparator = "\r\n";
 
 HttpMessage::HttpMessage(const Socket& socket)
-  : socket{socket}
-  , sharedBody{new std::stringstream()} {
-}
+    : socket{socket}, sharedBody{new std::stringstream()} {}
 
-HttpMessage::~HttpMessage() {
-}
+HttpMessage::~HttpMessage() {}
 
-Socket& HttpMessage::getSocket() {
-  return this->socket;
-}
+Socket& HttpMessage::getSocket() { return this->socket; }
 
 NetworkAddress HttpMessage::getNetworkAddress() const {
   return this->socket.getNetworkAddress();
 }
 
-std::string HttpMessage::getHeader(const std::string& key
-  , const std::string& defaultvalue) {
+std::string HttpMessage::getHeader(const std::string& key,
+                                   const std::string& defaultvalue) {
   const Headers::const_iterator& itr = this->headers.find(key);
   return itr != this->headers.end() ? itr->second : defaultvalue;
 }

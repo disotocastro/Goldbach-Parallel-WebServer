@@ -1,19 +1,19 @@
-// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes 
+// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
 // Universidad de Costa Rica. CC BY 4.0
-#include <string>
-
 #include "HttpConnectionHandler.hpp"
+
+#include <string>
+#include <vector>
+
+#include "HttpApp.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
-#include "HttpApp.hpp"
-#include "HttpApp.hpp"
-#include "NetworkAddress.hpp"
 #include "Log.hpp"
+#include "NetworkAddress.hpp"
 
-
-HttpConnectionHandler::HttpConnectionHandler (std::vector<HttpApp*>* WebApps) {
+HttpConnectionHandler::HttpConnectionHandler(std::vector<HttpApp*>* WebApps) {
   this->applications = WebApps;
-}  
+}
 
 int HttpConnectionHandler::run() {
   this->consumeForever();
@@ -47,27 +47,28 @@ void HttpConnectionHandler::consume(Socket client) {
       client.close();
       break;
     }
-
   }
 }
 
 bool HttpConnectionHandler::handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse) {
+                                              HttpResponse& httpResponse) {
   // Print IP and port from client
   const NetworkAddress& address = httpRequest.getNetworkAddress();
   Log::append(Log::INFO, "connection",
-    std::string("connection established with client ") + address.getIP()
-    + " port " + std::to_string(address.getPort()));
+              std::string("connection established with client ") +
+                  address.getIP() + " port " +
+                  std::to_string(address.getPort()));
 
   // Print HTTP request
-  Log::append(Log::INFO, "request", httpRequest.getMethod()
-    + ' ' + httpRequest.getURI()
-    + ' ' + httpRequest.getHttpVersion());
+  Log::append(Log::INFO, "request",
+              httpRequest.getMethod() + ' ' + httpRequest.getURI() + ' ' +
+                  httpRequest.getHttpVersion());
 
   return this->route(httpRequest, httpResponse);
 }
 
-bool HttpConnectionHandler::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
+bool HttpConnectionHandler::route(HttpRequest& httpRequest,
+                                  HttpResponse& httpResponse) {
   // Traverse the chain of applications
   for (size_t index = 0; index < (*(this->applications)).size(); ++index) {
     // If this application handles the request
@@ -81,8 +82,8 @@ bool HttpConnectionHandler::route(HttpRequest& httpRequest, HttpResponse& httpRe
   return this->serveNotFound(httpRequest, httpResponse);
 }
 
-bool HttpConnectionHandler::serveNotFound(HttpRequest& httpRequest
-  , HttpResponse& httpResponse) {
+bool HttpConnectionHandler::serveNotFound(HttpRequest& httpRequest,
+                                          HttpResponse& httpResponse) {
   (void)httpRequest;
 
   // Set HTTP response metadata (headers)
@@ -92,15 +93,16 @@ bool HttpConnectionHandler::serveNotFound(HttpRequest& httpRequest
 
   // Build the body of the response
   std::string title = "Not found";
-  httpResponse.body() << "<!DOCTYPE html>\n"
-    << "<html lang=\"en\">\n"
-    << "  <meta charset=\"ascii\"/>\n"
-    << "  <title>" << title << "</title>\n"
-    << "  <style>body {font-family: monospace} h1 {color: red}</style>\n"
-    << "  <h1>" << title << "</h1>\n"
-    << "  <p>The requested resouce was not found on this server.</p>\n"
-    << "  <hr><p><a href=\"/\">Homepage</a></p>\n"
-    << "</html>\n";
+  httpResponse.body()
+      << "<!DOCTYPE html>\n"
+      << "<html lang=\"en\">\n"
+      << "  <meta charset=\"ascii\"/>\n"
+      << "  <title>" << title << "</title>\n"
+      << "  <style>body {font-family: monospace} h1 {color: red}</style>\n"
+      << "  <h1>" << title << "</h1>\n"
+      << "  <p>The requested resouce was not found on this server.</p>\n"
+      << "  <hr><p><a href=\"/\">Homepage</a></p>\n"
+      << "</html>\n";
 
   // Send the response to the client (user agent)
   return httpResponse.send();

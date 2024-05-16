@@ -17,3 +17,4 @@ La lógica de enrutamiento de solicitudes se realiza en la clase HttpConnectionH
 En resumen, la combinación de concurrencia mediante hilos y una cola de sockets proporciona una arquitectura robusta y escalable para manejar eficientemente las solicitudes HTTP entrantes en un entorno de servidor web, mientras que las WebApps permiten ofrecer funcionalidades específicas a los clientes.
 
 ![Diagrama](uml_proyecto_1.1.png)
+![Diagrama](diagrama_proyecto1.1.png)

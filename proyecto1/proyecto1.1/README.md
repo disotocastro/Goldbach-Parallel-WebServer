@@ -56,7 +56,8 @@ Los requisitos no funcionales son:
 
 
 ## Solución Propuesta
-La solución propuesta se puede encontrar con más detalle aquí: [pseudo_desing1.1](./design/design.pseudo)
+El proyecto implementa un servidor web que maneja solicitudes HTTP concurrentes usando hilos y una cola de sockets. La clase principal, HttpConnectionHandler, gestiona las conexiones entrantes en hilos separados, mientras que las WebApps como FactWebApp y GoldWebApp procesan solicitudes específicas. La lógica de enrutamiento dirige cada solicitud a la aplicación adecuada según su URI. Esta combinación garantiza un rendimiento óptimo al manejar múltiples solicitudes simultáneamente y ofrecer funcionalidades específicas a los clientes.
+[Explicacion completa](./design/readme.md)
 
 
 ## Manual del usuario

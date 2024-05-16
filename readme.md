@@ -1,4 +1,4 @@
-# Equipo: Critical Racer Condition
+# Equipo: Critical Race Condition
 
 ## Integrantes:
 - Juan Diego Soto Castro. Correo: juan.sotocastro@ucr.ac.cr

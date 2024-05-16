@@ -2,6 +2,9 @@
 
 ## Introducción
 El propósito principal del presente documento es analizar y plantear la conversión de un servidor serializado a un servidor concurrente, como parte del proyecto del curso CI-0117 - Programación Paralela y Concurrente de la Universidad de Costa Rica. En este proyecto, nos proponemos transformar un servidor que maneja conexiones de manera secuencial en uno que pueda gestionar múltiples conexiones concurrentemente, mejorando así su eficiencia y capacidad de respuesta. El servidor estará destinado a proporcionar dos servicios principales a los usuarios: factorización prima de números y sumas de Goldbach. Ambos servicios serán accesibles a través de conexiones serializadas, lo que permitirá a los clientes enviar solicitudes al servidor y recibir respuestas de manera eficiente. El proyecto ha sido llevado a cabo por un equipo de tres personas, quienes hemos trabajado en conjunto para diseñar, implementar y probar la solución propuesta. En este documento, se detallarán los requisitos del sistema, los casos de uso, el diseño de la arquitectura del servidor concurrente y las pruebas planificadas para garantizar el correcto funcionamiento del mismo.  
+
+![Funcinamiento](./img/ResulGoldSum.png)
+
 ## Descripción del Problema
 El proyecto consiste en la implementación de un servidor web concurrente que brinde a sus usuarios la posibilidad de ingresar una secuencia de números enteros y obtener la factorización prima y/o las sumas de Goldbach de dichos números. Es importante destacar que, para recopilar los requerimientos del proyecto, en lugar de realizar entrevistas a los clientes, se aprovechó una base de código existente. Esta base de código proporciona un servidor web serializado, complementado con un documento explicativo que detalla los objetivos y expectativas del proyecto y una serie de grabaciones de inducción para comprender el código heredado.  
 ## Requisitos
@@ -51,14 +54,20 @@ Los requisitos no funcionales son:
   • Compatibilidad  
 	  - El servidor debe ser compatible con diferentes navegadores web y dispositivos de 	clientes.  
 
-# Manual del usuario
+
+## Solución Propuesta
+La solución propuesta se puede encontrar con más detalle aquí: [pseudo_desing1.1](./design/design.pseudo)
+
+
+## Manual del usuario
 ### I. Cómo compilar el programa
+
 Para compilar el programa, siga los pasos indicados a continuación desde la terminal de Linux, asegurándose de estar ubicado en la carpeta raíz del proyecto:
-<ul>
-  <li>1º. Ejecute el comando ` make clean` . Esto eliminará las carpetas bin/, build/ y doc/, limpiando el entorno de compilación previo.</li><br>
-  <li>2º. A continuación, ejecute el comando ` make` . Este comando compila y vincula los componentes localizados en la subcarpeta src/. Una vez finalizado, el ejecutable se almacenará en la subcarpeta bin/ y llevará el mismo nombre que la carpeta raíz del proyecto.  
-  </li>
-</ul>
+
+  - 1º. Ejecute el comando `make clean` . Esto eliminará las carpetas bin/, build/ y doc/, limpiando el entorno de compilación previo.</li><br>
+  - 2º. A continuación, ejecute el comando ` make` . Este comando compila y vincula los componentes localizados en la subcarpeta src/. Una vez finalizado, el ejecutable se almacenará en la subcarpeta bin/ y llevará el mismo nombre que la carpeta raíz del proyecto.  
+
+
 Las instrucciones necesarias para ejecutar estos comandos están definidas en el archivo Makefile, el cual se encuentra en la carpeta raíz del proyecto.   
 
 ### II. Qué es y para qué sirve un Makefile
@@ -78,27 +87,27 @@ Este enfoque asegura una metodología eficiente y organizada para la compilació
 Para ejecutar el programa desde lnea de comandos de linux, simplemente ingrese su nombre (sin extensión), añadiendo dos valores enteros positivos como parámetros. Si ejecuta el programa desde un directorio diferente, deberá especificar la ruta completa hasta el ejecutable. El primer parámetro determina el puerto en el que el servidor estará "escuchando" conexiones. El segundo define el número de hilos de ejecución que se utilizarán en el servidor. Estos parámetros son opcionales; si no se proporcionan, el sistema asumirá el puerto 8080 y el número de hilos equivalente al número de procesadores físicos disponibles en la computadora.  
 Por ejemplo, supongamos que el ejecutable se llama proyecto1, para iniciarlo con un puerto específico y un número determinado de hilos, desde la carpeta raiz escriba:  
 <pre>
-./bin/proyecto1:8080 4
+./bin/proyecto1.1:8080 4
 </pre>
 Una vez que el servidor esté activo y "escuchando", los usuarios pueden interactuar con él mediante un navegador web. Para acceder a las aplicaciones disponibles, deben escribir la siguiente dirección en la barra de direcciones del navegador:  
     • Para la factorización prima: Ingrese ` www.localhost:8080/fact` . Se mostrará una pantalla donde deberá introducir uno o más valores enteros, separados por comas o espacios, en el campo denominado number.  
-    ![](./SolicFactPrima.png)<br>
+    ![](./img/SolicFactPrima.png)<br>
 Después de hacer clic en el botón ` Factorizar` , los resultados se mostrarán en la misma página.  
-    ![](./ResulFactPrima.png)<br>
+    ![](./img/ResulFactPrima.png)<br>
     • Para las sumas de Goldbach: Ingrese ` www.localhost:8080/gold` . Aparecerá una pantalla similar en la que deberá introducir uno o más valores enteros, sean negativos o positivos, separados por comas o espacios, en el campo Number.  
-    ![](./SolicGoldSum.png)<br>
+    ![](./img/SolicGoldSum.png)<br>
 Al hacer clic en el botón ` Get sums` , los resultados aparecerán en el navegador. El tiempo de respuesta variará dependiendo del tamaño de los números ingresados. Durante este proceso, se mostrará un indicador animado en la pestaña del navegador, señalando que el cálculo está en curso.  
-    ![](./ResulGoldSum.png)<br>
+    ![](./img/ResulGoldSum.png)<br>
 Este método permite una interacción clara y efectiva con el servidor a través de interfaces sencillas y funciones específicas para cada tipo de cálculo requerido.  
 ### IV. Finalizar el servidor  
 Para finalizar el servidor, existen dos métodos eficaces. El primero es a través de la terminal en la que se inició el servidor, donde también se reciben los mensajes de diagnóstico de su actividad. Simplemente, pulse Ctrl+C, combinando simultáneamente las teclas Control y C. El segundo método requiere determinar previamente el ID del proceso del servidor, que generalmente corresponde al nombre del ejecutable. Una vez que tenga este dato, desde otra terminal, ejecute el comando ` kill <pid>` , sustituyendo \<pid\> por el número de proceso que haya consultado.
-# Créditos
-**Proyecto:**   	Servidor web concurrente  
-**Conexiones:** 	Factorización prima serializado,<br>&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&nbsp;Sumas de Goldbach serializado  
-### Autores  
-Juan Diego Soto Castro. Correo: juan.sotocastro@ucr.ac.cr  
-William Morales Fuentes. Correo: william.moralesfuentes@ucr.ac.cr  
-Migueledo Núñez Moreno. Correo: migueledo.nunez@ucr.ac.cr   
+## Créditos
+**Proyecto:**   	Servidor web concurrente.
+
+**Conexiones:** 	Factorización prima serializado, Sumas de Goldbach serializado.
+### Autores:
+- Juan Diego Soto Castro. Correo: juan.sotocastro@ucr.ac.cr  
+- William Morales Fuentes. Correo: william.moralesfuentes@ucr.ac.cr  
+- Migueledo Núñez Moreno. Correo: migueledo.nunez@ucr.ac.cr   
 ### Referencias y fuentes de información  
-Enunciado del proyecto: https://jeisson.ecci.ucr.ac.cr/concurrente/2022b/proyectos/webserv/  
-La definición de términos y clarificación de conceptos varios se realizó con la ayuda de ChatGPT de OpenAI, consultado el 14/05/2024.
+Enunciado del proyecto: https://jeisson.ecci.ucr.ac.cr/concurrente/2022b/proyectos/webserv/

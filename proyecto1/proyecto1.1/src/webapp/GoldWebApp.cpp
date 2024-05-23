@@ -140,8 +140,10 @@ void GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector,
                       << "  </style>\n"
                       << "  <h1>" << title << "</h1>\n";
   std::vector<int64_t> numbersTemp = numbersVector;
-  GoldSolver goldbach = GoldSolver(numbersTemp);
-  create_strings(goldbach.numbers);
+
+  GoldSolver goldbach = GoldSolver();
+  NumbersArray_t* numbers = goldbach.resolveGoldbach(numbersTemp);
+  std::vector<std::string> stringSums = create_strings(numbers);
 
   for (size_t i = 0; i < numbersVector.size(); i++) {
     std::string resultado = stringSums[i];
@@ -165,7 +167,8 @@ void GoldWebApp::sendErrorResponse(HttpResponse& httpResponse) {
       << "</html>\n";
 }
 
-void GoldWebApp::create_strings(NumbersArray_t* numbers) {
+std::vector<std::string> GoldWebApp::create_strings(NumbersArray_t* numbers) {
+  std::vector<std::string> sums;
   ///< Cadena temporal para almacenar la suma actual de Goldbach.
   std::string currentSum;
   ///< Arreglo de sumas de Goldbach.
@@ -207,7 +210,7 @@ void GoldWebApp::create_strings(NumbersArray_t* numbers) {
         }
       }
       // Agrega la cadena de sumas de Goldbach al vector de strings
-      this->stringSums.push_back(currentSum);
+      sums.push_back(currentSum);
 
     } else {
       // Construye la cadena para el caso en que
@@ -215,7 +218,8 @@ void GoldWebApp::create_strings(NumbersArray_t* numbers) {
       currentSum += std::to_string(SumsArray[i]->number) + ": " +
                     std::to_string(SumsArray[i]->sums_counter) + " sums";
       // Agrega la cadena al vector de strings
-      this->stringSums.push_back(currentSum);
+      sums.push_back(currentSum);
     }
   }
+  return sums;
 }

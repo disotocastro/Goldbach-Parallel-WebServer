@@ -8,13 +8,19 @@
 #include <string>
 #include <vector>
 
+/**
+ * @class GoldSolver
+ * @brief Clase para resolver la conjetura de Goldbach.
+ *
+ * La clase GoldSolver proporciona métodos para encontrar números primos,
+ * y para calcular las sumas de Goldbach para números pares e impares.
+ */
 class GoldSolver {
  public:
   /**
    * @brief Constructor para GoldSolver.
-   * @param inputNumbers Vector de números de entrada.
    */
-  GoldSolver(std::vector<int64_t>& inputNumbers);
+  GoldSolver();
   /**
    * @brief Destructor para GoldSolver.
    */
@@ -58,6 +64,18 @@ class GoldSolver {
    */
   void goldbach(NumbersArray_t* NumbersArray);
 
+  /**
+   * @brief Resuelve la conjetura de Goldbach para un conjunto de números de
+   * entrada.
+   *
+   * @param inputNumbers Vector que contiene los números de entrada.
+   * @return Puntero a la estructura NumbersArray_t que contiene los resultados.
+   */
+  NumbersArray_t* resolveGoldbach(std::vector<int64_t>& inputNumbers);
+
+  /**
+   * @brief Estructura que contiene los números y sus resultados.
+   */
   NumbersArray_t* numbers;
 };
 

@@ -60,7 +60,7 @@ is sent to the client.
 */
 class HttpServer : public TcpServer {
   DISABLE_COPY(HttpServer);
-  // Singleton server with private constructor and destructor
+  /// Singleton server with private constructor and destructor
  private:
   /// Constructor
   HttpServer();

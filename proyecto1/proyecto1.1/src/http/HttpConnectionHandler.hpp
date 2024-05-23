@@ -4,11 +4,20 @@
 #ifndef HTTPCONNECTIONHANDLER_HPP
 #define HTTPCONNECTIONHANDLER_HPP
 
+#include <vector>
+
 #include "Consumer.hpp"
 #include "HttpApp.hpp"
 #include "Socket.hpp"
-#include <vector>
 
+/**
+ * @class HttpConnectionHandler
+ * @brief Clase para manejar conexiones HTTP.
+ *
+ * La clase HttpConnectionHandler maneja conexiones HTTP utilizando un conjunto
+ * de aplicaciones web registradas. Hereda de Consumer<Socket> y proporciona
+ * métodos para consumir sockets y manejar peticiones HTTP.
+ */
 class HttpConnectionHandler : public Consumer<Socket> {
  public:
   /**

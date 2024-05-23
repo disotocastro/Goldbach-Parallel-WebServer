@@ -7,13 +7,17 @@
 #include <numbers.hpp>
 #include <vector>
 
-GoldSolver::GoldSolver(std::vector<int64_t>& inputNumbers) {
+GoldSolver::GoldSolver() {}
+
+GoldSolver::~GoldSolver() { free_memory(numbers); }
+
+NumbersArray_t* GoldSolver::resolveGoldbach(
+    std::vector<int64_t>& inputNumbers) {
   numbers = readNumbers(inputNumbers);
   prime_numbers(numbers);
   goldbach(numbers);
+  return numbers;
 }
-
-GoldSolver::~GoldSolver() { free_memory(numbers); }
 
 void GoldSolver::goldbach(NumbersArray_t* NumbersArray) {
   // Itera sobre el rango de números asignado a este hilo

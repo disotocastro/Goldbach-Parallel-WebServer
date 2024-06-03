@@ -9,6 +9,7 @@
 #include "HttpConnectionHandler.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
+#include "HttpDispatcher.hpp"
 #include "Queue.hpp"
 #include "TcpServer.hpp"
 #include "Thread.hpp"
@@ -74,6 +75,8 @@ class HttpServer : public TcpServer {
   const char* port = DEFAULT_PORT;
   // MAX NUMBER OF CONNECTIONS
   int64_t handlers = std::thread::hardware_concurrency();
+
+  HttpDispatcher* dispatcher;
 
   /**
    * @brief Vector de punteros a objetos HttpConnectionHandler.

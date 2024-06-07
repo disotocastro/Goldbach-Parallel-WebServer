@@ -12,6 +12,7 @@
 #include <unordered_map>
 
 #include "FactSolver.hpp"
+#include "Queue.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 
@@ -21,6 +22,8 @@ FactWebApp::~FactWebApp() {}
 
 void FactWebApp::start() {
   // TODO(you): Start producers, consumers, assemblers...
+  this->id = "/fact";
+  this->requestResponseQueue = new Queue<RequestResponseStruct>;
 }
 
 void FactWebApp::stop() {

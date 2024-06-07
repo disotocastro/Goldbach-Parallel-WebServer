@@ -5,10 +5,10 @@
 #include "Dispatcher.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
-#include "RequestResponseQueue.hpp"
+#include "RequestResponseStruct.hpp"
 #include <vector>
 
-class HttpDispatcher : public Dispatcher <std::string, RequestResponseQueue>  {
+class HttpDispatcher : public Dispatcher <std::string, RequestResponseStruct>  {
   DISABLE_COPY(HttpDispatcher);
 
  public:
@@ -19,7 +19,11 @@ class HttpDispatcher : public Dispatcher <std::string, RequestResponseQueue>  {
 
   void stop();
 
-  std::string extractKey(const RequestResponseQueue& data) const override;
+  std::string extractKey(const RequestResponseStruct& data) const override;
+
+  void consume(RequestResponseStruct data) override;
+
+   void serverNotFound(RequestResponseStruct& data) const;
 
 };
 

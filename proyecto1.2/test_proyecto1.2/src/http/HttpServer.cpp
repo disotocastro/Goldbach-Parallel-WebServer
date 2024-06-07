@@ -8,8 +8,8 @@
 #include <vector>
 
 #include "HttpApp.hpp"
-#include "HttpRequest.hpp"
 #include "HttpDispatcher.hpp"
+#include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "Log.hpp"
 #include "NetworkAddress.hpp"
@@ -26,9 +26,7 @@ const char* const usage =
     "\n"
     "  handlers     Number of connection handler theads\n";
 
-HttpServer::HttpServer() {
-  this->dispatcher = new HttpDispatcher();
-}
+HttpServer::HttpServer() { }
 
 HttpServer::~HttpServer() {}
 
@@ -64,9 +62,10 @@ int HttpServer::run(int argc, char* argv[]) {
                   "Listening on " + address.getIP() + " port " +
                       std::to_string(address.getPort()));
 
-            socketsQueue = new Queue<Socket>();
-            requestResponseQueue = new Queue<RequestResponseStruct>();
-            
+      this->dispatcher = new HttpDispatcher();
+      socketsQueue = new Queue<Socket>();
+      requestResponseQueue = new Queue<RequestResponseStruct>();
+      this->dispatcher->setConsumingQueue(requestResponseQueue);
 
       // Crear el vector de los handlers
       this->vectorHandlers.resize(this->handlers);
@@ -95,9 +94,15 @@ int HttpServer::run(int argc, char* argv[]) {
   return EXIT_SUCCESS;
 }
 
+/// Inicializar las aplicacion, Agrega en el mapa un elemento, utlizando el ID 
+/// de la Aplicación y las cola donde tiene que producir el dispatcher
 void HttpServer::startApps() {
   for (size_t index = 0; index < this->applications.size(); ++index) {
     this->applications[index]->start();
+
+    this->dispatcher->registerRedirect(
+      this->applications[index]->get_ID(),
+      this->applications[index]->get_request_response_queue());
   }
 }
 

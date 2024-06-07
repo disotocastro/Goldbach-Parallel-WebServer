@@ -11,8 +11,11 @@
 #include <string>
 
 #include "GoldSolver.hpp"
+#include "HttpApp.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
+#include "Queue.hpp"
+#include "RequestResponseStruct.hpp"
 #include "numbers.hpp"
 
 GoldWebApp::GoldWebApp() {}
@@ -21,6 +24,8 @@ GoldWebApp::~GoldWebApp() {}
 
 void GoldWebApp::start() {
   // TODO(you): Start producers, consumers, assemblers...
+  this->id = "/gold";
+  this->requestResponseQueue = new Queue<RequestResponseStruct>;
 }
 
 void GoldWebApp::stop() {

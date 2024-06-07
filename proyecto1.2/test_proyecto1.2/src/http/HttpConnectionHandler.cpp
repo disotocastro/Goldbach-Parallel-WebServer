@@ -1,5 +1,6 @@
 // Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
 // Universidad de Costa Rica. CC BY 4.0
+
 #include "HttpConnectionHandler.hpp"
 
 #include <string>
@@ -67,18 +68,36 @@ bool HttpConnectionHandler::handleHttpRequest(HttpRequest& httpRequest,
   return this->route(httpRequest, httpResponse);
 }
 
-bool HttpConnectionHandler::route(HttpRequest& httpRequest,
-                                  HttpResponse& httpResponse) {
-  /// Traverse the chain of applications
-  for (size_t index = 0; index < (*(this->applications)).size(); ++index) {
-    /// If this application handles the request
-    HttpApp* app = (*(this->applications))[index];
-    if (app->handleHttpRequest(httpRequest, httpResponse)) {
-      return true;
-    }
-  }
+// bool HttpConnectionHandler::route(HttpRequest& httpRequest,
+//                                   HttpResponse& httpResponse) {
+//   /// Traverse the chain of applications
+//   for (size_t index = 0; index < (*(this->applications)).size(); ++index) {
+//     /// If this application handles the request
+//     HttpApp* app = (*(this->applications))[index];
+//     if (app->handleHttpRequest(httpRequest, httpResponse)) {
+//       return true;
+//     }
+//   }
 
-  /// Unrecognized request
+//   /// Unrecognized request
+//   return this->serveNotFound(httpRequest, httpResponse);
+// }
+
+bool HttpConnectionHandler::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
+  // Instancia del struct
+  RequestResponseStruct reqRes(&httpRequest, &httpResponse, 0);
+  // Traverse the chain of applications
+  for (size_t index = 0; index < (*(this->applications)).size(); ++index) {
+      // If this application handles the request
+      HttpApp* app = (*(this->applications))[index];
+      if (app->handleHttpRequest(httpRequest, httpResponse)) {
+          // Darle un ID a cada request
+          reqRes.id = index + 1;
+          produce(reqRes);
+          return true;
+      }
+  }
+  // Unrecognized request
   return this->serveNotFound(httpRequest, httpResponse);
 }
 

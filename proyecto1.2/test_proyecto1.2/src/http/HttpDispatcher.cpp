@@ -16,7 +16,7 @@ int HttpDispatcher::run() {
   return EXIT_SUCCESS;
 }
 
-std::string HttpDispatcher::extractKey(const reqRes_t& data) const{
+std::string HttpDispatcher::extractKey(const RequestResponseStruct& data) const{
   std::string uri = data.httpRequest->getURI();
   return uri;
 }

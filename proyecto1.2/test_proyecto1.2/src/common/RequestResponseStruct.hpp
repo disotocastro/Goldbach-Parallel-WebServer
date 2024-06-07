@@ -4,19 +4,19 @@
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 
-typedef struct reqRes {
+typedef struct RequestResponseStruct {
     HttpRequest *httpRequest;
     HttpResponse *httpResponse;
 
 public:
-  reqRes(HttpRequest *request = nullptr, HttpResponse *response = nullptr)
+  RequestResponseStruct(HttpRequest *request = nullptr, HttpResponse *response = nullptr)
     : httpRequest(request), httpResponse(response) {}
 
-  inline bool operator==(const reqRes &other) const {
+  inline bool operator==(const RequestResponseStruct &other) const {
     return this->httpRequest == other.httpRequest
     && this->httpResponse == other.httpResponse;
   }
-} reqRes_t;
+} RequestResponseStruct;
 
 #endif // STRUCTS_HPP
  

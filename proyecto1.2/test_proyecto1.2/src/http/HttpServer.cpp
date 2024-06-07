@@ -9,10 +9,12 @@
 
 #include "HttpApp.hpp"
 #include "HttpRequest.hpp"
+#include "HttpDispatcher.hpp"
 #include "HttpResponse.hpp"
 #include "Log.hpp"
 #include "NetworkAddress.hpp"
 #include "Queue.hpp"
+#include "RequestResponseStruct.hpp"
 #include "Socket.hpp"
 
 // TODO(you): Implement connection handlers argument
@@ -24,7 +26,9 @@ const char* const usage =
     "\n"
     "  handlers     Number of connection handler theads\n";
 
-HttpServer::HttpServer() {}
+HttpServer::HttpServer() {
+  this->dispatcher = new HttpDispatcher();
+}
 
 HttpServer::~HttpServer() {}
 
@@ -61,6 +65,9 @@ int HttpServer::run(int argc, char* argv[]) {
                       std::to_string(address.getPort()));
 
             socketsQueue = new Queue<Socket>();
+            requestResponseQueue = new Queue<RequestResponseStruct>();
+            
+
       // Crear el vector de los handlers
       this->vectorHandlers.resize(this->handlers);
       createThreads();
@@ -156,6 +163,7 @@ void HttpServer::createThreads() {
     // CREA UN HANDLER
     this->vectorHandlers[i] = new HttpConnectionHandler(&this->applications);
     this->vectorHandlers[i]->setConsumingQueue(this->socketsQueue);
+    this->vectorHandlers[i]->setProducingQueue(this->requestResponseQueue);
     this->vectorHandlers[i]->startThread();
   }
 }

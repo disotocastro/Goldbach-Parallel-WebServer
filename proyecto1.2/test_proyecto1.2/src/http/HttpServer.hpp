@@ -1,6 +1,5 @@
 // Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
 // Universidad de Costa Rica. CC BY 4.0
-
 #ifndef HTTPSERVER_H
 #define HTTPSERVER_H
 
@@ -10,6 +9,7 @@
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "HttpDispatcher.hpp"
+#include "RequestResponseStruct.hpp"
 #include "Queue.hpp"
 #include "TcpServer.hpp"
 #include "Thread.hpp"
@@ -109,7 +109,8 @@ class HttpServer : public TcpServer {
 
   // Cola de sockets
   Queue<Socket>* socketsQueue;
-  // de producción nueva
+  Queue<RequestResponseStruct>* requestResponseQueue;
+  
 
  public:
   /// Registers a web application to the chain

@@ -6,8 +6,9 @@
 
 #include <vector>
 
-#include "Consumer.hpp"
+#include "Assembler.hpp"
 #include "HttpApp.hpp"
+#include "RequestResponseStruct.hpp"
 #include "Socket.hpp"
 
 /**
@@ -18,7 +19,7 @@
  * de aplicaciones web registradas. Hereda de Consumer<Socket> y proporciona
  * métodos para consumir sockets y manejar peticiones HTTP.
  */
-class HttpConnectionHandler : public Consumer<Socket> {
+class HttpConnectionHandler : public Assembler<Socket, RequestResponseStruct> {
  public:
   /**
    * @brief Constructor de la clase HttpConnectionHandler.

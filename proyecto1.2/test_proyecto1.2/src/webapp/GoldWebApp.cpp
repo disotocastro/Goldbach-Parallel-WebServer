@@ -6,7 +6,6 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
-
 #include <stdexcept>
 #include <string>
 
@@ -26,6 +25,13 @@ void GoldWebApp::start() {
   // TODO(you): Start producers, consumers, assemblers...
   this->id = "/gold";
   this->requestResponseQueue = new Queue<RequestResponseStruct>;
+  this->numbersQueue = new Queue<Numbers_t*>;
+  this->uriAnalyzer = new URI_Analyzer(requestResponseQueue, numbersQueue);
+  this->uriAnalyzer->startThread();
+  this->numbers_t_queue_resolved = new Queue<Numbers_t*>;
+
+  this->solverAsembler =
+      new Solver_Assembler(numbersQueue, numbers_t_queue_resolved);
 }
 
 void GoldWebApp::stop() {
@@ -78,14 +84,12 @@ bool GoldWebApp::serveHomepage(HttpRequest& httpRequest,
 
 bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest,
                                HttpResponse& httpResponse) {
-  
   bool hayError = false;
 
   // Set HTTP response metadata (headers)
   httpResponse.setHeader("Server", "AttoServer v1.0");
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
- 
   // Obtener los números del URI
   // if (!getNumbersFromURI(httpRequest, numbersVector, longitud, str)) {
   //   hayError = true;
@@ -98,7 +102,6 @@ bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest,
   }
   return httpResponse.send();
 }
-
 
 void GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector,
                                      HttpResponse& httpResponse) {

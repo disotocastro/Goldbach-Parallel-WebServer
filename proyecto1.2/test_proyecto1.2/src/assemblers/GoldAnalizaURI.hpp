@@ -12,6 +12,9 @@
 #include "RequestResponseStruct.hpp"
 #include "numbers.hpp"
 
+
+
+
 class URI_Analyzer : public Assembler<RequestResponseStruct, Numbers_t*> {
  public:
   URI_Analyzer();
@@ -44,8 +47,9 @@ class URI_Analyzer : public Assembler<RequestResponseStruct, Numbers_t*> {
    */
   NumbersArray_t* readNumbers(std::vector<int64_t>& inputNumbers,
                               RequestResponseStruct reqRes);
-
  protected:
+
+
 };
 
 #endif  // ANALIZAURI_HPP

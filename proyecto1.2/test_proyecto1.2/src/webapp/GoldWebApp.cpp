@@ -17,12 +17,24 @@
 #include "RequestResponseStruct.hpp"
 #include "numbers.hpp"
 
+// TODO: Incilizar vector de Gold Solvers
+//  void HttpServer::createThreads() {
+//    for (int64_t i = 0; i < this->handlers; i++) {
+//      // CREA UN HANDLER
+//      this->vectorHandlers[i] = new
+//      HttpConnectionHandler(&this->applications);
+//      this->vectorHandlers[i]->setConsumingQueue(this->socketsQueue);
+//      this->vectorHandlers[i]->setProducingQueue(this->requestResponseQueue);
+//      this->vectorHandlers[i]->startThread();
+//    }
+//  }
+
 GoldWebApp::GoldWebApp() {}
 
 GoldWebApp::~GoldWebApp() {}
 
 void GoldWebApp::start() {
-  // TODO(you): Start producers, consumers, assemblers...
+  // Se incializan las colas
   this->id = "/gold";
   this->requestResponseQueue = new Queue<RequestResponseStruct>;
   this->numbersQueue = new Queue<Numbers_t*>;
@@ -30,8 +42,16 @@ void GoldWebApp::start() {
   this->uriAnalyzer->startThread();
   this->numbers_t_queue_resolved = new Queue<Numbers_t*>;
 
-  this->solverAsembler =
-      new Solver_Assembler(numbersQueue, numbers_t_queue_resolved);
+  // Vector de solvers
+  int64_t n_solvers = std::thread::hardware_concurrency();
+  this->vectorSolverAssemblers.resize(n_solvers);
+
+  // Se crea el vector solvers
+  for (size_t i = 0; i < n_solvers; i++) {
+    this->vectorSolverAssemblers[i] =
+        new Gold_Solver_Assembler(numbersQueue, numbers_t_queue_resolved);
+    this->vectorSolverAssemblers[i]->startThread();
+  }
 }
 
 void GoldWebApp::stop() {

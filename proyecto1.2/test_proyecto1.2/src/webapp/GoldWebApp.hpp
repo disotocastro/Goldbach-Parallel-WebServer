@@ -91,8 +91,13 @@ class GoldWebApp : public HttpApp {
   Queue<RequestResponseStruct>* requestResponseQueue;
   Queue<Numbers_t*>* numbersQueue;
   URI_Analyzer* uriAnalyzer;
-  Solver_Assembler* solverAsembler;
   Queue<Numbers_t*>* numbers_t_queue_resolved;
+
+  /**
+   * @brief Vector de punteros a objetos HttpConnectionHandler.
+   */
+  std::vector<Gold_Solver_Assembler*> vectorSolverAssemblers;
+  
 };
 
 #endif  // GOLDWEBAPP_HPP

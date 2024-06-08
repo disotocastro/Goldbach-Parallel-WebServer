@@ -66,7 +66,7 @@ int HttpServer::run(int argc, char* argv[]) {
       socketsQueue = new Queue<Socket>();
       requestResponseQueue = new Queue<RequestResponseStruct>();
       this->dispatcher->setConsumingQueue(requestResponseQueue);
-
+      
       // Crear el vector de los handlers
       this->vectorHandlers.resize(this->handlers);
       createThreads();

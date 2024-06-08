@@ -11,10 +11,10 @@
 #include "Queue.hpp"
 #include "numbers.hpp"
 
-class Solver_Assembler : public Assembler<Numbers_t*, Numbers_t*> {
+class Gold_Solver_Assembler : public Assembler<Numbers_t*, Numbers_t*> {
  public:
-  Solver_Assembler();
-  explicit Solver_Assembler(Queue<Numbers_t*>* Numbers_t_queue,
+  Gold_Solver_Assembler();
+  explicit Gold_Solver_Assembler(Queue<Numbers_t*>* Numbers_t_queue,
                            Queue<Numbers_t*>* numbers_t_queue_resolved);
   int run() override;
   void consume(Numbers_t* number) override;

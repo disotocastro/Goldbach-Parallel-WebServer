@@ -32,14 +32,7 @@ class GoldSolver {
    * @param NumbersArray Puntero a la estructura NumbersArray_t
    * que contiene los números.
    */
-  void prime_numbers(NumbersArray_t* numbers_read);
-
-  /**
-   * @brief Verifica si un número dado es primo.
-   * @param number El número a verificar.
-   * @return true si el número es primo, false de lo contrario.
-   */
-  bool is_prime(int64_t number);
+  std::vector<int64_t> prime_numbers(int64_t number);
 
   /**
    * @brief Calcula las sumas de Goldbach para números impares.

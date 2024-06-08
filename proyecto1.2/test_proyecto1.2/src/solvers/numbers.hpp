@@ -5,6 +5,8 @@
 
 #include <cstdint>
 #include <vector>
+#include "HttpResponse.hpp"
+
 
 /**
  * @brief Estructura para representar un número y sus sumas de Goldbach.
@@ -14,6 +16,10 @@ typedef struct {
   int64_t** goldbachSums; /**< Matriz de sumas de Goldbach */
   int64_t sums_counter;   /**< Cantidad de sumas de Goldbach */
   bool printSums;         /**< Indicador de impresión de sumas */
+  int64_t index;
+  int64_t id;
+  HttpResponse httpResponse;
+  
 } Numbers_t;
 
 /**
@@ -23,10 +29,9 @@ typedef struct {
 typedef struct {
   Numbers_t** GoldbachSumsArray; /**< Arreglo de punteros a estructuras */
   int64_t counterNumbers;        /**< Número total de números en la lista */
-  int64_t largestNumber;         /**< El número más grande en la lista */
   int64_t totalSums;             /**< Número total de sumas en la lista */
-  int64_t counterPrimes;         /**< Número total de números primos */
-  int64_t* primeNumbers;         /**< Arreglo de números primos */
+  int64_t id;
+  
 } NumbersArray_t;
 
 /**

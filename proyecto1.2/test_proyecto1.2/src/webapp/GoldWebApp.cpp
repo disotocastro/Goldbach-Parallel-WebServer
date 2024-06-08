@@ -6,7 +6,7 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
-#include <regex>
+
 #include <stdexcept>
 #include <string>
 
@@ -87,11 +87,11 @@ bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest,
   httpResponse.setHeader("Server", "AttoServer v1.0");
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
-  std::vector<int64_t> numbersVector;
+ 
   // Obtener los números del URI
-  if (!getNumbersFromURI(httpRequest, numbersVector, longitud, str)) {
-    hayError = true;
-  }
+  // if (!getNumbersFromURI(httpRequest, numbersVector, longitud, str)) {
+  //   hayError = true;
+  // }
 
   if (!hayError) {
     sendSuccessResponse(numbersVector, httpResponse);
@@ -101,35 +101,6 @@ bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest,
   return httpResponse.send();
 }
 
-bool GoldWebApp::getNumbersFromURI(HttpRequest& httpRequest,
-                                   std::vector<int64_t>& numbersVector,
-                                   int longitud, std::string str) {
-  if (size_t pos = httpRequest.getURI().find("number=")) {
-    std::string numbersString = httpRequest.getURI().substr(pos + 7);
-    // Uniformar el URI para que el separador sea espacio
-    std::regex coma("%..");  // símbolo porcentaje y dos caracteres cualquiera
-    std::string nuevoUri = std::regex_replace(numbersString, coma, " ");
-    // Expresión regular para buscar números enteros
-    std::regex patron("-?[0-9]+");
-    std::smatch matches;
-    std::string::const_iterator ini = nuevoUri.begin();
-    std::string::const_iterator fin = nuevoUri.end();
-    // Buscar números en el URI modificado
-    while (std::regex_search(ini, fin, matches, patron)) {
-      str = matches.str();
-      longitud = str.size();
-      if (longitud > 19) {
-        return false;  // Hay un error, número demasiado grande
-      }
-      int valor = std::stoll(matches[0].str());
-      numbersVector.push_back(valor);
-      ini = matches.suffix().first;
-    }
-    return true;
-  } else {
-    return false;  // Hay un error, no se encontró la cadena "number="
-  }
-}
 
 void GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector,
                                      HttpResponse& httpResponse) {

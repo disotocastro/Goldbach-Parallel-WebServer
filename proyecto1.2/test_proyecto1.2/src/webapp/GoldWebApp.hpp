@@ -79,16 +79,7 @@ class GoldWebApp : public HttpApp {
    */
   void sendSuccessResponse(const std::vector<int64_t>& numbersVector,
                            HttpResponse& httpResponse);
-  /**
-   * @brief Extracts numbers from the URI of the HTTP request.
-   * @param httpRequest The HTTP request object.
-   * @param numbersVector A vector to store the extracted numbers.
-   * @return true if the numbers were successfully extracted, false otherwise.
-   */
-  bool getNumbersFromURI(HttpRequest& httpRequest,
-                         std::vector<int64_t>& numbersVector, int longitud,
-                         std::string str);
-
+  
   /**
    * @brief Crea cadenas de texto representando las sumas de Goldbach.
    */

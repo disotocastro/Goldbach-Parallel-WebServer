@@ -12,6 +12,7 @@ GoldSolver::GoldSolver() {}
 GoldSolver::~GoldSolver() { free_memory(numbers); }
 
 NumbersArray_t* GoldSolver::resolveGoldbach(
+
     std::vector<int64_t>& inputNumbers) {
   numbers = readNumbers(inputNumbers);
   prime_numbers(numbers);
@@ -34,41 +35,28 @@ void GoldSolver::goldbach(NumbersArray_t* NumbersArray) {
   }
 }
 
-void GoldSolver::prime_numbers(NumbersArray_t* NumbersArray) {
-  int64_t* primeNumbers = NumbersArray->primeNumbers;
-  int64_t maxPrimeCount = NumbersArray->largestNumber / 2;
-  // Se reserva memoria para almacenar los números primos
-  primeNumbers = (int64_t*)calloc(maxPrimeCount, sizeof(int64_t));
-  if (primeNumbers == NULL) {
-    // Manejo de errores en caso de fallo de asignación de memoria
-    // return NULL;
-  }
-  primeNumbers[0] = 2;
-  int64_t indexArray = 1;
-  for (int64_t number = 3; number < NumbersArray->largestNumber; number += 2) {
-    // Itera sobre todos los números impares hasta el número más grande en la
-    // lista
-    if (is_prime(number)) {
-      primeNumbers[indexArray] = number;
-      indexArray++;
+std::vector<int64_t> GoldSolver::prime_numbers(int64_t number) {
+
+  std::vector<bool> isPrime(number + 1, true);
+
+  // Criba de Eratóstenes
+  for (int64_t p = 2; p * p <= number; p++) {
+    if (isPrime[p]) {
+      for (int64_t multiple = p * p; multiple <= number; multiple += p) {
+        isPrime[multiple] = false;
+      }
     }
   }
 
-  // Actualiza el contador de números primos en la lista
-  NumbersArray->counterPrimes = indexArray;
-  NumbersArray->primeNumbers = primeNumbers;
-}
-
-bool GoldSolver::is_prime(int64_t number) {
-  bool prime = true;
-  for (int64_t testNumber = 3; testNumber < number; testNumber += 2) {
-    // Comprueba si el número es divisible por algún número impar menor que él
-    if ((number % testNumber == 0)) {
-      prime = false;
-      break;
+  // Almacenar los números primos en el array
+  std::vector<int64_t> primeNumbers;
+    for (int64_t i = 2; i <= number; i++) {
+        if (isPrime[i]) {
+            primeNumbers.push_back(i);
+        }
     }
-  }
-  return prime;
+
+  return primeNumbers;
 }
 
 void GoldSolver::goldbach_pair(NumbersArray_t* NumbersArray, int64_t index) {

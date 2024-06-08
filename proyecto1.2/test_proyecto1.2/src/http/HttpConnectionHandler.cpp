@@ -83,19 +83,20 @@ bool HttpConnectionHandler::handleHttpRequest(HttpRequest& httpRequest,
 //   return this->serveNotFound(httpRequest, httpResponse);
 // }
 
-bool HttpConnectionHandler::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
+bool HttpConnectionHandler::route(HttpRequest& httpRequest,
+                                  HttpResponse& httpResponse) {
   // Instancia del struct
   RequestResponseStruct reqRes(&httpRequest, &httpResponse, 0);
   // Traverse the chain of applications
   for (size_t index = 0; index < (*(this->applications)).size(); ++index) {
-      // If this application handles the request
-      HttpApp* app = (*(this->applications))[index];
-      if (app->handleHttpRequest(httpRequest, httpResponse)) {
-          // Darle un ID a cada request
-          reqRes.id = index + 1;
-          produce(reqRes);
-          return true;
-      }
+    // If this application handles the request
+    HttpApp* app = (*(this->applications))[index];
+    if (app->handleHttpRequest(httpRequest, httpResponse)) {
+      // Darle un ID a cada request
+      reqRes.id = index + 1;
+      produce(reqRes);
+      return true;
+    }
   }
   // Unrecognized request
   return this->serveNotFound(httpRequest, httpResponse);

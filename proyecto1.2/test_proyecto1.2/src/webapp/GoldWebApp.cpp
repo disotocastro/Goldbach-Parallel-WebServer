@@ -78,9 +78,7 @@ bool GoldWebApp::serveHomepage(HttpRequest& httpRequest,
 
 bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest,
                                HttpResponse& httpResponse) {
-  (void)httpRequest;
-  std::string str = "";
-  int longitud = 0;
+  
   bool hayError = false;
 
   // Set HTTP response metadata (headers)

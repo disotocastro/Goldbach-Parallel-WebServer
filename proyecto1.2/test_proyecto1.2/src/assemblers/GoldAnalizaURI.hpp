@@ -1,8 +1,8 @@
 // Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
 // Universidad de Costa Rica. CC BY 4.0
 
-#ifndef ANALIZAURI_HPP
-#define ANALIZAURI_HPP
+#ifndef GOLDANALIZAURI_HPP
+#define GOLDANALIZAURI_HPP
 
 #include <vector>
 
@@ -10,7 +10,6 @@
 #include "HttpApp.hpp"
 #include "Queue.hpp"
 #include "RequestResponseStruct.hpp"
-#include "Socket.hpp"
 #include "numbers.hpp"
 
 class URI_Analyzer : public Assembler<RequestResponseStruct, Numbers_t*> {

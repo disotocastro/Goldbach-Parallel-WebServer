@@ -1,8 +1,13 @@
 
-#include "AnalizaURI.hpp"
+#include "GoldAnalizaURI.hpp"
 
 #include <regex>
 #include <string>
+
+int URI_Analyzer::run() {
+  this->consumeForever();
+  return EXIT_SUCCESS;
+}
 
 URI_Analyzer::URI_Analyzer(
     Queue<RequestResponseStruct>* resquest_response_queue,
@@ -46,44 +51,28 @@ bool URI_Analyzer::getNumbersFromURI(HttpRequest& httpRequest,
 void URI_Analyzer::consume(RequestResponseStruct reqRes) {
   std::vector<int64_t> numbersVector;
 
-  getNumbersFromURI(*reqRes.httpRequest,numbersVector);
+  getNumbersFromURI(*reqRes.httpRequest, numbersVector);
 
   readNumbers(numbersVector, reqRes);
-
-  
-  //   if (orderPackage == PackageOrder()) {
-  //     this->produce(PackageResult());
-  //   } else {
-  //     bool isValid = false;
-  //     std::string URL = "";
-  //     std::vector<std::shared_ptr<struct numbers>> numbers;
-  //     PackageResult packageResult =
-  //         PackageResult(orderPackage.httpResponse, numbers, isValid, URL);
-  //     // cambiar los atributos de orderPackage a privado y usar getters y
-  //     setters. this->redirectPackageR(orderPackage.httpRequest,
-  //     packageResult); this->produce(packageResult);
-  //   }
 }
 
 NumbersArray_t* URI_Analyzer::readNumbers(std::vector<int64_t>& inputNumbers,
                                           RequestResponseStruct reqRes) {
-
   /// Crear el arreglo para almacenar los numeros.
   NumbersArray_t* numbers = (NumbersArray_t*)malloc(sizeof(NumbersArray_t));
   numbers->GoldbachSumsArray = nullptr;
   numbers->counterNumbers = inputNumbers.size();
   numbers->totalSums = 0;
- 
 
   // Lee los números de la entrada estándar y los almacena en la lista
   for (size_t i = 0; i < inputNumbers.size(); i++) {
-    this->producingQueue->enqueue(new_number(inputNumbers[i],i,reqRes));
+    this->producingQueue->enqueue(new_number(inputNumbers[i], i, reqRes));
   }
   return numbers;
 }
 
 Numbers_t* URI_Analyzer::new_number(int64_t newNumber, int64_t index,
-                                          RequestResponseStruct reqRes) {
+                                    RequestResponseStruct reqRes) {
   // Asigna memoria para el nuevo objeto Numbers_t
   Numbers_t* newData = (Numbers_t*)malloc(sizeof(Numbers_t));
   // Inicializa los campos del objeto con los valores predeterminados
@@ -104,4 +93,3 @@ Numbers_t* URI_Analyzer::new_number(int64_t newNumber, int64_t index,
   // Retorna un puntero al nuevo objeto Numbers_t creado
   return newData;
 }
-

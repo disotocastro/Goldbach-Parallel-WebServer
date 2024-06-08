@@ -5,8 +5,8 @@
 
 #include <cstdint>
 #include <vector>
-#include "HttpResponse.hpp"
 
+#include "HttpResponse.hpp"
 
 /**
  * @brief Estructura para representar un número y sus sumas de Goldbach.
@@ -19,7 +19,7 @@ typedef struct {
   int64_t index;
   int64_t id;
   HttpResponse httpResponse;
-  
+
 } Numbers_t;
 
 /**
@@ -31,28 +31,14 @@ typedef struct {
   int64_t counterNumbers;        /**< Número total de números en la lista */
   int64_t totalSums;             /**< Número total de sumas en la lista */
   int64_t id;
-  
+
 } NumbersArray_t;
-
-/**
- * @brief Crea una nueva estructura Numbers_t con el número especificado.
- * @param newNumber El número para crear la estructura.
- * @return Puntero a la nueva estructura Numbers_t creada.
- */
-Numbers_t* new_number(int64_t newNumber);
-
-/**
- * @brief Lee los números de la entrada estándar y los almacena en un arreglo.
- * @return Puntero a la estructura NumbersArray_t que contiene los números
- * leídos.
- */
-NumbersArray_t* readNumbers(std::vector<int64_t>& inputNumbers);
 
 /**
  * @brief Libera la memoria asignada a la lista de números.
  * @param NumbersArray Puntero a la estructura NumbersArray_t
  * que contiene los números.
  */
-void free_memory(NumbersArray_t* numbers);
+void free_memory();
 
 #endif

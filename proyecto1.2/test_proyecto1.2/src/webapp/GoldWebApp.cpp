@@ -52,6 +52,15 @@ void GoldWebApp::start() {
         new Gold_Solver_Assembler(numbersQueue, numbers_t_queue_resolved);
     this->vectorSolverAssemblers[i]->startThread();
   }
+
+  request_resolved_queue = new Queue<RequestResolved_t*>;
+
+  this->sortAssembler = new Sort_Assembler(numbers_t_queue_resolved, request_resolved_queue);
+  this->sortAssembler->startThread();
+
+  this->goldHTML = new Gold_HTML(request_resolved_queue);
+  this->goldHTML->startThread();
+
 }
 
 void GoldWebApp::stop() {
@@ -67,7 +76,7 @@ bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
 
   // If the request starts with "gold/" is for this web app
   if (httpRequest.getURI().rfind("/gold/gold", 0) == 0) {
-    return this->serveGoldbach(httpRequest, httpResponse);
+    //return this->serveGoldbach(httpRequest, httpResponse);
   }
 
   // Unrecognized request
@@ -102,26 +111,13 @@ bool GoldWebApp::serveHomepage(HttpRequest& httpRequest,
   return httpResponse.send();
 }
 
-bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest,
-                               HttpResponse& httpResponse) {
-  bool hayError = false;
+// bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest,
+//                                HttpResponse& httpResponse) {
 
-  // Set HTTP response metadata (headers)
-  httpResponse.setHeader("Server", "AttoServer v1.0");
-  httpResponse.setHeader("Content-type", "text/html; charset=ascii");
-
-  // Obtener los números del URI
-  // if (!getNumbersFromURI(httpRequest, numbersVector, longitud, str)) {
-  //   hayError = true;
-  // }
-
-  if (!hayError) {
-    // sendSuccessResponse(numbersVector, httpResponse);
-  } else {
-    sendErrorResponse(httpResponse);
-  }
-  return httpResponse.send();
-}
+//   // Set HTTP response metadata (headers)
+//   httpResponse.setHeader("Server", "AttoServer v1.0");
+//   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
+// }
 
 // void GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector,
 //                                      HttpResponse& httpResponse) {
@@ -164,59 +160,59 @@ bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest,
 //       << "</html>\n";
 // }
 
-std::vector<std::string> GoldWebApp::create_strings(NumbersArray_t* numbers) {
-  std::vector<std::string> sums;
-  ///< Cadena temporal para almacenar la suma actual de Goldbach.
-  std::string currentSum;
-  ///< Arreglo de sumas de Goldbach.
-  Numbers_t** SumsArray = numbers->GoldbachSumsArray;
-  ///< Variable temporal para almacenar el contador de sumas de Goldbach.
-  int64_t n;
-  // Itera sobre los números en el arreglo
-  for (int64_t i = 0; i < numbers->counterNumbers; i++) {
-    currentSum = "";  // Inicializa la cadena actual como vacía
-    // Verifica si se deben imprimir las sumas de Goldbach para el número actual
-    if (SumsArray[i]->printSums) {
-      // Obtiene el contador de sumas de Goldbach para el número actual
-      n = SumsArray[i]->sums_counter;
-      // Construye la cadena de sumas de Goldbach
-      currentSum += "-" + std::to_string(SumsArray[i]->number) + ": " +
-                    std::to_string(SumsArray[i]->sums_counter) + " sums: ";
-      // Itera sobre las sumas de Goldbach para el número actual
-      for (int64_t j = 0; j < n; j++) {
-        // Agrega la suma de Goldbach para números pares
-        if ((SumsArray[i]->number % 2) == 0) {
-          currentSum +=
-              "" + std::to_string(SumsArray[i]->goldbachSums[0][j]) + " ";
-          currentSum += "+ " + std::to_string(SumsArray[i]->goldbachSums[1][j]);
-          if (j == (SumsArray[i]->sums_counter) - 1) {
-          } else {
-            currentSum += ", ";
-          }
-          // Agrega la suma de Goldbach para números impares
-        } else {
-          currentSum +=
-              "" + std::to_string(SumsArray[i]->goldbachSums[0][j]) + " ";
-          currentSum +=
-              "+ " + std::to_string(SumsArray[i]->goldbachSums[1][j]) + " ";
-          currentSum += "+ " + std::to_string(SumsArray[i]->goldbachSums[2][j]);
-          if (j == (SumsArray[i]->sums_counter) - 1) {
-          } else {
-            currentSum += ", ";
-          }
-        }
-      }
-      // Agrega la cadena de sumas de Goldbach al vector de strings
-      sums.push_back(currentSum);
+// std::vector<std::string> GoldWebApp::create_strings(NumbersArray_t* numbers) {
+//   std::vector<std::string> sums;
+//   ///< Cadena temporal para almacenar la suma actual de Goldbach.
+//   std::string currentSum;
+//   ///< Arreglo de sumas de Goldbach.
+//   Numbers_t** SumsArray = numbers->GoldbachSumsArray;
+//   ///< Variable temporal para almacenar el contador de sumas de Goldbach.
+//   int64_t n;
+//   // Itera sobre los números en el arreglo
+//   for (int64_t i = 0; i < numbers->counterNumbers; i++) {
+//     currentSum = "";  // Inicializa la cadena actual como vacía
+//     // Verifica si se deben imprimir las sumas de Goldbach para el número actual
+//     if (SumsArray[i]->printSums) {
+//       // Obtiene el contador de sumas de Goldbach para el número actual
+//       n = SumsArray[i]->sums_counter;
+//       // Construye la cadena de sumas de Goldbach
+//       currentSum += "-" + std::to_string(SumsArray[i]->number) + ": " +
+//                     std::to_string(SumsArray[i]->sums_counter) + " sums: ";
+//       // Itera sobre las sumas de Goldbach para el número actual
+//       for (int64_t j = 0; j < n; j++) {
+//         // Agrega la suma de Goldbach para números pares
+//         if ((SumsArray[i]->number % 2) == 0) {
+//           currentSum +=
+//               "" + std::to_string(SumsArray[i]->goldbachSums[0][j]) + " ";
+//           currentSum += "+ " + std::to_string(SumsArray[i]->goldbachSums[1][j]);
+//           if (j == (SumsArray[i]->sums_counter) - 1) {
+//           } else {
+//             currentSum += ", ";
+//           }
+//           // Agrega la suma de Goldbach para números impares
+//         } else {
+//           currentSum +=
+//               "" + std::to_string(SumsArray[i]->goldbachSums[0][j]) + " ";
+//           currentSum +=
+//               "+ " + std::to_string(SumsArray[i]->goldbachSums[1][j]) + " ";
+//           currentSum += "+ " + std::to_string(SumsArray[i]->goldbachSums[2][j]);
+//           if (j == (SumsArray[i]->sums_counter) - 1) {
+//           } else {
+//             currentSum += ", ";
+//           }
+//         }
+//       }
+//       // Agrega la cadena de sumas de Goldbach al vector de strings
+//       sums.push_back(currentSum);
 
-    } else {
-      // Construye la cadena para el caso en que
-      // no se impriman las sumas de Goldbach
-      currentSum += std::to_string(SumsArray[i]->number) + ": " +
-                    std::to_string(SumsArray[i]->sums_counter) + " sums";
-      // Agrega la cadena al vector de strings
-      sums.push_back(currentSum);
-    }
-  }
-  return sums;
-}
+//     } else {
+//       // Construye la cadena para el caso en que
+//       // no se impriman las sumas de Goldbach
+//       currentSum += std::to_string(SumsArray[i]->number) + ": " +
+//                     std::to_string(SumsArray[i]->sums_counter) + " sums";
+//       // Agrega la cadena al vector de strings
+//       sums.push_back(currentSum);
+//     }
+//   }
+//   return sums;
+// }

@@ -1,8 +1,7 @@
-#include "SortAssembler.hpp"
-
-#include "GoldSolver.hpp"
 #include "GoldSolverAssambler.hpp"
+#include "GoldSortAssembler.hpp"
 #include "numbers.hpp"
+
 
 Sort_Assembler::Sort_Assembler(
     Queue<Numbers_t*>* numbers_t_queue_resolved,

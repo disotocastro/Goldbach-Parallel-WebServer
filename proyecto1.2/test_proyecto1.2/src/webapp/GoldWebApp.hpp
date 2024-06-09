@@ -7,7 +7,9 @@
 #include <vector>
 
 #include "GoldAnalizaURI.hpp"
+#include "GoldHTML.hpp"
 #include "GoldSolverAssambler.hpp"
+#include "GoldSortAssembler.hpp"
 #include "HttpApp.hpp"
 #include "numbers.hpp"
 
@@ -85,19 +87,20 @@ class GoldWebApp : public HttpApp {
   /**
    * @brief Crea cadenas de texto representando las sumas de Goldbach.
    */
-  std::vector<std::string> create_strings(NumbersArray_t* numbers);
+  std::vector<std::string> create_strings(RequestResolved_t* numbers);
 
   std::string id;
+
   Queue<RequestResponseStruct>* requestResponseQueue;
   Queue<Numbers_t*>* numbersQueue;
-  URI_Analyzer* uriAnalyzer;
   Queue<Numbers_t*>* numbers_t_queue_resolved;
+  Queue<RequestResolved_t*>* request_resolved_queue;
 
-  /**
-   * @brief Vector de punteros a objetos HttpConnectionHandler.
-   */
+  URI_Analyzer* uriAnalyzer;
+  Sort_Assembler* sortAssembler;
+  Gold_HTML* goldHTML;
+
   std::vector<Gold_Solver_Assembler*> vectorSolverAssemblers;
-  
 };
 
 #endif  // GOLDWEBAPP_HPP

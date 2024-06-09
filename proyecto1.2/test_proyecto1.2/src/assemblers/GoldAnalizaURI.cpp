@@ -56,19 +56,13 @@ void URI_Analyzer::consume(RequestResponseStruct reqRes) {
   readNumbers(numbersVector, reqRes);
 }
 
-NumbersArray_t* URI_Analyzer::readNumbers(std::vector<int64_t>& inputNumbers,
+void URI_Analyzer::readNumbers(std::vector<int64_t>& inputNumbers,
                                           RequestResponseStruct reqRes) {
-  /// Crear el arreglo para almacenar los numeros.
-  NumbersArray_t* numbers = (NumbersArray_t*)malloc(sizeof(NumbersArray_t));
-  numbers->GoldbachSumsArray = nullptr;
-  numbers->counterNumbers = inputNumbers.size();
-  numbers->totalSums = 0;
 
   // Lee los números de la entrada estándar y los almacena en la lista
   for (size_t i = 0; i < inputNumbers.size(); i++) {
     this->producingQueue->enqueue(new_number(inputNumbers[i], i, reqRes));
   }
-  return numbers;
 }
 
 Numbers_t* URI_Analyzer::new_number(int64_t newNumber, int64_t index,

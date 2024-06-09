@@ -1,8 +1,8 @@
 // Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
 // Universidad de Costa Rica. CC BY 4.0
 
-#ifndef SORTASSEMBLER_HPP
-#define SORTASSEMBLER_HPP
+#ifndef GOLDSORTASSEMBLER_HPP
+#define GOLDSORTASSEMBLER_HPP
 
 #include <vector>
 
@@ -24,4 +24,4 @@ class Sort_Assembler : public Assembler<Numbers_t*, RequestResolved_t*> {
 
 };
 
-#endif  // SORTASSEMBLER_HPP
+#endif  // GOLDSORTASSEMBLER_HPP

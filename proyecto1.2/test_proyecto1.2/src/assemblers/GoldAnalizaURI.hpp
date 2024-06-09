@@ -45,7 +45,7 @@ class URI_Analyzer : public Assembler<RequestResponseStruct, Numbers_t*> {
    * @return Puntero a la estructura NumbersArray_t que contiene los números
    * leídos.
    */
-  NumbersArray_t* readNumbers(std::vector<int64_t>& inputNumbers,
+  void readNumbers(std::vector<int64_t>& inputNumbers,
                               RequestResponseStruct reqRes);
  protected:
 

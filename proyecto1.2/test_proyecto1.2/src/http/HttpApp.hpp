@@ -3,8 +3,9 @@
 #ifndef HTTPAPP_H
 #define HTTPAPP_H
 
-#include "common.hpp"
+#include "Queue.hpp"
 #include "RequestResponseStruct.hpp"
+#include "common.hpp"
 
 class HttpRequest;
 class HttpResponse;
@@ -20,10 +21,10 @@ class HttpApp {
 
   /// ID de la aplicación (/fact o /gold)
 
-  protected:
-    std::string id;
-    /// Cola de paquetes
-    Queue<RequestResponseStruct>* requestResponseQueue;
+ protected:
+  std::string id;
+  /// Cola de paquetes
+  Queue<RequestResponseStruct>* requestResponseQueue;
 
  public:
   /// Constructor
@@ -36,18 +37,15 @@ class HttpApp {
   /// @return true If this application handled the request, false otherwise
   /// and another chained application should handle it
   virtual bool handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse) = 0;
+                                 HttpResponse& httpResponse) = 0;
   /// Called when the web server stops, in order to allow the web application
   /// clean up and finish as well
   virtual void stop();
 
-  std::string get_ID(){
-    return this->id;
-  }
-  Queue<RequestResponseStruct>* get_request_response_queue(){
+  std::string get_ID() { return this->id; }
+  Queue<RequestResponseStruct>* get_request_response_queue() {
     return this->requestResponseQueue;
   }
-
 };
 
 #endif  // HTTPAPP_H

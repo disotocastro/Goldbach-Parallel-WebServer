@@ -116,53 +116,53 @@ bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest,
   // }
 
   if (!hayError) {
-    sendSuccessResponse(numbersVector, httpResponse);
+    // sendSuccessResponse(numbersVector, httpResponse);
   } else {
     sendErrorResponse(httpResponse);
   }
   return httpResponse.send();
 }
 
-void GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector,
-                                     HttpResponse& httpResponse) {
-  std::string title = " Goldbach Sums";
-  httpResponse.body() << "<!DOCTYPE html>\n"
-                      << "<html lang=\"en\">\n"
-                      << "  <meta charset=\"ascii\"/>\n"
-                      << "  <title>" << title << "</title>\n"
-                      << "  <style>\n"
-                      << "    body {font-family: monospace}\n"
-                      << "    .blue {color: blue}\n"
-                      << "    .small {font-size: 0.8em; color: black}\n"
-                      << "  </style>\n"
-                      << "  <h1>" << title << "</h1>\n";
-  std::vector<int64_t> numbersTemp = numbersVector;
+// void GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector,
+//                                      HttpResponse& httpResponse) {
+//   std::string title = " Goldbach Sums";
+//   httpResponse.body() << "<!DOCTYPE html>\n"
+//                       << "<html lang=\"en\">\n"
+//                       << "  <meta charset=\"ascii\"/>\n"
+//                       << "  <title>" << title << "</title>\n"
+//                       << "  <style>\n"
+//                       << "    body {font-family: monospace}\n"
+//                       << "    .blue {color: blue}\n"
+//                       << "    .small {font-size: 0.8em; color: black}\n"
+//                       << "  </style>\n"
+//                       << "  <h1>" << title << "</h1>\n";
+//   std::vector<int64_t> numbersTemp = numbersVector;
 
-  GoldSolver goldbach = GoldSolver();
-  NumbersArray_t* numbers = goldbach.resolveGoldbach(numbersTemp);
-  std::vector<std::string> stringSums = create_strings(numbers);
+//   GoldSolver goldbach = GoldSolver();
+//   NumbersArray_t* numbers = goldbach.resolveGoldbach(numbersTemp);
+//   std::vector<std::string> stringSums = create_strings(numbers);
 
-  for (size_t i = 0; i < numbersVector.size(); i++) {
-    std::string resultado = stringSums[i];
-    httpResponse.body() << " <h1>" << resultado << "</h1>\n";
-  }
-  httpResponse.body() << "</html>\n";
-}
+//   for (size_t i = 0; i < numbersVector.size(); i++) {
+//     std::string resultado = stringSums[i];
+//     httpResponse.body() << " <h1>" << resultado << "</h1>\n";
+//   }
+//   httpResponse.body() << "</html>\n";
+// }
 
-void GoldWebApp::sendErrorResponse(HttpResponse& httpResponse) {
-  // Build the body for an invalid request
-  std::string title = "Invalid request";
-  httpResponse.body()
-      << "<!DOCTYPE html>\n"
-      << "<html lang=\"en\">\n"
-      << "  <meta charset=\"ascii\"/>\n"
-      << "  <title>" << title << "</title>\n"
-      << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
-      << "  <h1 class=\"err\">" << title << "</h1>\n"
-      << "  <p>Invalid request for Goldbach sums</p>\n"
-      << "  <hr><p><a href=\"/\">Back</a></p>\n"
-      << "</html>\n";
-}
+// void GoldWebApp::sendErrorResponse(HttpResponse& httpResponse) {
+//   // Build the body for an invalid request
+//   std::string title = "Invalid request";
+//   httpResponse.body()
+//       << "<!DOCTYPE html>\n"
+//       << "<html lang=\"en\">\n"
+//       << "  <meta charset=\"ascii\"/>\n"
+//       << "  <title>" << title << "</title>\n"
+//       << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
+//       << "  <h1 class=\"err\">" << title << "</h1>\n"
+//       << "  <p>Invalid request for Goldbach sums</p>\n"
+//       << "  <hr><p><a href=\"/\">Back</a></p>\n"
+//       << "</html>\n";
+// }
 
 std::vector<std::string> GoldWebApp::create_strings(NumbersArray_t* numbers) {
   std::vector<std::string> sums;

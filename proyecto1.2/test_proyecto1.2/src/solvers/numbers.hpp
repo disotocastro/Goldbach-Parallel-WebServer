@@ -18,6 +18,7 @@ typedef struct {
   bool printSums;         /**< Indicador de impresión de sumas */
   int64_t index;
   int64_t id;
+  int64_t maxNumbers;
   HttpResponse httpResponse;
 
 } Numbers_t;
@@ -26,13 +27,23 @@ typedef struct {
  * @brief Estructura para representar una lista de números y sus sumas
  * de Goldbach.
  */
-typedef struct {
-  Numbers_t** GoldbachSumsArray; /**< Arreglo de punteros a estructuras */
-  int64_t counterNumbers;        /**< Número total de números en la lista */
-  int64_t totalSums;             /**< Número total de sumas en la lista */
-  int64_t id;
+class RequestResolved_t {
+  public:
+  RequestResolved_t(){}
 
-} NumbersArray_t;
+  RequestResolved_t(int64_t ID, int64_t maxNumbers){
+    this->id = ID;
+    this->maxNumbers = maxNumbers;
+  }
+
+  ~RequestResolved_t(){}
+
+    Numbers_t** GoldbachSumsArray; /**< Arreglo de punteros a estructuras */
+    int64_t counterNumbers;        /**< Número total de números en la lista */
+    int64_t totalSums;             /**< Número total de sumas en la lista */
+    int64_t id;
+    int64_t maxNumbers;
+};
 
 /**
  * @brief Libera la memoria asignada a la lista de números.

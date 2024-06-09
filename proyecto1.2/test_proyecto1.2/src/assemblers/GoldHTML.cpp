@@ -107,7 +107,7 @@ void Gold_HTML::sendSuccessResponse(RequestResolved_t* resolved) {
 
   std::vector<std::string> stringSums = create_strings(resolved);
 
-  for (size_t i = 0; i < resolved->maxNumbers; i++) {
+  for (int64_t i = 0; i < resolved->maxNumbers; i++) {
     std::string resultado = stringSums[i];
     response.body() << " <h1>" << resultado << "</h1>\n";
   }

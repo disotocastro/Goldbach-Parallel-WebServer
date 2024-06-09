@@ -23,7 +23,7 @@ void Sort_Assembler::consume(Numbers_t* numbers_t_resolved) {
   bool exist = false;
   int64_t arrayPosition = numbers_t_resolved->index;
 
-  for (int64_t i = 0; i < Vector_Request_Resolved_t.size(); i++) {
+  for (size_t i = 0; i < Vector_Request_Resolved_t.size(); i++) {
     if (ID == Vector_Request_Resolved_t[i]->id) {
       Vector_Request_Resolved_t[i]->GoldbachSumsArray[arrayPosition] = numbers_t_resolved;
       Vector_Request_Resolved_t[i]->counterNumbers ++;

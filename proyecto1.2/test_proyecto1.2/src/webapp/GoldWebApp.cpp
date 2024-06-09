@@ -47,7 +47,7 @@ void GoldWebApp::start() {
   this->vectorSolverAssemblers.resize(n_solvers);
 
   // Se crea el vector solvers
-  for (size_t i = 0; i < n_solvers; i++) {
+  for (int64_t i = 0; i < n_solvers; i++) {
     this->vectorSolverAssemblers[i] =
         new Gold_Solver_Assembler(numbersQueue, numbers_t_queue_resolved);
     this->vectorSolverAssemblers[i]->startThread();

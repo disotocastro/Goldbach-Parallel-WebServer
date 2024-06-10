@@ -7,7 +7,6 @@
 typedef struct RequestResponseStruct {
   HttpRequest httpRequest;
   HttpResponse httpResponse;
-  int id;
 
  public:
   // Constructor con parámetros por defecto
@@ -17,7 +16,7 @@ typedef struct RequestResponseStruct {
 
   inline bool operator==(const RequestResponseStruct& other) const {
     return this->httpRequest == other.httpRequest &&
-           this->httpRequest == other.httpResponse;
+           this->httpResponse == other.httpResponse;
   }
 } RequestResponseStruct_t;
 

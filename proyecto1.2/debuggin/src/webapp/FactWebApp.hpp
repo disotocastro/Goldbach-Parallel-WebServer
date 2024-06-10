@@ -1,4 +1,4 @@
-// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
+// Copyright 2024 Diego Soto, Migueledo Nuñez, William Morales
 // Universidad de Costa Rica. CC BY 4.0
 
 #ifndef FACTWEBAPP_HPP
@@ -9,6 +9,11 @@
 
 #include "HttpApp.hpp"
 #include "FactUriAnalizer.hpp"
+#include "FactSortAssembler.hpp"
+#include "FactSolverAssembler.hpp"
+#include "FactNumber.hpp"
+#include "Queue.hpp"
+#include "FactHTML.hpp"
 
 /**
  * @class FactWebApp
@@ -19,7 +24,12 @@ class FactWebApp : public HttpApp {
   DISABLE_COPY(FactWebApp);
 
  public:
+  Queue<FactNumber*>* FactNumberQueue;
+  Queue<FactNumber*>* FactNumberSolvedQueue;
+  FactSolverAssembler* solverAssembler;
   FactUriAnalizer* uriAnalizer;
+  FactSortAssembler* sortAssembler;
+  FactHTML* buildHTML;
 
   /// Constructor
   FactWebApp();

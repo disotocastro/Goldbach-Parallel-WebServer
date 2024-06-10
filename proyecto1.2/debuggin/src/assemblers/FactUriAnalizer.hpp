@@ -1,10 +1,11 @@
-// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
+// Copyright 2024 Diego Soto, Migueledo Nuñez, William Morales
 // Universidad de Costa Rica. CC BY 4.0
 
 #ifndef FACTURIANALIZER_HPP
 #define FACTURIANALIZER_HPP
 
 #include <vector>
+#include <string>
 
 #include "Assembler.hpp"
 #include "HttpApp.hpp"
@@ -13,10 +14,16 @@
 #include "Queue.hpp"
 #include "RequestResponseStruct.hpp"
 #include "Socket.hpp"
+#include "FactNumber.hpp"
+
 
 class FactUriAnalizer
-    : public Assembler<RequestResponseStruct_t, RequestResponseStruct_t> {
+    : public Assembler<RequestResponseStruct_t, FactNumber*> {
  public:
+
+  /// @brief ID para los elementos de la cola de produccion
+  int64_t Element_ID = 0;
+
   /**
    * @brief Método para ejecutar la conexión HTTP.
    * @return Entero que indica el estado de la ejecución.
@@ -30,20 +37,17 @@ class FactUriAnalizer
   void consume(RequestResponseStruct_t data) override;
 
   bool serveHomepage(HttpRequest& httpRequest, HttpResponse& httpResponse);
+  bool serveFactorize(HttpRequest& httpRequest
+  , HttpResponse& httpResponse, std::string cadena);
 
-  bool serveHomepage2(HttpRequest& httpRequest, HttpResponse& httpResponse);
-
-  /**
-   * @brief Sends an error HTTP response.
-   *
-   * This method is responsible for generating and sending an HTTP response
-   * indicating an error occurred during processing of a request.
-   *
-   * @param httpResponse The HTTP response object to fill with
-   *  the error response.
+   /**
+   * @brief Fill a vector of integers from a string representation.
+   * @param numbersString The string containing numbers separated by spaces.
+   * @return A vector of integers.
    */
-  void sendErrorResponse(HttpResponse& httpResponse);
+  std::vector<int64_t> fillVector(std::string numbersString);
 
+  void factUri(HttpRequest& httpRequest, HttpResponse& httpResponse);
 };
 
 #endif  // FACTURIANALIZER_HPP

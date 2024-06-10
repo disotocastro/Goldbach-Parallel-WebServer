@@ -1,4 +1,4 @@
-// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
+// Copyright 2024 Diego Soto, Migueledo Nuñez, William Morales
 // Universidad de Costa Rica. CC BY 4.0
 
 #ifndef HTTPCONNECTIONHANDLER_HPP

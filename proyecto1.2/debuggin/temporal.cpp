@@ -170,3 +170,28 @@ std::vector<std::string> FactWebApp::FactorizeToString(
   }
   return factorizations;
 }
+
+
+//UTIL
+bool FactUriAnalizer::serveFactorize(HttpRequest& httpRequest
+  , HttpResponse& httpResponse, std::string cadena) {
+  (void)httpRequest;
+
+  // Set HTTP response metadata (headers)
+  httpResponse.setHeader("Server", "AttoServer v1.1");
+  httpResponse.setHeader("Content-type", "text/html; charset=ascii");
+
+  // Build the body of the response
+  std::string title = "Prime factorization of " + httpRequest.getURI();
+  httpResponse.body() << "<!DOCTYPE html>\n"
+    << "<html lang=\"en\">\n"
+    << "  <meta charset=\"ascii\"/>\n"
+    << "  <title>" << title << "</title>\n"
+    << "  <style>body {font-family: monospace}</style>\n"
+    << "  <h1>" << cadena << "</h1>\n"
+    << "  <hr><p><a href=\"/fact\">Back</a></p>\n"
+    << "</html>\n";
+
+  // Send the response to the client (user agent)
+  return httpResponse.send();
+}

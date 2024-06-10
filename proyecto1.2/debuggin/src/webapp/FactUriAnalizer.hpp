@@ -30,6 +30,20 @@ class FactUriAnalizer
   void consume(RequestResponseStruct_t data) override;
 
   bool serveHomepage(HttpRequest& httpRequest, HttpResponse& httpResponse);
+
+  bool serveHomepage2(HttpRequest& httpRequest, HttpResponse& httpResponse);
+
+  /**
+   * @brief Sends an error HTTP response.
+   *
+   * This method is responsible for generating and sending an HTTP response
+   * indicating an error occurred during processing of a request.
+   *
+   * @param httpResponse The HTTP response object to fill with
+   *  the error response.
+   */
+  void sendErrorResponse(HttpResponse& httpResponse);
+
 };
 
 #endif  // FACTURIANALIZER_HPP

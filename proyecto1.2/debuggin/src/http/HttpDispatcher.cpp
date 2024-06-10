@@ -1,6 +1,7 @@
 #include "HttpDispatcher.hpp"
 #include "RequestResponseStruct.hpp"
 
+#include <iostream>
 #include <string>
 
 HttpDispatcher::HttpDispatcher() {}
@@ -21,6 +22,11 @@ int HttpDispatcher::run() {
 // Analizador de URI
 std::string HttpDispatcher::extractKey(const RequestResponseStruct_t& data) const {
   std::string uri = data.httpRequest.getURI();
+  std::cout << uri << std::endl;
   std::string key = uri.substr(1, 4);
+  const auto& itr = this->toQueues.find(key);
+  if ( itr == this->toQueues.end() ) {
+    key = "fact";
+  }
   return key;
 }

@@ -45,13 +45,15 @@ void FactHTML::sendSuccessResponse(std::vector<FactNumber*> data_resolved, const
                       << "  <h1>" << title << "</h1>\n";
 
   for (size_t i = 0; i < data_resolved.size(); i++) {
-    std::string numero = std::to_string(results.size());
+    std::string numero = std::to_string(data_resolved[0]->numero);
     std::string resultado = results[i];
     data_resolved[0]->httpResponse.body() << "  <h2 class=\"blue\">" << numero
-                        << ": <span class=\"small\">" << numero
+                        << ": <span class=\"small\">" << resultado
                         << "</span></h2>\n";
   }
   data_resolved[0]->httpResponse.body() << "</html>\n";
+  data_resolved[0]->httpResponse.send();
+
 }
 
 

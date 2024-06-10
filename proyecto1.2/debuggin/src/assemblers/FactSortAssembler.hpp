@@ -22,6 +22,15 @@ class FactSortAssembler
   std::map<int64_t, std::vector<FactNumber*>> map_vector;
   std::map<int64_t, int> map_counter;
 
+  // 0. if map_vector[data.id] == null
+    // 0.1 map_vector[data.id] = std::make_shared<vector<factNum>>()
+    // 0.2 map_vector[data.id]->resize(data.max_num)
+    // 0.3 map_vector[data.id][data.index] = data;
+  // 1. else
+    // 1.1 map_vector[data.id][data.index] = data;
+  // checkIsComplete()
+
+  
 
 
   // std::vector<RequestResolved_t*> Vector_Request_Resolved_t;

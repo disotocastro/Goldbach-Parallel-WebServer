@@ -34,6 +34,7 @@ void FactSortAssembler::consume(FactNumber* data) {
       map_counter.erase(it_counter);
       map_vector.erase(it);
       produce(producir);
+      return;
     }
 
   } else {
@@ -45,6 +46,8 @@ void FactSortAssembler::consume(FactNumber* data) {
     /// Si solo se espera un dato para esta clave, producir el vector
     if (data->maxNumbers == 1) {
       produce(nuevoVector);
+      std::cout << "Produci tamano uno" << std::endl;
+      return;
     }
 
     /// Actualizar los mapas con la nueva clave y el nuevo vector

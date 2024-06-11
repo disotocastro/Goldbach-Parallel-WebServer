@@ -22,8 +22,7 @@ class FactSolver {
    * @return A vector of strings representing the factorizations
    * of the input numbers.
    */
-  std::vector<int64_t> FactorizeVector(
-      int64_t numbers);
+  std::vector<int64_t> FactorizeVector(int64_t numbers);
 
   /**
    * @brief Get the prime factors of a number.

@@ -4,31 +4,46 @@
 #ifndef FACTWEBAPP_HPP
 #define FACTWEBAPP_HPP
 
-#include <string>
+#include <queue>
 #include <vector>
 
-#include "HttpApp.hpp"
-#include "FactUriAnalizer.hpp"
-#include "FactSortAssembler.hpp"
-#include "FactSolverAssembler.hpp"
-#include "FactNumber.hpp"
-#include "Queue.hpp"
 #include "FactHTML.hpp"
+#include "FactSolverAssembler.hpp"
+#include "FactSortAssembler.hpp"
+#include "FactUriAnalizer.hpp"
+#include "HttpApp.hpp"
 
 /**
  * @class FactWebApp
  * @brief A web application that calculates prime factors.
+ *
+ * This class represents a web application responsible for calculating prime
+ * factors of numbers provided via HTTP requests.
  */
 class FactWebApp : public HttpApp {
   /// Objects of this class cannot be copied
   DISABLE_COPY(FactWebApp);
 
  public:
-  Queue<FactNumber*>* FactNumberQueue;
-  Queue<FactNumber*>* FactNumberSolvedQueue;
-  FactSolverAssembler* solverAssembler;
+  /// MAX NUMBER OF CONNECTIONS
+  int64_t maxSolvers = std::thread::hardware_concurrency();
+
+  /**
+   * @brief Vector de punteros a objetos FactSolverAssembler.
+   */
+  std::vector<FactSolverAssembler*> vectorSolverAssemblers;
+
+  /**
+   * @brief Analyzer for URIs to extract FactNumber objects.
+   */
   FactUriAnalizer* uriAnalizer;
+  /**
+   * @brief Assembler for sorting FactNumber objects.
+   */
   FactSortAssembler* sortAssembler;
+  /**
+   * @brief Object for building HTML responses.
+   */
   FactHTML* buildHTML;
 
   /// Constructor
@@ -39,11 +54,9 @@ class FactWebApp : public HttpApp {
 
   /// Called by the web server when the web server is started
   void start() override;
-  
+
   /// Called when the web server stops, in order to allow the web application
   /// clean up and finish as well
   void stop() override;
-
 };
 #endif  // FACTWEBAPP_HPP
-

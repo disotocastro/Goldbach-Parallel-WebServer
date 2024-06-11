@@ -3,11 +3,11 @@
 #ifndef HTTPAPP_H
 #define HTTPAPP_H
 
-#include "common.hpp"
 #include <string>
-#include "RequestResponseStruct.hpp"
-#include "Queue.hpp"
 
+#include "Queue.hpp"
+#include "RequestResponseStruct.hpp"
+#include "common.hpp"
 
 class HttpRequest;
 class HttpResponse;
@@ -35,7 +35,7 @@ class HttpApp {
   /// Handle HTTP requests. @see HttpServer::handleHttpRequest()
   /// @return true If this application handled the request, false otherwise
   /// and another chained application should handle it
-  
+
   // virtual bool handleHttpRequest(HttpRequest& httpRequest,
   //   HttpResponse& httpResponse) = 0;
   /// Called when the web server stops, in order to allow the web application

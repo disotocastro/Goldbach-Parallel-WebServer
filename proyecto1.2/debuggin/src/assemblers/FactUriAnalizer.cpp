@@ -1,5 +1,6 @@
 // Copyright 2024 Diego Soto, Migueledo Nuñez, William Morales
 // Universidad de Costa Rica. CC BY 4.0
+
 #include "FactUriAnalizer.hpp"
 
 #include <string>
@@ -20,6 +21,12 @@ int FactUriAnalizer::run() {
 
 void FactUriAnalizer::consume(RequestResponseStruct_t data) {
   // If the home page was asked
+
+  if (data.httpRequest.getMethod() == "GET" &&
+      data.httpRequest.getURI() == "/") {
+    this->sendErrorResponse(data.httpResponse);
+  }
+
   if (data.httpRequest.getMethod() == "GET" &&
       data.httpRequest.getURI() == "/fact") {
     this->serveHomepage(data.httpRequest, data.httpResponse);
@@ -27,28 +34,29 @@ void FactUriAnalizer::consume(RequestResponseStruct_t data) {
 
   if (data.httpRequest.getURI().rfind("/fact/fact", 0) == 0) {
     if (size_t pos = data.httpRequest.getURI().find("number=")) {
-      factUri(data.httpRequest, data.httpResponse);
-
-      if (pos == std::string::npos) {
-        std::cerr << "No se encontraron números en la URL." << std::endl;
-      }
-      // El 7 es la longitud de "number="
-      std::string numbersString = data.httpRequest.getURI().substr(pos + 7);
-
-      std::vector<int64_t> numbersVector = fillVector(numbersString);
-      Element_ID++;
-      for (size_t i = 0; i < numbersVector.size(); i++) {
-        FactNumber* number =
-            new FactNumber(data.httpResponse, this->Element_ID, i,
-                           numbersVector[i], numbersVector.size());
-        produce(number);
-      }
+      factUri(data, pos);
     }
   }
 }
 
-void FactUriAnalizer::factUri(HttpRequest& httpRequest,
-                              HttpResponse& httpResponse) {}
+void FactUriAnalizer::factUri(RequestResponseStruct_t data, size_t pos) {
+  // El 7 es la longitud de "number="
+  std::string numbersString = data.httpRequest.getURI().substr(pos + 7);
+
+  std::vector<int64_t> numbersVector = fillVector(numbersString);
+
+  // sino hay numeros en el uri
+  if (numbersVector.size() == 0) {
+    this->sendErrorResponse(data.httpResponse);
+  }
+
+  Element_ID++;
+  for (size_t i = 0; i < numbersVector.size(); i++) {
+    FactNumber* number = new FactNumber(data.httpResponse, this->Element_ID, i,
+                                        numbersVector[i], numbersVector.size());
+    produce(number);
+  }
+}
 
 bool FactUriAnalizer::serveHomepage(HttpRequest& httpRequest,
                                     HttpResponse& httpResponse) {
@@ -71,10 +79,28 @@ bool FactUriAnalizer::serveHomepage(HttpRequest& httpRequest,
                       << "    <input type=\"text\" name=\"number\" required/>\n"
                       << "    <button type=\"submit\">Factorize</button>\n"
                       << "  </form>\n"
+                      << "  <hr><p><a href=\"/\">Back</a></p>\n"
                       << "</html>\n";
 
   // Send the response to the client (user agent)
   return httpResponse.send();
+}
+
+void FactUriAnalizer::sendErrorResponse(HttpResponse& httpResponse) {
+  // Build the body for an invalid request
+  std::string title = "WebApps";
+  httpResponse.body()
+      << "<!DOCTYPE html>\n"
+      << "<html lang=\"en\">\n"
+      << "  <meta charset=\"ascii\"/>\n"
+      << "  <title>" << title << "</title>\n"
+      << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
+      << "  <h1 class=\"err\">" << title << "</h1>\n"
+      << "  <p>Select a wepApp</p>\n"
+      << "  <hr><p><a href=\"/fact\">Go To Fact</a></p>\n"
+      << "  <hr><p><a href=\"/gold\">Go To Gold</a></p>\n"
+      << "</html>\n";
+  httpResponse.send();
 }
 
 std::vector<int64_t> FactUriAnalizer::fillVector(std::string numbersString) {
@@ -89,7 +115,7 @@ std::vector<int64_t> FactUriAnalizer::fillVector(std::string numbersString) {
 
   // Ahora leemos los números uno por uno desde el stringstream
   std::istringstream iss(numbersString);
-  int number;
+  int64_t number;
   while (iss >> number) {
     numbersVector.push_back(number);
   }

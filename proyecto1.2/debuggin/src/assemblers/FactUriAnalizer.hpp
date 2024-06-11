@@ -4,24 +4,26 @@
 #ifndef FACTURIANALIZER_HPP
 #define FACTURIANALIZER_HPP
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "Assembler.hpp"
+#include "FactNumber.hpp"
 #include "HttpApp.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "Queue.hpp"
 #include "RequestResponseStruct.hpp"
 #include "Socket.hpp"
-#include "FactNumber.hpp"
 
-
-class FactUriAnalizer
-    : public Assembler<RequestResponseStruct_t, FactNumber*> {
+/**
+ * @class FactUriAnalizer
+ * @brief Clase que analiza y maneja las peticiones URI para la
+ * factorización de números.
+ */
+class FactUriAnalizer : public Assembler<RequestResponseStruct_t, FactNumber*> {
  public:
-
-  /// @brief ID para los elementos de la cola de produccion
+  /// @brief ID para los elementos de la cola de producción.
   int64_t Element_ID = 0;
 
   /**
@@ -31,23 +33,54 @@ class FactUriAnalizer
   int run() override;
 
   /**
-   * @brief Método para consumir un socket.
-   * @param client Socket que se va a consumir.
+   * @brief Método para consumir una estructura de datos de petición y
+   * respuesta.
+   * @param data Estructura que contiene los datos de la petición y la respuesta
+   * HTTP.
    */
   void consume(RequestResponseStruct_t data) override;
 
+  /**
+   * @brief Sirve la página principal del servidor HTTP.
+   * @param httpRequest Objeto que representa la solicitud HTTP.
+   * @param httpResponse Objeto que representa la respuesta HTTP.
+   * @return `true` si la respuesta se envía con éxito, `false` en caso
+   * contrario.
+   */
   bool serveHomepage(HttpRequest& httpRequest, HttpResponse& httpResponse);
-  bool serveFactorize(HttpRequest& httpRequest
-  , HttpResponse& httpResponse, std::string cadena);
 
-   /**
-   * @brief Fill a vector of integers from a string representation.
-   * @param numbersString The string containing numbers separated by spaces.
-   * @return A vector of integers.
+  /**
+   * @brief Sirve la página de factorización.
+   * @param httpRequest Objeto que representa la solicitud HTTP.
+   * @param httpResponse Objeto que representa la respuesta HTTP.
+   * @param cadena Cadena de texto que contiene los números a factorizar.
+   * @return `true` si la respuesta se envía con éxito, `false` en caso
+   * contrario.
+   */
+  bool serveFactorize(HttpRequest& httpRequest, HttpResponse& httpResponse,
+                      std::string cadena);
+
+  /**
+   * @brief Llena un vector de enteros a partir de una representación en cadena.
+   * @param numbersString Cadena de texto que contiene los números separados por
+   * espacios.
+   * @return Un vector de enteros.
    */
   std::vector<int64_t> fillVector(std::string numbersString);
 
-  void factUri(HttpRequest& httpRequest, HttpResponse& httpResponse);
+  /**
+   * @brief Analiza la URI y procesa la solicitud de factorización.
+   * @param data Estructura que contiene los datos de la petición y la respuesta
+   * HTTP.
+   * @param pos Posición en la URI donde comienza la cadena de números.
+   */
+  void factUri(RequestResponseStruct_t data, size_t pos);
+
+  /**
+   * @brief Envía una respuesta de error al cliente.
+   * @param httpResponse Objeto que representa la respuesta HTTP.
+   */
+  void sendErrorResponse(HttpResponse& httpResponse);
 };
 
 #endif  // FACTURIANALIZER_HPP

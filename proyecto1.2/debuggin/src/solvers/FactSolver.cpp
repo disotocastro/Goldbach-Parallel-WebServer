@@ -5,9 +5,9 @@
 
 std::vector<int64_t> FactSolver::FactorizeVector(int64_t number) {
   std::vector<int64_t> factors;
- 
+
   factors = GetFactors(number);
-  
+
   return factors;
 }
 

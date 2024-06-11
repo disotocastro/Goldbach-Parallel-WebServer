@@ -6,14 +6,13 @@
 
 #include <vector>
 
+#include "HttpConnectionHandler.hpp"
+#include "HttpDispatcher.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "Queue.hpp"
-#include "HttpDispatcher.hpp"
 #include "TcpServer.hpp"
 #include "Thread.hpp"
-#include "HttpConnectionHandler.hpp"
-#include "RequestResponseStruct.hpp"
 
 #define DEFAULT_PORT "8080"
 
@@ -83,7 +82,7 @@ class HttpServer : public TcpServer {
   /// Cola de sockets
   Queue<Socket>* socketsQueue;
 
-  /// Dispatcher que consume de la cola de paquetes y distribuye en las colas de 
+  /// Dispatcher que consume de la cola de paquetes y distribuye en las colas de
   /// las diferentes webApps
   HttpDispatcher* dispatcher;
 

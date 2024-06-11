@@ -5,6 +5,7 @@
 #define FACTHTML_HPP
 
 #include <vector>
+#include <string>
 
 #include "Consumer.hpp"
 #include "FactSortAssembler.hpp"

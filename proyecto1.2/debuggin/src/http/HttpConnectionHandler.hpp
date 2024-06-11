@@ -6,11 +6,10 @@
 
 #include <vector>
 
-
-#include "HttpApp.hpp"
-#include "Socket.hpp"
 #include "Assembler.hpp"
+#include "HttpApp.hpp"
 #include "RequestResponseStruct.hpp"
+#include "Socket.hpp"
 
 /**
  * @class HttpConnectionHandler
@@ -20,13 +19,14 @@
  * de aplicaciones web registradas. Hereda de Consumer<Socket> y proporciona
  * métodos para consumir sockets y manejar peticiones HTTP.
  */
-class HttpConnectionHandler : public Assembler<Socket, RequestResponseStruct_t> {
+class HttpConnectionHandler
+    : public Assembler<Socket, RequestResponseStruct_t> {
  public:
   /**
    * @brief Constructor de la clase HttpConnectionHandler.
    * @param WebApps Puntero a un vector de punteros a objetos HttpApp.
    */
-  explicit HttpConnectionHandler();
+  HttpConnectionHandler();
 
   /**
    * @brief Método para ejecutar la conexión HTTP.
@@ -39,9 +39,6 @@ class HttpConnectionHandler : public Assembler<Socket, RequestResponseStruct_t> 
    * @param client Socket que se va a consumir.
    */
   void consume(Socket client) override;
-
-
-
 };
 
 #endif  // HTTPCONNECTIONHANDLER_HPP

@@ -1,8 +1,7 @@
-#include "HttpDispatcher.hpp"
-#include "RequestResponseStruct.hpp"
+// Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
+// Universidad de Costa Rica. CC BY 4.0
 
-#include <iostream>
-#include <string>
+#include "HttpDispatcher.hpp"
 
 HttpDispatcher::HttpDispatcher() {}
 
@@ -20,12 +19,12 @@ int HttpDispatcher::run() {
 }
 
 // Analizador de URI
-std::string HttpDispatcher::extractKey(const RequestResponseStruct_t& data) const {
+std::string HttpDispatcher::extractKey(
+    const RequestResponseStruct_t& data) const {
   std::string uri = data.httpRequest.getURI();
-  std::cout << uri << std::endl;
   std::string key = uri.substr(1, 4);
   const auto& itr = this->toQueues.find(key);
-  if ( itr == this->toQueues.end() ) {
+  if (itr == this->toQueues.end()) {
     key = "fact";
   }
   return key;

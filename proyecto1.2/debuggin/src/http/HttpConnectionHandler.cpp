@@ -17,7 +17,7 @@ int HttpConnectionHandler::run() {
   return EXIT_SUCCESS;
 }
 
-HttpConnectionHandler::HttpConnectionHandler(){}
+HttpConnectionHandler::HttpConnectionHandler() {}
 
 void HttpConnectionHandler::consume(Socket data) {
   /// While the same client asks for HTTP requests in the same connection
@@ -36,19 +36,14 @@ void HttpConnectionHandler::consume(Socket data) {
     /// A complete HTTP client request was received. Create an object for the
     /// server responds to that client's request
     HttpResponse httpResponse(data);
-
     RequestResponseStruct_t reqRes(httpRequest, httpResponse);
-    
+
     /// If subclass did not handle the request or the client used HTTP/1.0
     if (httpRequest.getHttpVersion() == "HTTP/1.0") {
       /// The socket will not be more used, close the connection
       data.close();
       break;
     }
-
-    
     produce(reqRes);
-
   }
 }
-

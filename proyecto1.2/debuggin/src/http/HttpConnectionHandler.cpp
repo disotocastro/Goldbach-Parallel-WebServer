@@ -8,9 +8,6 @@
 #include "HttpApp.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
-#include "Log.hpp"
-#include "NetworkAddress.hpp"
-
 
 int HttpConnectionHandler::run() {
   this->consumeForever();

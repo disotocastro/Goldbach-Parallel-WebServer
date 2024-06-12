@@ -1,22 +1,21 @@
-bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
+
+bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
                                    HttpResponse& httpResponse) {
   // If the home page was asked
-  if (httpRequest.getMethod() == "GET" && httpRequest.getURI() == "/fact") {
+  if (httpRequest.getMethod() == "GET" && httpRequest.getURI() == "/gold") {
     return this->serveHomepage(httpRequest, httpResponse);
   }
 
-  // If the request starts with "fact/" is for this web app
-  if (httpRequest.getURI().rfind("/fact/fact", 0) == 0) {
-    return this->serveFactorization(httpRequest, httpResponse);
+  // If the request starts with "gold/" is for this web app
+  if (httpRequest.getURI().rfind("/gold/gold", 0) == 0) {
+    return this->serveGoldbach(httpRequest, httpResponse);
   }
 
   // Unrecognized request
   return false;
-} 
+}
 
-// TODO(you): Fix code redundancy in the following methods
-
-bool FactWebApp::serveHomepage(HttpRequest& httpRequest,
+bool GoldWebApp::serveHomepage(HttpRequest& httpRequest,
                                HttpResponse& httpResponse) {
   (void)httpRequest;
 
@@ -25,7 +24,7 @@ bool FactWebApp::serveHomepage(HttpRequest& httpRequest,
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
   // Build the body of the response
-  std::string title = "Prime factorization";
+  std::string title = "Goldbach sums ";
   httpResponse.body()
       << "<!DOCTYPE html>\n"
       << "<html lang=\"en\">\n"
@@ -33,10 +32,10 @@ bool FactWebApp::serveHomepage(HttpRequest& httpRequest,
       << "  <title>" << title << "</title>\n"
       << "  <style>body {font-family: monospace}</style>\n"
       << "  <h1>" << title << "</h1>\n"
-      << "  <form method=\"get\" action=\"/fact/fact\">\n"
+      << "  <form method=\"get\" action=\"/gold/gold\">\n"
       << "    <label for=\"number\">Number</label>\n"
       << "    <input type=\"arrays\" name=\"number\" required/>\n"
-      << "    <button type=\"submit\">Factorize</button>\n"
+      << "    <button type=\"submit\">Get sums</button>\n"
       << "  </form>\n"
       << "</html>\n";
 
@@ -44,40 +43,64 @@ bool FactWebApp::serveHomepage(HttpRequest& httpRequest,
   return httpResponse.send();
 }
 
-bool FactWebApp::serveFactorization(HttpRequest& httpRequest,
-                                    HttpResponse& httpResponse) {
+bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest,
+                               HttpResponse& httpResponse) {
   (void)httpRequest;
+  std::string str = "";
+  int longitud = 0;
+  bool hayError = false;
 
   // Set HTTP response metadata (headers)
   httpResponse.setHeader("Server", "AttoServer v1.0");
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
-  // Se extrae del URI los numeros y se almacenan en un vector
-  if (size_t pos = httpRequest.getURI().find("number=")) {
-    if (pos == std::string::npos) {
-      std::cerr << "No se encontraron números en la URL." << std::endl;
-      return 1;
-    }
-    // El 7 es la longitud de "number="
-    std::string numbersString = httpRequest.getURI().substr(pos + 7);
-    // Vector de numeros enteros con los numeros del URI
-    std::vector<int64_t> numbersVector = fillVector(numbersString);
-    // Vector de Strings con el resultado de cada factorización
-    std::vector<std::vector<int64_t>> factorResults = getResults(numbersVector);
-    std::vector<std::string> results = FactorizeToString(factorResults);
+  std::vector<int64_t> numbersVector;
+  // Obtener los números del URI
+  if (!getNumbersFromURI(httpRequest, numbersVector, longitud, str)) {
+    hayError = true;
+  }
 
-    sendSuccessResponse(httpResponse, numbersVector, results);
-
+  if (!hayError) {
+    sendSuccessResponse(numbersVector, httpResponse);
   } else {
     sendErrorResponse(httpResponse);
   }
   return httpResponse.send();
 }
 
-void FactWebApp::sendSuccessResponse(HttpResponse& httpResponse,
-                                     const std::vector<int64_t>& numbersVector,
-                                     const std::vector<std::string>& results) {
-  std::string title = "Prime factorization";
+bool GoldWebApp::getNumbersFromURI(HttpRequest& httpRequest,
+                                   std::vector<int64_t>& numbersVector,
+                                   int longitud, std::string str) {
+  if (size_t pos = httpRequest.getURI().find("number=")) {
+    std::string numbersString = httpRequest.getURI().substr(pos + 7);
+    // Uniformar el URI para que el separador sea espacio
+    std::regex coma("%..");  // símbolo porcentaje y dos caracteres cualquiera
+    std::string nuevoUri = std::regex_replace(numbersString, coma, " ");
+    // Expresión regular para buscar números enteros
+    std::regex patron("-?[0-9]+");
+    std::smatch matches;
+    std::string::const_iterator ini = nuevoUri.begin();
+    std::string::const_iterator fin = nuevoUri.end();
+    // Buscar números en el URI modificado
+    while (std::regex_search(ini, fin, matches, patron)) {
+      str = matches.str();
+      longitud = str.size();
+      if (longitud > 19) {
+        return false;  // Hay un error, número demasiado grande
+      }
+      int valor = std::stoll(matches[0].str());
+      numbersVector.push_back(valor);
+      ini = matches.suffix().first;
+    }
+    return true;
+  } else {
+    return false;  // Hay un error, no se encontró la cadena "number="
+  }
+}
+
+void GoldWebApp::sendSuccessResponse(const std::vector<int64_t>& numbersVector,
+                                     HttpResponse& httpResponse) {
+  std::string title = " Goldbach Sums";
   httpResponse.body() << "<!DOCTYPE html>\n"
                       << "<html lang=\"en\">\n"
                       << "  <meta charset=\"ascii\"/>\n"
@@ -88,18 +111,20 @@ void FactWebApp::sendSuccessResponse(HttpResponse& httpResponse,
                       << "    .small {font-size: 0.8em; color: black}\n"
                       << "  </style>\n"
                       << "  <h1>" << title << "</h1>\n";
+  std::vector<int64_t> numbersTemp = numbersVector;
+
+  GoldSolver goldbach = GoldSolver();
+  NumbersArray_t* numbers = goldbach.resolveGoldbach(numbersTemp);
+  std::vector<std::string> stringSums = create_strings(numbers);
 
   for (size_t i = 0; i < numbersVector.size(); i++) {
-    std::string numero = std::to_string(numbersVector[i]);
-    std::string resultado = results[i];
-    httpResponse.body() << "  <h2 class=\"blue\">" << numero
-                        << ": <span class=\"small\">" << resultado
-                        << "</span></h2>\n";
+    std::string resultado = stringSums[i];
+    httpResponse.body() << " <h1>" << resultado << "</h1>\n";
   }
   httpResponse.body() << "</html>\n";
 }
 
-void FactWebApp::sendErrorResponse(HttpResponse& httpResponse) {
+void GoldWebApp::sendErrorResponse(HttpResponse& httpResponse) {
   // Build the body for an invalid request
   std::string title = "Invalid request";
   httpResponse.body()
@@ -109,89 +134,64 @@ void FactWebApp::sendErrorResponse(HttpResponse& httpResponse) {
       << "  <title>" << title << "</title>\n"
       << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
       << "  <h1 class=\"err\">" << title << "</h1>\n"
-      << "  <p>Invalid request for factorization</p>\n"
+      << "  <p>Invalid request for Goldbach sums</p>\n"
       << "  <hr><p><a href=\"/\">Back</a></p>\n"
       << "</html>\n";
 }
 
-std::vector<int64_t> FactWebApp::fillVector(std::string numbersString) {
-  std::vector<int64_t> numbersVector;
-  // Elimina los caracteres especiales '%2C' que representan comas
-  while (true) {
-    size_t commaPos = numbersString.find("%2C");
-    if (commaPos == std::string::npos) break;
-    numbersString.replace(commaPos, 3, " ");
-  }
-
-  // Ahora leemos los números uno por uno desde el stringstream
-  std::istringstream iss(numbersString);
-  int number;
-  while (iss >> number) {
-    numbersVector.push_back(number);
-  }
-
-  return numbersVector;
-}
-
-std::vector<std::vector<int64_t>> FactWebApp::getResults(
-    std::vector<int64_t> numbersVector) {
-  FactSolver Factorizacion;
-  std::vector<std::vector<int64_t>> results;
-  return results = Factorizacion.FactorizeVector(numbersVector);
-}
-
-std::vector<std::string> FactWebApp::FactorizeToString(
-    std::vector<std::vector<int64_t>> generalFactors) {
-  std::vector<std::string> factorizations;
-  for (size_t i = 0; i < generalFactors.size(); i++) {
-    std::vector<int64_t> factors = generalFactors[i];
-    // Contar los exponentes de los factores
-    std::unordered_map<int64_t, int> exponentCount;
-    for (int64_t factor : factors) {
-      exponentCount[factor]++;
-    }
-    // Construir la cadena de factorización
-    std::string factorization;
-    for (auto index = exponentCount.begin(); index != exponentCount.end();
-         ++index) {
-      factorization += std::to_string(index->first);
-      if (index->second > 1) {
-        factorization += "^" + std::to_string(index->second);
+std::vector<std::string> GoldWebApp::create_strings(NumbersArray_t* numbers) {
+  std::vector<std::string> sums;
+  ///< Cadena temporal para almacenar la suma actual de Goldbach.
+  std::string currentSum;
+  ///< Arreglo de sumas de Goldbach.
+  Numbers_t** SumsArray = numbers->GoldbachSumsArray;
+  ///< Variable temporal para almacenar el contador de sumas de Goldbach.
+  int64_t n;
+  // Itera sobre los números en el arreglo
+  for (int64_t i = 0; i < numbers->counterNumbers; i++) {
+    currentSum = "";  // Inicializa la cadena actual como vacía
+    // Verifica si se deben imprimir las sumas de Goldbach para el número actual
+    if (SumsArray[i]->printSums) {
+      // Obtiene el contador de sumas de Goldbach para el número actual
+      n = SumsArray[i]->sums_counter;
+      // Construye la cadena de sumas de Goldbach
+      currentSum += "-" + std::to_string(SumsArray[i]->number) + ": " +
+                    std::to_string(SumsArray[i]->sums_counter) + " sums: ";
+      // Itera sobre las sumas de Goldbach para el número actual
+      for (int64_t j = 0; j < n; j++) {
+        // Agrega la suma de Goldbach para números pares
+        if ((SumsArray[i]->number % 2) == 0) {
+          currentSum +=
+              "" + std::to_string(SumsArray[i]->goldbachSums[0][j]) + " ";
+          currentSum += "+ " + std::to_string(SumsArray[i]->goldbachSums[1][j]);
+          if (j == (SumsArray[i]->sums_counter) - 1) {
+          } else {
+            currentSum += ", ";
+          }
+          // Agrega la suma de Goldbach para números impares
+        } else {
+          currentSum +=
+              "" + std::to_string(SumsArray[i]->goldbachSums[0][j]) + " ";
+          currentSum +=
+              "+ " + std::to_string(SumsArray[i]->goldbachSums[1][j]) + " ";
+          currentSum += "+ " + std::to_string(SumsArray[i]->goldbachSums[2][j]);
+          if (j == (SumsArray[i]->sums_counter) - 1) {
+          } else {
+            currentSum += ", ";
+          }
+        }
       }
-      factorization += " * ";
-    }
-    // Eliminar los últimos caracteres " * " si están presentes
-    if (!factorization.empty()) {
-      factorization.pop_back();
-      factorization.pop_back();
-    }
+      // Agrega la cadena de sumas de Goldbach al vector de strings
+      sums.push_back(currentSum);
 
-    factorizations.push_back(factorization);
+    } else {
+      // Construye la cadena para el caso en que
+      // no se impriman las sumas de Goldbach
+      currentSum += std::to_string(SumsArray[i]->number) + ": " +
+                    std::to_string(SumsArray[i]->sums_counter) + " sums";
+      // Agrega la cadena al vector de strings
+      sums.push_back(currentSum);
+    }
   }
-  return factorizations;
-}
-
-
-//UTIL
-bool FactUriAnalizer::serveFactorize(HttpRequest& httpRequest
-  , HttpResponse& httpResponse, std::string cadena) {
-  (void)httpRequest;
-
-  // Set HTTP response metadata (headers)
-  httpResponse.setHeader("Server", "AttoServer v1.1");
-  httpResponse.setHeader("Content-type", "text/html; charset=ascii");
-
-  // Build the body of the response
-  std::string title = "Prime factorization of " + httpRequest.getURI();
-  httpResponse.body() << "<!DOCTYPE html>\n"
-    << "<html lang=\"en\">\n"
-    << "  <meta charset=\"ascii\"/>\n"
-    << "  <title>" << title << "</title>\n"
-    << "  <style>body {font-family: monospace}</style>\n"
-    << "  <h1>" << cadena << "</h1>\n"
-    << "  <hr><p><a href=\"/fact\">Back</a></p>\n"
-    << "</html>\n";
-
-  // Send the response to the client (user agent)
-  return httpResponse.send();
+  return sums;
 }

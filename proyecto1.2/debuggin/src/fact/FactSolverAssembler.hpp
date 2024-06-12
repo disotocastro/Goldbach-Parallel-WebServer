@@ -49,4 +49,4 @@ class FactSolverAssembler : public Assembler<FactNumber*, FactNumber*> {
   void consume(FactNumber* data) override;
 };
 
-#endif  // FACTSOLVERASSEMBLER_HPP
+#endif  // FACTSOLVERASSEMBLER_HP

@@ -7,12 +7,8 @@
 #include <vector>
 
 #include "FactNumber.hpp"
-#include "HttpApp.hpp"
-#include "HttpDispatcher.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
-#include "Log.hpp"
-#include "NetworkAddress.hpp"
 
 int FactUriAnalizer::run() {
   this->consumeForever();
@@ -25,17 +21,15 @@ void FactUriAnalizer::consume(RequestResponseStruct_t data) {
   if (data.httpRequest.getMethod() == "GET" &&
       data.httpRequest.getURI() == "/") {
     this->sendErrorResponse(data.httpResponse);
-  }
-
-  if (data.httpRequest.getMethod() == "GET" &&
+  }else if (data.httpRequest.getMethod() == "GET" &&
       data.httpRequest.getURI() == "/fact") {
     this->serveHomepage(data.httpRequest, data.httpResponse);
-  }
-
-  if (data.httpRequest.getURI().rfind("/fact/fact", 0) == 0) {
+  }else if (data.httpRequest.getURI().rfind("/fact/fact", 0) == 0) {
     if (size_t pos = data.httpRequest.getURI().find("number=")) {
       factUri(data, pos);
     }
+  }else{
+    this->sendErrorResponse(data.httpResponse);
   }
 }
 

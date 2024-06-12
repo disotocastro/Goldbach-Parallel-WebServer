@@ -9,12 +9,9 @@
 
 #include "Assembler.hpp"
 #include "FactNumber.hpp"
-#include "HttpApp.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
-#include "Queue.hpp"
 #include "RequestResponseStruct.hpp"
-#include "Socket.hpp"
 
 /**
  * @class FactUriAnalizer

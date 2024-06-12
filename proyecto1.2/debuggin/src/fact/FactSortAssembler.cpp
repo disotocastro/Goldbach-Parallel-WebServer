@@ -3,7 +3,6 @@
 
 #include "FactSortAssembler.hpp"
 
-#include <iostream>
 #include <map>
 
 #include "FactSolverAssembler.hpp"
@@ -24,13 +23,12 @@ void FactSortAssembler::consume(FactNumber* data) {
   if (it != map_vector.end()) {
     /// Actualizar el vector asociado con los nuevos datos
     (*it).second[data->index] = data;
-    std::cout << (*it_counter).second << std::endl;
+
     /// Reducir el contador asociado a la clave
     (*it_counter).second--;
 
     /// Verificar si se han recibido todos los datos correspondientes a esta
     /// clave
-    std::cout << (*it_counter).second << std::endl;
     if ((*it_counter).second == 0) {
       /// Si se han recibido todos los datos, producir el vector y eliminar la
       /// entrada de los mapas

@@ -55,6 +55,8 @@ class HttpDispatcher : public Dispatcher<std::string, RequestResponseStruct_t> {
    * @return A string representing the extracted key.
    */
   std::string extractKey(const RequestResponseStruct_t& data) const override;
+  
+  bool serveHomepage(RequestResponseStruct_t data);
 };
 
 #endif  // HTTPDISPATCHER_H

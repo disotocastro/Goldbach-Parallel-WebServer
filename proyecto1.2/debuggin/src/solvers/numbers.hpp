@@ -4,50 +4,42 @@
 #define NUMBERS_HPP
 
 #include <cstdint>
-#include <vector>
 
-/**
- * @brief Estructura para representar un número y sus sumas de Goldbach.
- */
-typedef struct {
-  int64_t number;         /**< El número */
-  int64_t** goldbachSums; /**< Matriz de sumas de Goldbach */
+#include "HttpResponse.hpp"
+
+class Numbers_t {
+ public:
+  
+  bool printSums; /**< Indicador de impresión de sumas */
+  int64_t id;
+  int64_t index;
+  int64_t number; /**< El número */
+  int64_t maxNumbers;
   int64_t sums_counter;   /**< Cantidad de sumas de Goldbach */
-  bool printSums;         /**< Indicador de impresión de sumas */
-} Numbers_t;
+  int64_t** goldbachSums; /**< Matriz de sumas de Goldbach */
+  HttpResponse httpResponse;
 
-/**
- * @brief Estructura para representar una lista de números y sus sumas
- * de Goldbach.
- */
-typedef struct {
-  Numbers_t** GoldbachSumsArray; /**< Arreglo de punteros a estructuras */
-  int64_t counterNumbers;        /**< Número total de números en la lista */
-  int64_t largestNumber;         /**< El número más grande en la lista */
-  int64_t totalSums;             /**< Número total de sumas en la lista */
-  int64_t counterPrimes;         /**< Número total de números primos */
-  int64_t* primeNumbers;         /**< Arreglo de números primos */
-} NumbersArray_t;
 
-/**
- * @brief Crea una nueva estructura Numbers_t con el número especificado.
- * @param newNumber El número para crear la estructura.
- * @return Puntero a la nueva estructura Numbers_t creada.
- */
-Numbers_t* new_number(int64_t newNumber);
+  Numbers_t(int64_t id, int64_t index, int64_t number, int64_t maxNumbers, HttpResponse httpResponse)
+      : id(id),
+        index(index),
+        number(number),
+        maxNumbers(maxNumbers),
+        sums_counter(0),
+        printSums(false),
+        goldbachSums(nullptr),
+        httpResponse(httpResponse) {
 
-/**
- * @brief Lee los números de la entrada estándar y los almacena en un arreglo.
- * @return Puntero a la estructura NumbersArray_t que contiene los números
- * leídos.
- */
-NumbersArray_t* readNumbers(std::vector<int64_t>& inputNumbers);
+          if (this->number < 0)
+          {
+            this->printSums = true;
+            this->number = -number;
+          }
+          
 
-/**
- * @brief Libera la memoria asignada a la lista de números.
- * @param NumbersArray Puntero a la estructura NumbersArray_t
- * que contiene los números.
- */
-void free_memory(NumbersArray_t* numbers);
+
+        }
+};
+
 
 #endif

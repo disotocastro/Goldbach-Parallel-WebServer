@@ -23,9 +23,10 @@ std::string HttpDispatcher::extractKey(
     const RequestResponseStruct_t& data) const {
   std::string uri = data.httpRequest.getURI();
   std::string key = uri.substr(1, 4);
+  
   const auto& itr = this->toQueues.find(key);
   if (itr == this->toQueues.end()) {
-    key = "fact";
+    key = "gold";
   }
   return key;
 }

@@ -69,7 +69,6 @@ class GoldUriAnalizer : public Assembler<RequestResponseStruct_t, Numbers_t*> {
    */
   void GoldBach(RequestResponseStruct_t data);
 
-
   /**
    * @brief Lee los números de la entrada y los almacena en una lista para su
    * procesamiento.

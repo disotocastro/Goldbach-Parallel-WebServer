@@ -3,12 +3,7 @@
 
 #include "FactUriAnalizer.hpp"
 
-#include <string>
-#include <vector>
-
 #include "FactNumber.hpp"
-#include "HttpRequest.hpp"
-#include "HttpResponse.hpp"
 
 int FactUriAnalizer::run() {
   this->consumeForever();
@@ -21,14 +16,14 @@ void FactUriAnalizer::consume(RequestResponseStruct_t data) {
   if (data.httpRequest.getMethod() == "GET" &&
       data.httpRequest.getURI() == "/") {
     this->sendErrorResponse(data.httpResponse);
-  }else if (data.httpRequest.getMethod() == "GET" &&
-      data.httpRequest.getURI() == "/fact") {
+  } else if (data.httpRequest.getMethod() == "GET" &&
+             data.httpRequest.getURI() == "/fact") {
     this->serveHomepage(data.httpRequest, data.httpResponse);
-  }else if (data.httpRequest.getURI().rfind("/fact/fact", 0) == 0) {
+  } else if (data.httpRequest.getURI().rfind("/fact/fact", 0) == 0) {
     if (size_t pos = data.httpRequest.getURI().find("number=")) {
       factUri(data, pos);
     }
-  }else{
+  } else {
     this->sendErrorResponse(data.httpResponse);
   }
 }
@@ -45,6 +40,7 @@ void FactUriAnalizer::factUri(RequestResponseStruct_t data, size_t pos) {
   }
 
   Element_ID++;
+  // TODO: NEW
   for (size_t i = 0; i < numbersVector.size(); i++) {
     FactNumber* number = new FactNumber(data.httpResponse, this->Element_ID, i,
                                         numbersVector[i], numbersVector.size());

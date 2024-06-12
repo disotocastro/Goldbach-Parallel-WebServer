@@ -87,13 +87,14 @@ void GoldUriAnalizer::readNumbers(std::vector<int64_t>& inputNumbers,
   for (size_t i = 0; i < inputNumbers.size(); i++) {
     Numbers_t* Nuevo = new Numbers_t(this->Element_ID, i, inputNumbers[i],
                                      inputNumbers.size(), reqRes.httpResponse);
-
+    // // TODO: NEW
     produce(Nuevo);
   }
 }
 
 Numbers_t* new_number(int64_t newNumber) {
   // Asigna memoria para el nuevo objeto Numbers_t
+  // // TODO: NEW
   Numbers_t* newData = (Numbers_t*)malloc(sizeof(Numbers_t));
   // Inicializa los campos del objeto con los valores predeterminados
   newData->number = newNumber;

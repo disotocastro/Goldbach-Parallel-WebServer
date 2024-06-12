@@ -59,4 +59,17 @@ void FactWebApp::start() {
 
 void FactWebApp::stop() {
   // TODO(you): Stop producers, consumers, assemblers...
+
+  this->uriAnalizer->waitToFinish();
+  this->sortAssembler->waitToFinish();
+  this->buildHTML->waitToFinish();
+
+  for (int64_t i = 0; i < this->maxSolvers; i++) {
+    this->vectorSolverAssemblers[i]->waitToFinish();
+    delete this->vectorSolverAssemblers[i];
+  }
+
+  delete this->uriAnalizer;
+  delete this->sortAssembler;
+  delete this->buildHTML;
 }

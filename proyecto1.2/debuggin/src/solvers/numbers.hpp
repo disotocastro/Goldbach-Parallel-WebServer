@@ -22,7 +22,7 @@ class Numbers_t {
   int64_t maxNumbers;   /**< Número máximo de sumas de Goldbach a almacenar */
   int64_t sums_counter; /**< Cantidad de sumas de Goldbach */
   int64_t** goldbachSums;    /**< Matriz de sumas de Goldbach */
-  bool printSums;       /**< Indicador de impresión de sumas */
+  bool printSums;            /**< Indicador de impresión de sumas */
   HttpResponse httpResponse; /**< Respuesta HTTP asociada */
 
   /**

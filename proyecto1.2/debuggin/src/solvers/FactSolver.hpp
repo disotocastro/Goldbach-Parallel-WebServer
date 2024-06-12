@@ -4,9 +4,7 @@
 #ifndef FACT_SOLVER_HPP
 #define FACT_SOLVER_HPP
 
-#include <iostream>
-#include <string>
-#include <unordered_map>
+#include <cstdint>
 #include <vector>
 
 /**

@@ -3,7 +3,6 @@
 #include <GoldSolver.hpp>
 #include <cstdint>
 #include <cstdlib>
-#include <iostream>
 #include <numbers.hpp>
 #include <vector>
 

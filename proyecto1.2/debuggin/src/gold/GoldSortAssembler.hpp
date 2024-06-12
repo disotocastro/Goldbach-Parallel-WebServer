@@ -8,9 +8,8 @@
 #include <vector>
 
 #include "Assembler.hpp"
-#include "numbers.hpp"
 #include "HttpApp.hpp"
-#include "Queue.hpp"
+#include "numbers.hpp"
 
 /**
  * @class GoldSortAssembler

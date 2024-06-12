@@ -3,17 +3,6 @@
 
 #include "GoldHTML.hpp"
 
-#include <string>
-#include <vector>
-
-#include "Consumer.hpp"
-#include "HttpApp.hpp"
-#include "HttpRequest.hpp"
-#include "HttpResponse.hpp"
-#include "Log.hpp"
-#include "NetworkAddress.hpp"
-#include "numbers.hpp"
-
 int GoldHTML::run() {
   this->consumeForever();
   return EXIT_SUCCESS;
@@ -28,7 +17,8 @@ void GoldHTML::consume(std::vector<Numbers_t*> data) {
   response.setHeader("Content-type", "text/html; charset=ascii");
 }
 
-std::vector<std::string> GoldHTML::create_strings(std::vector<Numbers_t*>  numbers) {
+std::vector<std::string> GoldHTML::create_strings(
+    std::vector<Numbers_t*> numbers) {
   std::vector<std::string> sums;
   ///< Cadena temporal para almacenar la suma actual de Goldbach.
   std::string currentSum;
@@ -106,8 +96,7 @@ void GoldHTML::sendSuccessResponse(std::vector<Numbers_t*> numbers) {
     response.body() << " <h1>" << resultado << "</h1>\n";
   }
 
-  response.body() 
-  << "  <hr><p><a href=\"/gold\">Back</a></p>\n"
-  << "</html>\n";
+  response.body() << "  <hr><p><a href=\"/gold\">Back</a></p>\n"
+                  << "</html>\n";
   response.send();
 }

@@ -4,23 +4,15 @@
 #ifndef GOLDSOLVERASSEMBLER_HPP
 #define GOLDSOLVERASSEMBLER_HPP
 
-#include <string>
-#include <vector>
-#include <map>
-#include <iostream>
-
 #include "Assembler.hpp"
 #include "GoldSolver.hpp"
-#include "HttpRequest.hpp"
-#include "HttpResponse.hpp"
 #include "numbers.hpp"
-
 
 class GoldSolverAssembler : public Assembler<Numbers_t*, Numbers_t*> {
  public:
   /**
    * @brief Ejecuta el ensamblador.
-   * 
+   *
    * Este método inicia el proceso de consumo y se ejecuta indefinidamente.
    * @return Un entero que representa el estado de salida.
    */
@@ -28,7 +20,7 @@ class GoldSolverAssembler : public Assembler<Numbers_t*, Numbers_t*> {
 
   /**
    * @brief Consume un número y resuelve la conjetura de Goldbach.
-   * 
+   *
    * Este método recibe un número, resuelve la conjetura de Goldbach para él,
    * y luego produce el resultado.
    * @param number Puntero al número que se va a procesar.

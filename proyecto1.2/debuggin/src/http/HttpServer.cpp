@@ -82,6 +82,7 @@ int HttpServer::run(int argc, char* argv[]) {
   } catch (const std::runtime_error& error) {
     std::cerr << "error: " << error.what() << std::endl;
     /// Detener los hilos que forman parte de la cadena de produccion
+    throw std::runtime_error("dispatcher: queue's key not found");
     deleteThreads();
   }
 

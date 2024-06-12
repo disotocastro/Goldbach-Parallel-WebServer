@@ -3,10 +3,6 @@
 
 #include "GoldSortAssembler.hpp"
 
-#include <iostream>
-
-
-
 int GoldSortAssembler::run() {
   this->consumeForever();
   return EXIT_SUCCESS;

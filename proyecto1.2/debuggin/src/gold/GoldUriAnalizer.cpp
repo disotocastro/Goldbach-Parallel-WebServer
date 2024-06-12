@@ -22,7 +22,7 @@ void GoldUriAnalizer::consume(RequestResponseStruct_t data) {
              data.httpRequest.getURI() == "/gold") {
     this->serveHomepage(data.httpRequest, data.httpResponse);
   } else if (data.httpRequest.getURI().rfind("/gold/gold", 0) == 0) {
-    if (size_t pos = data.httpRequest.getURI().find("number=")) {
+    if (data.httpRequest.getURI().find("number=")) {
       GoldBach(data);
     }
   } else {
@@ -78,7 +78,6 @@ void GoldUriAnalizer::sendErrorResponse(HttpResponse& httpResponse) {
 void GoldUriAnalizer::GoldBach(RequestResponseStruct_t data) {
   std::vector<int64_t> numbersVector = getNumbersFromURI(data.httpRequest);
   readNumbers(numbersVector, data);
-  
 }
 
 void GoldUriAnalizer::readNumbers(std::vector<int64_t>& inputNumbers,
@@ -88,9 +87,8 @@ void GoldUriAnalizer::readNumbers(std::vector<int64_t>& inputNumbers,
   for (size_t i = 0; i < inputNumbers.size(); i++) {
     Numbers_t* Nuevo = new Numbers_t(this->Element_ID, i, inputNumbers[i],
                                      inputNumbers.size(), reqRes.httpResponse);
-    
+
     produce(Nuevo);
-    
   }
 }
 
@@ -117,29 +115,28 @@ std::vector<int64_t> GoldUriAnalizer::getNumbersFromURI(
     HttpRequest& httpRequest) {
   std::vector<int64_t> numbersVector;
 
-  if (size_t pos = httpRequest.getURI().find("number=")) {
-    std::string str = "";
-    int64_t longitud = 0;
+  size_t pos = httpRequest.getURI().find("number=");
+  std::string str = "";
+  int64_t longitud = 0;
 
-    std::string numbersString = httpRequest.getURI().substr(pos + 7);
-    // Uniformar el URI para que el separador sea espacio
-    std::regex coma("%..");  // símbolo porcentaje y dos caracteres cualquiera
-    std::string nuevoUri = std::regex_replace(numbersString, coma, " ");
-    // Expresión regular para buscar números enteros
-    std::regex patron("-?[0-9]+");
-    std::smatch matches;
-    std::string::const_iterator ini = nuevoUri.begin();
-    std::string::const_iterator fin = nuevoUri.end();
-    // Buscar números en el URI modificado
-    while (std::regex_search(ini, fin, matches, patron)) {
-      str = matches.str();
-      longitud = str.size();
-      if (longitud > 19) {
-      }
-      int valor = std::stoll(matches[0].str());
-      numbersVector.push_back(valor);
-      ini = matches.suffix().first;
+  std::string numbersString = httpRequest.getURI().substr(pos + 7);
+  // Uniformar el URI para que el separador sea espacio
+  std::regex coma("%..");  // símbolo porcentaje y dos caracteres cualquiera
+  std::string nuevoUri = std::regex_replace(numbersString, coma, " ");
+  // Expresión regular para buscar números enteros
+  std::regex patron("-?[0-9]+");
+  std::smatch matches;
+  std::string::const_iterator ini = nuevoUri.begin();
+  std::string::const_iterator fin = nuevoUri.end();
+  // Buscar números en el URI modificado
+  while (std::regex_search(ini, fin, matches, patron)) {
+    str = matches.str();
+    longitud = str.size();
+    if (longitud > 19) {
     }
-    return numbersVector;
+    int valor = std::stoll(matches[0].str());
+    numbersVector.push_back(valor);
+    ini = matches.suffix().first;
   }
+  return numbersVector;
 }

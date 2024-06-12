@@ -20,10 +20,25 @@ class GoldWebApp : public HttpApp {
   DISABLE_COPY(GoldWebApp);
 
  public:
+  /**
+   * @brief Número máximo de ensambladores de solucionadores.
+   */
   int64_t maxSolvers = std::thread::hardware_concurrency();
+  /**
+   * @brief Vector de ensambladores de solucionadores.
+   */
   std::vector<GoldSolverAssembler*> vectorSolverAssemblers;
+  /**
+   * @brief Analizador de URI.
+   */
   GoldUriAnalizer* uriAnalizer;
+  /**
+   * @brief Ensamblador de ordenamiento.
+   */
   GoldSortAssembler* sortAssembler;
+  /**
+   * @brief Constructor.
+   */
   GoldHTML* buildHTML;
 
   /**
@@ -47,7 +62,6 @@ class GoldWebApp : public HttpApp {
    * application to clean up and finish as well.
    */
   void stop() override;
-
 };
 
 #endif  // GOLDWEBAPP_HPP

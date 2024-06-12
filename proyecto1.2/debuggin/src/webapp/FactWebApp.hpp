@@ -52,11 +52,15 @@ class FactWebApp : public HttpApp {
   /// Destructor
   ~FactWebApp();
 
-  /// Called by the web server when the web server is started
+  /**
+   * @brief Llamado por el servidor web cuando el servidor web es iniciado.
+   */
   void start() override;
 
-  /// Called when the web server stops, in order to allow the web application
-  /// clean up and finish as well
+  /**
+   * @brief Llamado cuando el servidor web se detiene, para permitir que la
+   * aplicación web también se limpie y termine.
+   */
   void stop() override;
 };
 #endif  // FACTWEBAPP_HPP

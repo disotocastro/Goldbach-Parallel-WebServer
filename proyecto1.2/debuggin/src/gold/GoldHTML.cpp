@@ -105,6 +105,9 @@ void GoldHTML::sendSuccessResponse(std::vector<Numbers_t*> numbers) {
     std::string resultado = stringSums[i];
     response.body() << " <h1>" << resultado << "</h1>\n";
   }
-  response.body() << "</html>\n";
+
+  response.body() 
+  << "  <hr><p><a href=\"/gold\">Back</a></p>\n"
+  << "</html>\n";
   response.send();
 }

@@ -1,12 +1,11 @@
 # Análisis del proyecto
 
 ## Introducción
-El propósito principal del presente documento es analizar y plantear la conversión de un servidor serializado a un servidor concurrente, como parte del proyecto del curso CI-0117 - Programación Paralela y Concurrente de la Universidad de Costa Rica. En este proyecto, nos proponemos transformar un servidor que maneja conexiones de manera secuencial en uno que pueda gestionar múltiples conexiones concurrentemente, mejorando así su eficiencia y capacidad de respuesta. El servidor estará destinado a proporcionar dos servicios principales a los usuarios: factorización prima de números y sumas de Goldbach. Ambos servicios serán accesibles a través de conexiones serializadas, lo que permitirá a los clientes enviar solicitudes al servidor y recibir respuestas de manera eficiente. El proyecto ha sido llevado a cabo por un equipo de tres personas, quienes hemos trabajado en conjunto para diseñar, implementar y probar la solución propuesta. En este documento, se detallarán los requisitos del sistema, los casos de uso, el diseño de la arquitectura del servidor concurrente y las pruebas planificadas para garantizar el correcto funcionamiento del mismo.  
-
-![Funcinamiento](./img/ResulGoldSum.png)
+El propósito principal del presente documento es analizar y plantear la conversión de un servidor serializado a un servidor concurrente, como parte del proyecto del curso CI-0117 - Programación Paralela y Concurrente de la Universidad de Costa Rica. En este proyecto, nos proponemos transformar un servidor que maneja conexiones de manera secuencial en uno que pueda gestionar múltiples conexiones concurrentemente, mejorando así su eficiencia y capacidad de respuesta. El servidor estará destinado a proporcionar dos servicios principales a los usuarios: factorización prima de números y sumas de Goldbach. Ambos servicios serán accesibles a través de conexiones serializadas, lo que permitirá a los clientes enviar solicitudes al servidor y recibir respuestas de manera eficiente. El proyecto ha sido llevado a cabo por un equipo de tres personas, quienes hemos trabajado en conjunto para diseñar, implementar y probar la solución propuesta. En este documento, se detallarán los requisitos del sistema, los casos de uso, el diseño de la arquitectura del servidor concurrente y las pruebas planificadas para garantizar el correcto funcionamiento del mismo.
 
 ## Descripción del Problema
-El proyecto consiste en la implementación de un servidor web concurrente que brinde a sus usuarios la posibilidad de ingresar una secuencia de números enteros y obtener la factorización prima y/o las sumas de Goldbach de dichos números. Es importante destacar que, para recopilar los requerimientos del proyecto, en lugar de realizar entrevistas a los clientes, se aprovechó una base de código existente. Esta base de código proporciona un servidor web serializado, complementado con un documento explicativo que detalla los objetivos y expectativas del proyecto y una serie de grabaciones de inducción para comprender el código heredado.  
+El proyecto consiste en la implementación de un servidor web concurrente que brinde a sus usuarios la posibilidad de ingresar una secuencia de números enteros y obtener la factorización prima y/o las sumas de Goldbach de dichos números. Es importante destacar que, para recopilar los requerimientos del proyecto, en lugar de realizar entrevistas a los clientes, se aprovechó una base de código existente. Esta base de código proporciona un servidor web serializado, complementado con un documento explicativo que detalla los objetivos y expectativas del proyecto y una serie de grabaciones de inducción para comprender el código heredado.
+
 ## Requisitos
 Los requisitos funcionales describen las acciones específicas que el sistema debe considerar, mientras que los requisitos no funcionales se refieren a atributos del sistema.  
 
@@ -56,7 +55,11 @@ Los requisitos no funcionales son:
 
 
 ## Solución Propuesta
-El proyecto implementa un servidor web que maneja solicitudes HTTP concurrentes usando hilos y una cola de sockets. La clase principal, HttpConnectionHandler, gestiona las conexiones entrantes en hilos separados, mientras que las WebApps como FactWebApp y GoldWebApp procesan solicitudes específicas. La lógica de enrutamiento dirige cada solicitud a la aplicación adecuada según su URI. Esta combinación garantiza un rendimiento óptimo al manejar múltiples solicitudes simultáneamente y ofrecer funcionalidades específicas a los clientes.
+
+En la primera parte de este proyecto, implementamos un servidor web concurrente capaz de atender una cantidad arbitraria de clientes simultáneamente. Estos clientes solicitan factorizaciones primas o sumas de Goldbach de números enteros, calculadas por una aplicación web serial. Sin embargo, este diseño no es óptimo. La naturaleza serial de la aplicación puede causar des-balances, como que un usuario que requiere mucho procesamiento sea atendido por un tiempo prolongado, dejando a otros usuarios en espera. Otro escenario posible es que se conecten muchos usuarios, todos compitiendo por los mismos recursos. Esto provocará un "cuello de botella" e ineficiencia en el procesamiento, resultando en una mala experiencia para los usuarios.
+
+En esta segunda parte del proyecto, implementaremos una solución que utilice los recursos del sistema de manera más eficiente, haciendo concurrentes las aplicaciones web. Para cada una de ellas se crearán tantos hilos como CPUs haya disponibles en el sistema.
+
 [Explicacion completa](./design/readme.md)
 
 
@@ -77,7 +80,7 @@ Componentes clave de un Makefile:
   • Reglas: Cada regla específica cómo construir un objetivo, ya sea un archivo ejecutable o un objeto, a partir de uno o más archivos fuente. También pueden incluir acciones adicionales como eliminar archivos temporales o instalar el programa.  
   • Dependencias: Identifican los archivos que deben existir y estar actualizados para que la regla correspondiente pueda ejecutarse. Estas dependencias son esenciales para determinar qué componentes del proyecto necesitan ser recompilados tras cambios en los archivos.  
   • Comandos: Corresponden a las instrucciones de shell que se ejecutan para construir los objetivos. Estos pueden incluir la compilación de código fuente, la vinculación de objetos, y otras tareas relacionadas.  
-  • Variables: Permiten definir y ajustar parámetros como los compiladores y las banderas de compilación, facilitando la configuración y adaptación del proceso de compilación.  
+  • Variables: Permiten definir y ajustar parámetros como los compiladores y las banderas de compilación, facilitando la configuración y adaptación del proceso de compilación.
 Funciones de un Makefile:  
   • Automatización: Optimiza el proceso de compilación asegurando que solo los componentes modificados sean recompilados, lo cual es crucial en proyectos grandes.  
   • Eficiencia: Minimiza el tiempo de desarrollo al limitar la compilación a los elementos que realmente necesitan actualización, evitando procesos innecesarios.  
@@ -88,7 +91,7 @@ Este enfoque asegura una metodología eficiente y organizada para la compilació
 Para ejecutar el programa desde lnea de comandos de linux, simplemente ingrese su nombre (sin extensión), añadiendo dos valores enteros positivos como parámetros. Si ejecuta el programa desde un directorio diferente, deberá especificar la ruta completa hasta el ejecutable. El primer parámetro determina el puerto en el que el servidor estará "escuchando" conexiones. El segundo define el número de hilos de ejecución que se utilizarán en el servidor. Estos parámetros son opcionales; si no se proporcionan, el sistema asumirá el puerto 8080 y el número de hilos equivalente al número de procesadores físicos disponibles en la computadora.  
 Por ejemplo, supongamos que el ejecutable se llama proyecto1, para iniciarlo con un puerto específico y un número determinado de hilos, desde la carpeta raiz escriba:  
 <pre>
-./bin/proyecto1.1:8080 4
+./bin/proyecto1.2:8080 4
 </pre>
 Una vez que el servidor esté activo y "escuchando", los usuarios pueden interactuar con él mediante un navegador web. Para acceder a las aplicaciones disponibles, deben escribir la siguiente dirección en la barra de direcciones del navegador:  
     • Para la factorización prima: Ingrese ` www.localhost:8080/fact` . Se mostrará una pantalla donde deberá introducir uno o más valores enteros, separados por comas o espacios, en el campo denominado number.  

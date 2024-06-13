@@ -1,8 +1,8 @@
-# Diseño
+# Diseño con servidor web concurrente y aplicaciones serializadas
 
 El proyecto presenta una solución sofisticada para gestionar solicitudes HTTP entrantes en un entorno de servidor web. Integrando la concurrencia mediante hilos y una cola de sockets, se logra una arquitectura robusta que maneja múltiples conexiones simultáneas de manera eficiente y escalable.
 
-En el núcleo de esta solución se encuentra la clase HttpConnectionHandler, que actúa como punto de entrada para las solicitudes entrantes. Al heredar de la clase Consumer<Socket>, HttpConnectionHandler está diseñado para consumir sockets de manera concurrente, permitiendo manejar múltiples conexiones simultáneas, crucial para un servidor web.
+En el núcleo de esta solución se encuentra la clase HttpConnectionHandler, que actúa como punto de entrada para las solicitudes entrantes. Al heredar de la clase Consumer <Socket>, HttpConnectionHandler está diseñado para consumir sockets de manera concurrente, permitiendo manejar múltiples conexiones simultáneas, crucial para un servidor web.
 
 Cuando se inicia el servidor, se activa un proceso de producción constante de solicitudes HTTP. Este proceso se ejecuta dentro de un bucle infinito en el método run() de HttpConnectionHandler, donde cada conexión entrante se maneja en un hilo separado, permitiendo al servidor procesar múltiples solicitudes de manera simultánea y eficiente.
 
@@ -16,10 +16,32 @@ FactWebApp está diseñada para calcular factores primos y GoldWebApp se enfoca 
 
 La lógica de enrutamiento de solicitudes se realiza en la clase HttpConnectionHandler, que determina a qué aplicación web debe dirigirse la solicitud entrante basándose en la URI de la solicitud. Una vez determinada la aplicación adecuada, se invoca su método handleHttpRequest() para el procesamiento de la solicitud.
 
-En resumen, la combinación de concurrencia mediante hilos y una cola de sockets proporciona una arquitectura robusta y escalable para manejar eficientemente las solicitudes HTTP entrantes en un entorno de servidor web, mientras que las WebApps permiten ofrecer funcionalidades específicas a los clientes.
+En resumen, la combinación de concurrencia mediante hilos y una cola de sockets proporciona una arquitectura robusta y aceptable para manejar las solicitudes HTTP entrantes en un entorno de servidor web, mientras que las WebApps permiten ofrecer funcionalidades específicas a los clientes.
 
 ![Diagrama](uml_proyecto_1.1.png)
-![Diagrama](diagrama_proyecto1.1.png)
+![Diagrama](diagrama_proyecto1.2.png)
+
+# Diseño con las aplicaciones concurrentes
+
+Hemos actualizado el diagrama de flujo de datos de la entrega anterior para optimizar la cadena de producción mediante la implementación del patrón productor-consumidor. La figura siguiente ilustra los cambios realizados en el diseño.
+
+![Diagrama](Diseno1pto2.png)
+
+En la parte del servidor, primero se crean las instancias de cada uno de los elementos que compondrán la cadena de producción. Luego, se establece la comunicación entre ellos. Los hilos de los elementos que forman la WebApp se comunican exclusivamente a través de colas, por lo que es necesario crearlas o configurarlas adecuadamente. El servidor se encarga de llamar a cada una de estas instancias y ejecutar los métodos correspondientes, como createOwnQueue, setConsumingQueue o setProducingQueue, según se trate de un consumidor, productor o ensamblador. Además, se registra cada aplicación web ante el servidor para que puedan especificar los criterios que determinen cuándo una solicitud les corresponde. Una vez completadas estas inicializaciones, el sistema queda en espera, "escuchando" las solicitudes entrantes o bien la indicación de finalizar el servidor.
+
+Al igual que en el avance anterior, el servidor solo acepta solicitudes y las pone en cola. Los manejadores de conexiones HTTP (httpConnectionHandler) consumen de las conexiones, extrayendo todas las solicitudes HTTP del cliente. En esta modificación, los httpConnectionHandler no atienden estas solicitudes directamente, sino que las ponen en otra cola.
+
+Un nuevo hilo tipo repartidor (dispatcher) consume las solicitudes de la cola dejada por los httpConnectionHandler. Por cada solicitud, determina a cuál aplicación web va dirigida y la pone en la cola correspondiente.
+
+Trazamos una línea punteada para separar la parte del servidor de la parte de las WebApps. En la parte superior del gráfico se muestra lo que maneja el servidor, y en la parte inferior se ubican lo correspondiente a las aplicaciones.
+
+Dada la similitud entre las dos aplicaciones soportadas, describiremos la aplicación de sumas de Goldbach, teniendo en cuenta que la aplicación de factorización prima sigue un razonamiento similar.
+
+Recordemos que se nos pide que la solución sea lo más eficiente posible. Para ello, debemos aprovechar al máximo los núcleos. Por esta razón, el siguiente proceso en la secuencia “GoldAnalizaURI”, fragmenta las listas de entradas en cada uno de sus componentes y las encola para que los “GoldSolverAssembler” las consuman. Es decir, las aplicaciones web son hilos (tantos como CPUs haya disponibles en el sistema) que actúan como productores-consumidores. Cada vez que un hilo “GoldSolverAssembler” extrae una unidad de trabajo de la cola, calcula lo que le corresponde y el resultado es puesto en otra cola de salida, sin ningún orden particular más que el orden en que sale.
+
+El hilo “GoldSortAssembler” consume los resultados encolados por los “GoldSolverAssembler” y revisa si la solicitud está completa; si lo está, la pone en otra cola ya armada y ordenada tal y como la solicitó el usuario.
+
+El hilo "GoldHTML" consume las solicitudes que ya están resueltas (y completas), arma el mensaje de respuesta HTTP y lo envía a su respectivo solicitante haciendo uso del httpResponse que viene en los nodos.
 
 ## Pseudocódigos   
 A continuación, se presentan los pseudocódigos de los distintos métodos que fueron modificados y los agregados a la solución. Estos pseudocódigos conforman la guía de la conversión del proyecto para que funcione de manera concurrente. Brindan una visión de cómo se desarrollaron y optimizaron los diferentes procesos para lograr los objetivos establecidos.

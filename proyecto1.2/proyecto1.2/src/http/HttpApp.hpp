@@ -3,6 +3,10 @@
 #ifndef HTTPAPP_H
 #define HTTPAPP_H
 
+#include <string>
+
+#include "Queue.hpp"
+#include "RequestResponseStruct.hpp"
 #include "common.hpp"
 
 class HttpRequest;
@@ -18,6 +22,10 @@ class HttpApp {
   DISABLE_COPY(HttpApp);
 
  public:
+  /// Key que identifica cual webApp es
+  std::string key;
+  /// Cola de consumo para dicha webApp
+  Queue<RequestResponseStruct_t>* entranceQueue;
   /// Constructor
   HttpApp() = default;
   /// Destructor
@@ -27,8 +35,9 @@ class HttpApp {
   /// Handle HTTP requests. @see HttpServer::handleHttpRequest()
   /// @return true If this application handled the request, false otherwise
   /// and another chained application should handle it
-  virtual bool handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse) = 0;
+
+  // virtual bool handleHttpRequest(HttpRequest& httpRequest,
+  //   HttpResponse& httpResponse) = 0;
   /// Called when the web server stops, in order to allow the web application
   /// clean up and finish as well
   virtual void stop();

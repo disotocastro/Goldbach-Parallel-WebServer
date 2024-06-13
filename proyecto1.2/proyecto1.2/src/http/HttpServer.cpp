@@ -24,7 +24,14 @@ const char* const usage =
     "\n"
     "  handlers     Number of connection handler theads\n";
 
-HttpServer::HttpServer() {}
+HttpServer::HttpServer() {
+  // Crear cola de Sockets
+  this->socketsQueue = new Queue<Socket>();
+  // Crear instancia del dispatcher
+  this->dispatcher = new HttpDispatcher();
+  // Crear cola de consumo del dispatcher
+  this->dispatcher->createOwnQueue();
+}
 
 HttpServer::~HttpServer() {}
 
@@ -53,17 +60,16 @@ int HttpServer::run(int argc, char* argv[]) {
       // Start all web applications
       this->startApps();
       stopApps = true;
-      // Start waiting for connections
+
+      // Iniciar los hilos que forman parte de la cadena de produccion
+      createThreads();
+      this->dispatcher->startThread();
+
       this->listenForConnections(this->port);
       const NetworkAddress& address = this->getNetworkAddress();
       Log::append(Log::INFO, "webserver",
                   "Listening on " + address.getIP() + " port " +
                       std::to_string(address.getPort()));
-
-            socketsQueue = new Queue<Socket>();
-      // Crear el vector de los handlers
-      this->vectorHandlers.resize(this->handlers);
-      createThreads();
 
       // Accept all client connections. The main process will get blocked
       // running this method and will not return. When HttpServer::stop() is
@@ -75,6 +81,8 @@ int HttpServer::run(int argc, char* argv[]) {
     }
   } catch (const std::runtime_error& error) {
     std::cerr << "error: " << error.what() << std::endl;
+    /// Detener los hilos que forman parte de la cadena de produccion
+    throw std::runtime_error("dispatcher: queue's key not found");
     deleteThreads();
   }
 
@@ -88,9 +96,30 @@ int HttpServer::run(int argc, char* argv[]) {
   return EXIT_SUCCESS;
 }
 
+void HttpServer::createThreads() {
+  // Asignar el tamaño del vector de ConnectionHandlers
+  this->vectorHandlers.resize(this->handlers);
+  for (int64_t i = 0; i < this->handlers; i++) {
+    // Se inician la creación de los ConnectionHandlers
+    this->vectorHandlers[i] = new HttpConnectionHandler();
+    // Asignar la cola de consumo de los ConnectionHandlers
+    this->vectorHandlers[i]->setConsumingQueue(this->socketsQueue);
+    // Asignar la cola de produccion de los ConnectionHandlers
+    this->vectorHandlers[i]->setProducingQueue(
+        this->dispatcher->getConsumingQueue());
+    // Inicar el hilo de ejecucion
+    this->vectorHandlers[i]->startThread();
+  }
+}
+
 void HttpServer::startApps() {
   for (size_t index = 0; index < this->applications.size(); ++index) {
+    // Iniciar la webApp
     this->applications[index]->start();
+    // Registrar en el dispatcher el Key y la de consumo del webApp
+    this->dispatcher->registerRedirect(
+        this->applications[index]->key,
+        this->applications[index]->entranceQueue);
   }
 }
 
@@ -142,22 +171,10 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
 }
 
 void HttpServer::handleClientConnection(Socket& client) {
-  // into a collection (e.g thread-safe queue) and stop in web server
-
   /**
    * Se encolan los sockets
-   *
    */
   this->socketsQueue->enqueue(client);
-}
-
-void HttpServer::createThreads() {
-  for (int64_t i = 0; i < this->handlers; i++) {
-    // CREA UN HANDLER
-    this->vectorHandlers[i] = new HttpConnectionHandler(&this->applications);
-    this->vectorHandlers[i]->setConsumingQueue(this->socketsQueue);
-    this->vectorHandlers[i]->startThread();
-  }
 }
 
 void HttpServer::deleteThreads() {
@@ -179,4 +196,7 @@ void HttpServer::deleteThreads() {
     delete this->vectorHandlers[i];
   }
   delete this->socketsQueue;
+
+  this->dispatcher->waitToFinish();
+  delete this->dispatcher;
 }

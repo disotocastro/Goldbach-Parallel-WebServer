@@ -1,3 +1,4 @@
+
 // Copyright 2024 Diego Soto, Migueledo Nuñez, William Moraes
 // Universidad de Costa Rica. CC BY 4.0
 #ifndef GOLDWEBAPP_HPP
@@ -6,8 +7,11 @@
 #include <string>
 #include <vector>
 
+#include "GoldHTML.hpp"
+#include "GoldSolverAssembler.hpp"
+#include "GoldSortAssembler.hpp"
+#include "GoldUriAnalizer.hpp"
 #include "HttpApp.hpp"
-#include "numbers.hpp"
 
 /**
  * @brief A web application that calculates Goldbach sums.
@@ -17,11 +21,33 @@ class GoldWebApp : public HttpApp {
 
  public:
   /**
+   * @brief Número máximo de ensambladores de solucionadores.
+   */
+  int64_t maxSolvers = std::thread::hardware_concurrency();
+  /**
+   * @brief Vector de ensambladores de solucionadores.
+   */
+  std::vector<GoldSolverAssembler*> vectorSolverAssemblers;
+  /**
+   * @brief Analizador de URI.
+   */
+  GoldUriAnalizer* uriAnalizer;
+  /**
+   * @brief Ensamblador de ordenamiento.
+   */
+  GoldSortAssembler* sortAssembler;
+  /**
+   * @brief Constructor.
+   */
+  GoldHTML* buildHTML;
+
+  /**
    * @brief Constructor.
    */
   GoldWebApp();
 
   /**
+  GoldUriAnalizer* uriAnalizer;
    * @brief Destructor.
    */
   ~GoldWebApp();
@@ -32,67 +58,10 @@ class GoldWebApp : public HttpApp {
   void start() override;
 
   /**
-   * @brief Handle HTTP requests.
-   * @see HttpServer::handleHttpRequest()
-   * @param httpRequest The HTTP request object.
-   * @param httpResponse The HTTP response object.
-   * @return true If this application handled the request, false otherwise.
-   */
-  bool handleHttpRequest(HttpRequest& httpRequest,
-                         HttpResponse& httpResponse) override;
-
-  /**
    * @brief Called when the web server stops, in order to allow the web
    * application to clean up and finish as well.
    */
   void stop() override;
-
- protected:
-  /**
-   * @brief Handle HTTP requests.
-   * @param httpRequest The HTTP request object.
-   * @param httpResponse The HTTP response object.
-   * @return true If this application handled the request, false otherwise.
-   * Sends the homepage as HTTP response.
-   */
-  bool serveHomepage(HttpRequest& httpRequest, HttpResponse& httpResponse);
-
-  /**
-   * @brief Handle a HTTP request that starts with "/fact".
-   * @param httpRequest The HTTP request object.
-   * @param httpResponse The HTTP response object.
-   * @return true if the factorization was handled, false if it must be handled
-   * by another application.
-   */
-  bool serveGoldbach(HttpRequest& httpRequest, HttpResponse& httpResponse);
-
-  /**
-   * @brief Sends an error response for an invalid request.
-   * @param httpResponse The HTTP response object.
-   */
-  void sendErrorResponse(HttpResponse& httpResponse);
-
-  /**
-   * @brief Sends a successful response with Goldbach sums.
-   * @param numbersVector A vector containing the numbers to process.
-   * @param httpResponse The HTTP response object.
-   */
-  void sendSuccessResponse(const std::vector<int64_t>& numbersVector,
-                           HttpResponse& httpResponse);
-  /**
-   * @brief Extracts numbers from the URI of the HTTP request.
-   * @param httpRequest The HTTP request object.
-   * @param numbersVector A vector to store the extracted numbers.
-   * @return true if the numbers were successfully extracted, false otherwise.
-   */
-  bool getNumbersFromURI(HttpRequest& httpRequest,
-                         std::vector<int64_t>& numbersVector, int longitud,
-                         std::string str);
-
-  /**
-   * @brief Crea cadenas de texto representando las sumas de Goldbach.
-   */
-  std::vector<std::string> create_strings(NumbersArray_t* numbers);
 };
 
 #endif  // GOLDWEBAPP_HPP

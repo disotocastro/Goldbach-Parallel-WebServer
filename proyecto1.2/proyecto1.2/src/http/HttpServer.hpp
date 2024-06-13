@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "HttpConnectionHandler.hpp"
+#include "HttpDispatcher.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "Queue.hpp"
@@ -72,13 +73,18 @@ class HttpServer : public TcpServer {
   struct addrinfo hints;
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
-  // MAX NUMBER OF CONNECTIONS
+  /// MAX NUMBER OF CONNECTIONS
   int64_t handlers = std::thread::hardware_concurrency();
 
-  /**
-   * @brief Vector de punteros a objetos HttpConnectionHandler.
-   */
+  /// @brief Vector de punteros a objetos HttpConnectionHandler.
   std::vector<HttpConnectionHandler*> vectorHandlers;
+
+  /// Cola de sockets
+  Queue<Socket>* socketsQueue;
+
+  /// Dispatcher que consume de la cola de paquetes y distribuye en las colas de
+  /// las diferentes webApps
+  HttpDispatcher* dispatcher;
 
   /**
    * @brief Crea hilos para manejar conexiones HTTP.
@@ -103,10 +109,6 @@ class HttpServer : public TcpServer {
   /// call the httpResponse.send() and the chain stops. If no web app serves
   /// the request, the not found page will be served.
   std::vector<HttpApp*> applications;
-
-  // Cola de sockets
-  Queue<Socket>* socketsQueue;
-  // de producción nueva
 
  public:
   /// Registers a web application to the chain

@@ -4,50 +4,51 @@
 #define NUMBERS_HPP
 
 #include <cstdint>
-#include <vector>
+
+#include "HttpResponse.hpp"
 
 /**
- * @brief Estructura para representar un número y sus sumas de Goldbach.
+ * @class Numbers_t
+ * @brief Clase que representa números y sus sumas de Goldbach.
+ *
+ * Esta clase almacena un número y maneja sus sumas de Goldbach, así como
+ * la respuesta HTTP relacionada.
  */
-typedef struct {
-  int64_t number;         /**< El número */
-  int64_t** goldbachSums; /**< Matriz de sumas de Goldbach */
-  int64_t sums_counter;   /**< Cantidad de sumas de Goldbach */
-  bool printSums;         /**< Indicador de impresión de sumas */
-} Numbers_t;
+class Numbers_t {
+ public:
+  int64_t id;           /**< Identificador del número */
+  int64_t index;        /**< Índice del número */
+  int64_t number;       /**< El número */
+  int64_t maxNumbers;   /**< Número máximo de sumas de Goldbach a almacenar */
+  int64_t sums_counter; /**< Cantidad de sumas de Goldbach */
+  int64_t** goldbachSums;    /**< Matriz de sumas de Goldbach */
+  bool printSums;            /**< Indicador de impresión de sumas */
+  HttpResponse httpResponse; /**< Respuesta HTTP asociada */
 
-/**
- * @brief Estructura para representar una lista de números y sus sumas
- * de Goldbach.
- */
-typedef struct {
-  Numbers_t** GoldbachSumsArray; /**< Arreglo de punteros a estructuras */
-  int64_t counterNumbers;        /**< Número total de números en la lista */
-  int64_t largestNumber;         /**< El número más grande en la lista */
-  int64_t totalSums;             /**< Número total de sumas en la lista */
-  int64_t counterPrimes;         /**< Número total de números primos */
-  int64_t* primeNumbers;         /**< Arreglo de números primos */
-} NumbersArray_t;
-
-/**
- * @brief Crea una nueva estructura Numbers_t con el número especificado.
- * @param newNumber El número para crear la estructura.
- * @return Puntero a la nueva estructura Numbers_t creada.
- */
-Numbers_t* new_number(int64_t newNumber);
-
-/**
- * @brief Lee los números de la entrada estándar y los almacena en un arreglo.
- * @return Puntero a la estructura NumbersArray_t que contiene los números
- * leídos.
- */
-NumbersArray_t* readNumbers(std::vector<int64_t>& inputNumbers);
-
-/**
- * @brief Libera la memoria asignada a la lista de números.
- * @param NumbersArray Puntero a la estructura NumbersArray_t
- * que contiene los números.
- */
-void free_memory(NumbersArray_t* numbers);
+  /**
+   * @brief Constructor de la clase Numbers_t.
+   *
+   * @param id Identificador del número.
+   * @param index Índice del número.
+   * @param number El número.
+   * @param maxNumbers Número máximo de sumas de Goldbach a almacenar.
+   * @param httpResponse Respuesta HTTP asociada.
+   */
+  Numbers_t(int64_t id, int64_t index, int64_t number, int64_t maxNumbers,
+            HttpResponse httpResponse)
+      : id(id),
+        index(index),
+        number(number),
+        maxNumbers(maxNumbers),
+        sums_counter(0),
+        goldbachSums(nullptr),
+        printSums(false),
+        httpResponse(httpResponse) {
+    if (this->number < 0) {
+      this->printSums = true;
+      this->number = -number;
+    }
+  }
+};
 
 #endif

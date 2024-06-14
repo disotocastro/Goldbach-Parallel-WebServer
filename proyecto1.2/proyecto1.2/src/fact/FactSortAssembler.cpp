@@ -9,6 +9,7 @@
 
 int FactSortAssembler::run() {
   this->consumeForever();
+  produce(std::vector<FactNumber*>());
   return EXIT_SUCCESS;
 }
 
@@ -55,5 +56,20 @@ void FactSortAssembler::consume(FactNumber* data) {
     /// Actualizar los mapas con la nueva clave y el nuevo vector
     map_counter[data->id] = data->maxNumbers - 1;
     map_vector[data->id] = nuevoVector;
+  }
+}
+
+void FactSortAssembler::consumeForever() {
+  assert(this->consumingQueue);
+  while (true) {
+    // Get the next data to consume, or block while queue is empty
+    FactNumber* data = this->consumingQueue->dequeue();
+    // If data is the stop condition, stop the loop
+    if (data->id == 0) {
+      std::cout << "break Sort" << std::endl;
+      break;
+    }
+    // Process this data
+    this->consume(data);
   }
 }

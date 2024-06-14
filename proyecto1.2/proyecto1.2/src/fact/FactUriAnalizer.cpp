@@ -4,9 +4,17 @@
 #include "FactUriAnalizer.hpp"
 
 #include "FactNumber.hpp"
+#include <iostream>
 
 int FactUriAnalizer::run() {
   this->consumeForever();
+
+  for (int64_t i = 0; i < this->maxSolvers; i++){
+    FactNumber temp = FactNumber();
+    produce(&temp);
+  }
+  
+
   return EXIT_SUCCESS;
 }
 
@@ -25,6 +33,20 @@ void FactUriAnalizer::consume(RequestResponseStruct_t data) {
     }
   } else {
     this->sendErrorResponse(data.httpResponse);
+  }
+}
+
+void FactUriAnalizer::consumeForever() {
+  assert(this->consumingQueue);
+  while (true) {
+    // Get the next data to consume, or block while queue is empty
+    const RequestResponseStruct_t& data = this->consumingQueue->dequeue();
+    // If data is the stop condition, stop the loop
+    if (data.stopCondition == 1) {
+      break;
+    }
+    // Process this data
+    this->consume(data);
   }
 }
 

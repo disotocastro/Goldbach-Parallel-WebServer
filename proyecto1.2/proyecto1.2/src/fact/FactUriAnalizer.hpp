@@ -23,6 +23,8 @@ class FactUriAnalizer : public Assembler<RequestResponseStruct_t, FactNumber*> {
   /// @brief ID para los elementos de la cola de producción.
   int64_t Element_ID = 0;
 
+  int64_t maxSolvers = std::thread::hardware_concurrency();
+
   /**
    * @brief Método para ejecutar la conexión HTTP.
    * @return Entero que indica el estado de la ejecución.
@@ -78,6 +80,8 @@ class FactUriAnalizer : public Assembler<RequestResponseStruct_t, FactNumber*> {
    * @param httpResponse Objeto que representa la respuesta HTTP.
    */
   void sendErrorResponse(HttpResponse& httpResponse);
+
+  void consumeForever() override;
 };
 
 #endif  // FACTURIANALIZER_HPP

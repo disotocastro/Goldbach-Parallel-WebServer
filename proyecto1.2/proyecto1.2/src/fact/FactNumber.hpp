@@ -63,6 +63,13 @@ class FactNumber {
         index(index),
         numero(numero),
         maxNumbers(maxNumbers) {}
+
+  FactNumber()
+      : httpResponse(HttpResponse(Socket())), // Suponiendo que HttpResponse tiene un constructor por defecto con Socket
+        id(0),
+        index(0),
+        numero(0),
+        maxNumbers(0) {}
 };
 
 #endif  // FACTNUMBER_HPP

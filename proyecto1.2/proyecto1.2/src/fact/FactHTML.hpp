@@ -41,6 +41,8 @@ class FactHTML : public Consumer<std::vector<FactNumber*>> {
   void sendSuccessResponse(std::vector<FactNumber*> data_resolved,
                            const std::vector<std::string>& results);
 
+  void consumeForever() override;
+
   /**
      * @brief This function takes a list of lists of integers where each inner
      *  list represents a set of factors to be factorized.

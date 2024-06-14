@@ -47,6 +47,8 @@ class FactSolverAssembler : public Assembler<FactNumber*, FactNumber*> {
    * @param data Puntero al objeto FactNumber que se va a consumir.
    */
   void consume(FactNumber* data) override;
+
+  void consumeForever() override;
 };
 
 #endif  // FACTSOLVERASSEMBLER_HP

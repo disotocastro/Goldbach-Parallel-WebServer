@@ -24,6 +24,8 @@ typedef struct RequestResponseStruct {
    */
   HttpResponse httpResponse;
 
+  int stopCondition;
+
  public:
   /**
    * @brief Constructor con parámetros por defecto.
@@ -38,7 +40,7 @@ typedef struct RequestResponseStruct {
    */
   RequestResponseStruct(HttpRequest request = HttpRequest((Socket())),
                         HttpResponse response = HttpResponse((Socket())))
-      : httpRequest(request), httpResponse(response) {}
+      : httpRequest(request), httpResponse(response), stopCondition(0) {}
 
   /**
    * @brief Operador de igualdad.
@@ -55,4 +57,3 @@ typedef struct RequestResponseStruct {
 } RequestResponseStruct_t;
 
 #endif  // REQUESTRESPONSESTRUCTS_HPP
-

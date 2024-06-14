@@ -91,3 +91,18 @@ std::vector<std::string> FactHTML::FactorizeToString(
   }
   return factorizations;
 }
+
+void FactHTML::consumeForever() {
+  assert(this->consumingQueue);
+  while (true) {
+    // Get the next data to consume, or block while queue is empty
+    const std::vector<FactNumber*>& data = this->consumingQueue->dequeue();
+    // If data is the stop condition, stop the loop
+    if (data.size() == 0) {
+      std::cout << "break html" << std::endl;
+      break;
+    }
+    // Process this data
+    this->consume(data);
+  }
+}

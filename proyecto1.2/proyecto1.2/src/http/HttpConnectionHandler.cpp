@@ -11,6 +11,9 @@
 
 int HttpConnectionHandler::run() {
   this->consumeForever();
+  RequestResponseStruct_t temp = RequestResponseStruct_t();
+  temp.stopCondition = 1;
+  produce(temp);
   return EXIT_SUCCESS;
 }
 

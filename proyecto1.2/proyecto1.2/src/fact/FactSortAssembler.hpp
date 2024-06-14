@@ -42,6 +42,8 @@ class FactSortAssembler
    */
   void consume(FactNumber* data) override;
 
+  void consumeForever() override;
+
  private:
   /**
    * @brief Mapa que asocia identificadores con vectores de objetos FactNumber.

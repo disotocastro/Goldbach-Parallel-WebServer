@@ -3,12 +3,17 @@
 
 #include "GoldUriAnalizer.hpp"
 
-#include <iostream>
 #include <string>
 #include <vector>
 
 int GoldUriAnalizer::run() {
   this->consumeForever();
+
+  for (int64_t i = 0; i < this->maxSolvers; i++) {
+    Numbers_t temp = Numbers_t();
+    produce(&temp);
+  }
+
   return EXIT_SUCCESS;
 }
 
@@ -92,26 +97,6 @@ void GoldUriAnalizer::readNumbers(std::vector<int64_t>& inputNumbers,
   }
 }
 
-Numbers_t* new_number(int64_t newNumber) {
-  // Asigna memoria para el nuevo objeto Numbers_t
-  // // TODO: NEW
-  Numbers_t* newData = (Numbers_t*)malloc(sizeof(Numbers_t));
-  // Inicializa los campos del objeto con los valores predeterminados
-  newData->number = newNumber;
-  newData->printSums = false;
-  newData->sums_counter = 0;
-  newData->goldbachSums = NULL;
-
-  /** Si el número es negativo, establece la bandera de impresión de sumas y
-  convierte el número en positivo */
-  if (newNumber < 0) {
-    newData->printSums = true;
-    newData->number = -newNumber;
-  }
-  // Retorna un puntero al nuevo objeto Numbers_t creado
-  return newData;
-}
-
 std::vector<int64_t> GoldUriAnalizer::getNumbersFromURI(
     HttpRequest& httpRequest) {
   std::vector<int64_t> numbersVector;
@@ -133,11 +118,23 @@ std::vector<int64_t> GoldUriAnalizer::getNumbersFromURI(
   while (std::regex_search(ini, fin, matches, patron)) {
     str = matches.str();
     longitud = str.size();
-    if (longitud > 19) {
-    }
     int valor = std::stoll(matches[0].str());
     numbersVector.push_back(valor);
     ini = matches.suffix().first;
   }
   return numbersVector;
+}
+
+void GoldUriAnalizer::consumeForever() {
+  assert(this->consumingQueue);
+  while (true) {
+    // Get the next data to consume, or block while queue is empty
+    const RequestResponseStruct_t& data = this->consumingQueue->dequeue();
+    // If data is the stop condition, stop the loop
+    if (data.stopCondition == 1) {
+      break;
+    }
+    // Process this data
+    this->consume(data);
+  }
 }

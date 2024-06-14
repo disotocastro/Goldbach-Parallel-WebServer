@@ -26,6 +26,7 @@ class GoldUriAnalizer : public Assembler<RequestResponseStruct_t, Numbers_t*> {
   /// @brief ID para los elementos de la cola de producción.
   int64_t Element_ID = 0;
 
+  int64_t maxSolvers = std::thread::hardware_concurrency();
   /**
    * @brief Método para ejecutar la conexión HTTP.
    * @return Entero que indica el estado de la ejecución.
@@ -78,6 +79,15 @@ class GoldUriAnalizer : public Assembler<RequestResponseStruct_t, Numbers_t*> {
    */
   void readNumbers(std::vector<int64_t>& inputNumbers,
                    RequestResponseStruct_t reqRes);
+  /**
+   * @brief Continuamente consume datos de la cola.
+   *
+   * Este método consume datos de la cola de manera continua hasta
+   * encontrar una condición de detención.
+   *
+   * @note Asume que la cola de consumo está inicializada.
+   */
+  void consumeForever() override;
 };
 
 #endif  // GOLDURIANALIZER_HPP

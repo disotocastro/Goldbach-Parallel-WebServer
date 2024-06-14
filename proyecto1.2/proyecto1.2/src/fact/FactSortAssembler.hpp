@@ -42,6 +42,14 @@ class FactSortAssembler
    */
   void consume(FactNumber* data) override;
 
+  /**
+   * @brief Continuamente consume datos de la cola.
+   *
+   * Este método consume datos de la cola de manera continua hasta
+   * encontrar una condición de detención.
+   *
+   * @note Asume que la cola de consumo está inicializada.
+   */
   void consumeForever() override;
 
  private:

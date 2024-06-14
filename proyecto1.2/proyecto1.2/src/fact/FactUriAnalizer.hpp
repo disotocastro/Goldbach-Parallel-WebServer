@@ -80,7 +80,14 @@ class FactUriAnalizer : public Assembler<RequestResponseStruct_t, FactNumber*> {
    * @param httpResponse Objeto que representa la respuesta HTTP.
    */
   void sendErrorResponse(HttpResponse& httpResponse);
-
+  /**
+   * @brief Continuamente consume datos de la cola.
+   *
+   * Este método consume datos de la cola de manera continua hasta
+   * encontrar una condición de detención.
+   *
+   * @note Asume que la cola de consumo está inicializada.
+   */
   void consumeForever() override;
 };
 

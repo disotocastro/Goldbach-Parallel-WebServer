@@ -4,8 +4,8 @@
 #ifndef FACTHTML_HPP
 #define FACTHTML_HPP
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "Consumer.hpp"
 #include "FactSortAssembler.hpp"
@@ -40,7 +40,14 @@ class FactHTML : public Consumer<std::vector<FactNumber*>> {
    */
   void sendSuccessResponse(std::vector<FactNumber*> data_resolved,
                            const std::vector<std::string>& results);
-
+  /**
+   * @brief Continuamente consume datos de la cola.
+   *
+   * Este método consume datos de la cola de manera continua hasta
+   * encontrar una condición de detención.
+   *
+   * @note Asume que la cola de consumo está inicializada.
+   */
   void consumeForever() override;
 
   /**

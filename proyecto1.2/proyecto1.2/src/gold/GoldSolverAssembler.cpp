@@ -1,26 +1,26 @@
 // Copyright 2024 Diego Soto, Migueledo Nuñez, William Morales
 // Universidad de Costa Rica. CC BY 4.0
 
-#include "FactSolverAssembler.hpp"
+#include "GoldSolverAssembler.hpp"
 
-int FactSolverAssembler::run() {
+int GoldSolverAssembler::run() {
   this->consumeForever();
-  FactNumber temp = FactNumber();
+  Numbers_t temp = Numbers_t();
   produce(&temp);
   return EXIT_SUCCESS;
 }
 
-void FactSolverAssembler::consume(FactNumber* data) {
-  FactSolver solver = FactSolver();
-  data->numbersVector = solver.FactorizeVector(data->numero);
-  produce(data);
+void GoldSolverAssembler::consume(Numbers_t* number) {
+  GoldSolver solver;
+  solver.resolveGoldbach(number);
+  produce(number);
 }
 
-void FactSolverAssembler::consumeForever() {
+void GoldSolverAssembler::consumeForever() {
   assert(this->consumingQueue);
   while (true) {
     // Get the next data to consume, or block while queue is empty
-    FactNumber* data = this->consumingQueue->dequeue();
+    Numbers_t* data = this->consumingQueue->dequeue();
     // If data is the stop condition, stop the loop
     if (data->id == 0) {
       break;

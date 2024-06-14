@@ -6,7 +6,6 @@
 
 #include <vector>
 
-
 #include "HttpResponse.hpp"
 
 /**
@@ -65,7 +64,9 @@ class FactNumber {
         maxNumbers(maxNumbers) {}
 
   FactNumber()
-      : httpResponse(HttpResponse(Socket())), // Suponiendo que HttpResponse tiene un constructor por defecto con Socket
+      : httpResponse(
+            HttpResponse(Socket())),  // Suponiendo que HttpResponse tiene un
+                                      // constructor por defecto con Socket
         id(0),
         index(0),
         numero(0),
@@ -73,4 +74,3 @@ class FactNumber {
 };
 
 #endif  // FACTNUMBER_HPP
-

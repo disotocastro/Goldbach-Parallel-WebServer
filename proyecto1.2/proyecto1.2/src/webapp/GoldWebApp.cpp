@@ -2,20 +2,6 @@
 
 #include "GoldWebApp.hpp"
 
-#include <Queue.hpp>
-#include <algorithm>
-#include <cassert>
-#include <cstring>
-#include <iostream>
-#include <regex>
-#include <stdexcept>
-#include <string>
-
-#include "GoldSolver.hpp"
-#include "HttpRequest.hpp"
-#include "HttpResponse.hpp"
-#include "numbers.hpp"
-
 GoldWebApp::GoldWebApp() {}
 
 GoldWebApp::~GoldWebApp() {}

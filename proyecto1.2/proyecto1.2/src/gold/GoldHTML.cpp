@@ -12,6 +12,11 @@ void GoldHTML::consume(std::vector<Numbers_t*> data) {
   sendSuccessResponse(data);
   HttpResponse response = data[0]->httpResponse;
 
+  for (size_t i = 0; i < data.size(); i++) {
+    delete data[i];
+  }
+
+
   // Set HTTP response metadata (headers)
   response.setHeader("Server", "AttoServer v1.0");
   response.setHeader("Content-type", "text/html; charset=ascii");
@@ -99,4 +104,18 @@ void GoldHTML::sendSuccessResponse(std::vector<Numbers_t*> numbers) {
   response.body() << "  <hr><p><a href=\"/gold\">Back</a></p>\n"
                   << "</html>\n";
   response.send();
+}
+
+void GoldHTML::consumeForever() {
+  assert(this->consumingQueue);
+  while (true) {
+    // Get the next data to consume, or block while queue is empty
+    const std::vector<Numbers_t*>& data = this->consumingQueue->dequeue();
+    // If data is the stop condition, stop the loop
+    if (data.size() == 0) {
+      break;
+    }
+    // Process this data
+    this->consume(data);
+  }
 }

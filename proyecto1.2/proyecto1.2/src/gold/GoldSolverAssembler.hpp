@@ -26,6 +26,16 @@ class GoldSolverAssembler : public Assembler<Numbers_t*, Numbers_t*> {
    * @param number Puntero al número que se va a procesar.
    */
   void consume(Numbers_t* number) override;
+
+  /**
+   * @brief Continuamente consume datos de la cola.
+   *
+   * Este método consume datos de la cola de manera continua hasta
+   * encontrar una condición de detención.
+   *
+   * @note Asume que la cola de consumo está inicializada.
+   */
+  void consumeForever() override;
 };
 
 #endif  // GOLDSOLVERASSEMBLER_HPP

@@ -4,6 +4,7 @@
 #define NUMBERS_HPP
 
 #include <cstdint>
+#include <vector>
 
 #include "HttpResponse.hpp"
 
@@ -21,7 +22,8 @@ class Numbers_t {
   int64_t number;       /**< El número */
   int64_t maxNumbers;   /**< Número máximo de sumas de Goldbach a almacenar */
   int64_t sums_counter; /**< Cantidad de sumas de Goldbach */
-  int64_t** goldbachSums;    /**< Matriz de sumas de Goldbach */
+  std::vector<std::vector<int64_t>>
+      goldbachSums;          /**< Matriz de sumas de Goldbach */
   bool printSums;            /**< Indicador de impresión de sumas */
   HttpResponse httpResponse; /**< Respuesta HTTP asociada */
 
@@ -41,7 +43,6 @@ class Numbers_t {
         number(number),
         maxNumbers(maxNumbers),
         sums_counter(0),
-        goldbachSums(nullptr),
         printSums(false),
         httpResponse(httpResponse) {
     if (this->number < 0) {
@@ -49,6 +50,21 @@ class Numbers_t {
       this->number = -number;
     }
   }
+
+  /**
+   * @brief Constructor predeterminado de la clase Numbers_t.
+   *
+   * Este constructor crea un objeto Numbers_t con todos los miembros
+   * inicializados a sus valores por defecto.
+   */
+  Numbers_t()
+      : id(0),
+        index(0),
+        number(0),
+        maxNumbers(0),
+        sums_counter(0),
+        printSums(false),
+        httpResponse(HttpResponse(Socket())) {}
 };
 
 #endif

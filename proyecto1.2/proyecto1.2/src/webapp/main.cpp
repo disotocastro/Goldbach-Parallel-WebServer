@@ -7,7 +7,7 @@
 #include <iostream>
 
 #include "FactWebApp.hpp"
-// #include "GoldWebApp.hpp"
+#include "GoldWebApp.hpp"
 #include "HttpServer.hpp"
 #include "Log.hpp"
 
@@ -22,10 +22,10 @@ int main(int argc, char* argv[]) {
   HttpServer& httpServer = HttpServer::getInstance();
   // Create a factorization web application, and other apps if you want
   FactWebApp factWebApp;
-  // GoldWebApp goldWebApp;
+  GoldWebApp goldWebApp;
   //  Register the web application(s) with the web server
   httpServer.chainWebApp(&factWebApp);
-  // httpServer.chainWebApp(&goldWebApp);
+  httpServer.chainWebApp(&goldWebApp);
   //  Run the web server
   return httpServer.run(argc, argv);
 }

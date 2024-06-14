@@ -4,7 +4,6 @@
 #include "HttpDispatcher.hpp"
 
 #include <cassert>
-#include <iostream>
 
 HttpDispatcher::HttpDispatcher() {}
 
@@ -12,17 +11,13 @@ HttpDispatcher::~HttpDispatcher() {}
 
 int HttpDispatcher::run() {
   this->consumeForever();
-  std::cout << "salido" << std::endl;
 
   // condicion de parada
   for (const auto& pair : this->toQueues) {
     RequestResponseStruct_t temp = RequestResponseStruct_t();
     temp.stopCondition = 1;
     pair.second->enqueue(temp);
-    std::cout << "encolados" << std::endl;
   }
-
-  std::cout << "recien salido del encolado" << std::endl;
 
   return EXIT_SUCCESS;
 }
@@ -47,7 +42,6 @@ void HttpDispatcher::consumeForever() {
     const RequestResponseStruct_t& data = this->consumingQueue->dequeue();
     // If data is the stop condition, stop the loop
     if (data.stopCondition == 1) {
-      std::cout << "break" << std::endl;
       break;
     }
     // Process this data

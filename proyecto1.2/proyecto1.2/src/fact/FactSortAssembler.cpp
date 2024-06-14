@@ -5,8 +5,6 @@
 
 #include <map>
 
-#include "FactSolverAssembler.hpp"
-
 int FactSortAssembler::run() {
   this->consumeForever();
   produce(std::vector<FactNumber*>());
@@ -66,7 +64,6 @@ void FactSortAssembler::consumeForever() {
     FactNumber* data = this->consumingQueue->dequeue();
     // If data is the stop condition, stop the loop
     if (data->id == 0) {
-      std::cout << "break Sort" << std::endl;
       break;
     }
     // Process this data

@@ -51,6 +51,15 @@ class GoldSortAssembler
    * @brief Mapa que asocia identificadores con contadores de elementos
    */
   std::map<int64_t, int> map_counter;
+  /**
+   * @brief Continuamente consume datos de la cola.
+   *
+   * Este método consume datos de la cola de manera continua hasta
+   * encontrar una condición de detención.
+   *
+   * @note Asume que la cola de consumo está inicializada.
+   */
+  void consumeForever() override;
 };
 
 #endif  // FACTSORTASSEMBLER

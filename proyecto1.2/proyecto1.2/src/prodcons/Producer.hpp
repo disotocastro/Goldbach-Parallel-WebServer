@@ -9,7 +9,6 @@
 
 #include "Queue.hpp"
 #include "Thread.hpp"
-#include <iostream>
 
 /**
  * @brief A template that generates abstract base classes for Producers

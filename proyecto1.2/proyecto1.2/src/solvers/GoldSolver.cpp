@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <cstdlib>
 #include <numbers.hpp>
-#include <vector>
 
 GoldSolver::GoldSolver() {}
 
@@ -50,11 +49,9 @@ void GoldSolver::goldbach_pair(Numbers_t* inputNumber,
   int64_t goldbachSumsCounter = 0;
   int64_t size = number / 3;
 
-  // Allocate memory for storing Goldbach sums
-  int64_t** goldbachSums = (int64_t**)calloc(2, sizeof(int64_t*));
-  for (int64_t i = 0; i < 2; i++) {
-    goldbachSums[i] = (int64_t*)calloc(size, sizeof(int64_t));
-  }
+  // Almacenar las sumas de Goldbach utilizando
+  // std::vector<std::vector<int64_t>>
+  std::vector<std::vector<int64_t>> goldbachSums(2, std::vector<int64_t>(size));
 
   int64_t counterPrimes = primeNumbers.size();
 
@@ -67,17 +64,13 @@ void GoldSolver::goldbach_pair(Numbers_t* inputNumber,
     int64_t sum = primeNumbers[left] + primeNumbers[right];
 
     if (sum == number) {
-      // Check if the matrix needs to be resized
+      // Verificar si es necesario redimensionar la matriz
       if (goldbachSumsCounter >= size) {
-        int64_t newSize = size * 2;
-        for (int64_t i = 0; i < 2; i++) {
-          int64_t* temp =
-              (int64_t*)realloc(goldbachSums[i], newSize * sizeof(int64_t));
-          goldbachSums[i] = temp;
-        }
-        size = newSize;
+        size *= 2;
+        goldbachSums[0].resize(size);
+        goldbachSums[1].resize(size);
       }
-      // Store the prime numbers that sum to the given number
+      // Almacenar los números primos que suman al número dado
       goldbachSums[0][goldbachSumsCounter] = primeNumbers[left];
       goldbachSums[1][goldbachSumsCounter] = primeNumbers[right];
       goldbachSumsCounter++;
@@ -89,7 +82,7 @@ void GoldSolver::goldbach_pair(Numbers_t* inputNumber,
       right--;
     }
   }
-  // Store the results back into the NumbersArray structure
+  // Almacenar los resultados de nuevo en la estructura NumbersArray
   inputNumber->goldbachSums = goldbachSums;
   inputNumber->sums_counter = goldbachSumsCounter;
 }
@@ -100,11 +93,9 @@ void GoldSolver::goldbach_odd(Numbers_t* inputNumber,
   int64_t goldbachSumsCounter = 0;
   int64_t size = number * 5;
 
-  // Allocate memory for storing Goldbach sums
-  int64_t** goldbachSums = (int64_t**)calloc(3, sizeof(int64_t*));
-  for (int64_t i = 0; i < 3; i++) {
-    goldbachSums[i] = (int64_t*)calloc(size, sizeof(int64_t));
-  }
+  // Almacenar las sumas de Goldbach utilizando
+  // std::vector<std::vector<int64_t>>
+  std::vector<std::vector<int64_t>> goldbachSums(3, std::vector<int64_t>(size));
 
   int64_t counterPrimes = primeNumbers.size();
 
@@ -118,17 +109,14 @@ void GoldSolver::goldbach_odd(Numbers_t* inputNumber,
       int64_t sum = primeNumbers[i] + primeNumbers[left] + primeNumbers[right];
 
       if (sum == number) {
-        // Check if the matrix needs to be resized
+        // Verificar si es necesario redimensionar la matriz
         if (goldbachSumsCounter >= size) {
-          int64_t newSize = size * 2;
+          size *= 2;
           for (int64_t j = 0; j < 3; j++) {
-            int64_t* temp =
-                (int64_t*)realloc(goldbachSums[j], newSize * sizeof(int64_t));
-            goldbachSums[j] = temp;
+            goldbachSums[j].resize(size);
           }
-          size = newSize;
         }
-        // Store the prime numbers that sum to the given number
+        // Almacenar los números primos que suman al número dado
         goldbachSums[0][goldbachSumsCounter] = primeNumbers[i];
         goldbachSums[1][goldbachSumsCounter] = primeNumbers[left];
         goldbachSums[2][goldbachSumsCounter] = primeNumbers[right];
@@ -143,7 +131,7 @@ void GoldSolver::goldbach_odd(Numbers_t* inputNumber,
     }
   }
 
-  // Store the results back into the NumbersArray structure
+  // Almacenar los resultados de nuevo en la estructura NumbersArray
   inputNumber->goldbachSums = goldbachSums;
   inputNumber->sums_counter = goldbachSumsCounter;
 }

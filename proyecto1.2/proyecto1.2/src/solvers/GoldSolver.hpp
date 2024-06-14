@@ -3,9 +3,11 @@
 #ifndef GOLDSOLVER_HPP
 #define GOLDSOLVER_HPP
 
+#include <vector>
+
 #include <cstdint>
 #include <numbers.hpp>
-#include <vector>
+
 
 /**
  * @class GoldSolver

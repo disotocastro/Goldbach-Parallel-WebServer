@@ -4,16 +4,14 @@
 #include "FactUriAnalizer.hpp"
 
 #include "FactNumber.hpp"
-#include <iostream>
 
 int FactUriAnalizer::run() {
   this->consumeForever();
 
-  for (int64_t i = 0; i < this->maxSolvers; i++){
+  for (int64_t i = 0; i < this->maxSolvers; i++) {
     FactNumber temp = FactNumber();
     produce(&temp);
   }
-  
 
   return EXIT_SUCCESS;
 }
@@ -62,7 +60,7 @@ void FactUriAnalizer::factUri(RequestResponseStruct_t data, size_t pos) {
   }
 
   Element_ID++;
-  // TODO: NEW
+
   for (size_t i = 0; i < numbersVector.size(); i++) {
     FactNumber* number = new FactNumber(data.httpResponse, this->Element_ID, i,
                                         numbersVector[i], numbersVector.size());

@@ -57,6 +57,16 @@ class GoldHTML : public Consumer<std::vector<Numbers_t*>> {
    * Goldbach.
    */
   std::vector<std::string> create_strings(std::vector<Numbers_t*> numbers);
+
+  /**
+   * @brief Continuamente consume datos de la cola.
+   *
+   * Este método consume datos de la cola de manera continua hasta
+   * encontrar una condición de detención.
+   *
+   * @note Asume que la cola de consumo está inicializada.
+   */
+  void consumeForever() override;
 };
 
 #endif  // GOLDHTML_HPP

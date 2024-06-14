@@ -4,7 +4,6 @@
 #ifndef GOLDWEBAPP_HPP
 #define GOLDWEBAPP_HPP
 
-#include <string>
 #include <vector>
 
 #include "GoldHTML.hpp"

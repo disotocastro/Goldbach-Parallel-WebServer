@@ -3,7 +3,6 @@
 
 #include "FactHTML.hpp"
 
-#include <iostream>
 #include <unordered_map>
 #include <vector>
 
@@ -28,6 +27,10 @@ void FactHTML::consume(std::vector<FactNumber*> data_resolved) {
 
   std::vector<std::string> results = FactorizeToString(data_resolved);
   this->sendSuccessResponse(data_resolved, results);
+
+  for (size_t i = 0; i < data_resolved.size(); i++) {
+    delete data_resolved[i];
+  }
 }
 
 void FactHTML::sendSuccessResponse(std::vector<FactNumber*> data_resolved,
@@ -99,7 +102,6 @@ void FactHTML::consumeForever() {
     const std::vector<FactNumber*>& data = this->consumingQueue->dequeue();
     // If data is the stop condition, stop the loop
     if (data.size() == 0) {
-      std::cout << "break html" << std::endl;
       break;
     }
     // Process this data

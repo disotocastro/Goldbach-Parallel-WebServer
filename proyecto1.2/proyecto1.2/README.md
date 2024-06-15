@@ -105,6 +105,9 @@ Al hacer clic en el botón ` Get sums` , los resultados aparecerán en el navega
 Este método permite una interacción clara y efectiva con el servidor a través de interfaces sencillas y funciones específicas para cada tipo de cálculo requerido.  
 ### IV. Finalizar el servidor  
 Para finalizar el servidor, existen dos métodos eficaces. El primero es a través de la terminal en la que se inició el servidor, donde también se reciben los mensajes de diagnóstico de su actividad. Simplemente, pulse Ctrl+C, combinando simultáneamente las teclas Control y C. El segundo método requiere determinar previamente el ID del proceso del servidor, que generalmente corresponde al nombre del ejecutable. Una vez que tenga este dato, desde otra terminal, ejecute el comando ` kill <pid>` , sustituyendo \<pid\> por el número de proceso que haya consultado.
+
+### Prueba de concurrencia
+![](./img/prueba_concurrencia.png)
 ## Créditos
 **Proyecto:**   	Servidor web concurrente.
 

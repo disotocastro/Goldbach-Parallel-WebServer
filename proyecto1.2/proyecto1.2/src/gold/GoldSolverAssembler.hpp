@@ -8,6 +8,13 @@
 #include "GoldSolver.hpp"
 #include "numbers.hpp"
 
+/**
+ * @class GoldSolverAssembler
+ * @brief Clase para ensamblar y resolver la conjetura de Goldbach.
+ *
+ * La clase `GoldSolverAssembler` hereda de `Assembler<Numbers_t*, Numbers_t*>` y proporciona
+ * métodos para ejecutar el ensamblador, consumir números y resolver la conjetura de Goldbach.
+ */
 class GoldSolverAssembler : public Assembler<Numbers_t*, Numbers_t*> {
  public:
   /**

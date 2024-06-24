@@ -21,6 +21,10 @@ En resumen, la combinación de concurrencia mediante hilos y una cola de sockets
 
 # Diseño con las aplicaciones concurrentes
 
+Los UMLs de las clases agregadas en esta etapa del proyecto son mostradas a continuación. Las otras que se anexaron son las respectivas de la aplicación sumas de Goldbach, cuyos nombres son: GoldUriAnalizer, GoldSolverAsembler, GoldSortAssembler y GoldHTML, pero no se incluyen por su similitud.
+
+![Diagrama](UMLs_Proyecto1pto2.png)
+
 Hemos actualizado el diagrama de flujo de datos de la entrega anterior para optimizar la cadena de producción mediante la implementación del patrón productor-consumidor. La figura siguiente ilustra los cambios realizados en el diseño.
 
 ![Diagrama](diagrama_proyecto1.2.png)
@@ -366,6 +370,50 @@ fin_si
 httpRespuesta.enviar()
 DEVUELVE: éxito o fracaso del envio
 FIN DE serveGoldbach
+```
+
+### Clase HttpDispatcher
+
+```sh
+ALGORITMO run
+/* Consume sockets y los clasifica de acuerdo a la aplicación en la cola debida.
+ * Cuando llega la indicación de finalizar, se ocupa de ello                    */
+ENTRADAS: ninguna
+Ejecuta consumeForever()
+Al salir del ciclo consumeforever, colocar en las colas la condicion de parada 1
+DEVUELVE: indicación de Exito
+FIN DE run.
+```
+
+```sh
+ALGORITMO extractKey
+/* Analiza la URI del objeto data y extrae una clave indicada ahí */
+ENTRADAS: data // un objeto de tipo RequestResponseStruct_t
+Obtener la URI de la solicitud HTTP de data
+Extraer la subcadena de la URI desde la posición 1 y de longitud 4
+Si la clave no se encuentra en el diccionario Entonces
+  key = "fact"
+Fin Si
+DEVUELVE key // Cadena de caracteres
+FIN DE extractKey
+```
+
+```sh
+ALGORITMO consumeForever
+/* Consume datos indefinidamente desde la cola hasta encontrar una condición de parada */
+ENTRADAS: ninguna
+Asegurarse de que la cola no sea nula
+Mientras verdadero Hacer
+  Obtener el siguiente dato de la cola
+  Si viene la condición de parada Entonces
+    Salir del bucle
+  Sino
+    Extraer del la cola el socket
+    Colocar en cola correspodiente el socket
+  Fin Si
+Fin Mientras
+
+FIN DE consumeForever
 ```
 
 ### Clase FactUriAnalizer

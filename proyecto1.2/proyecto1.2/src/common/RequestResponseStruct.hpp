@@ -23,7 +23,9 @@ typedef struct RequestResponseStruct {
    * @brief Respuesta HTTP.
    */
   HttpResponse httpResponse;
-
+  /**
+   * @brief Condicion de parada.
+   */
   int stopCondition;
 
  public:

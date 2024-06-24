@@ -2,10 +2,12 @@
 // Universidad de Costa Rica. CC BY 4.0
 
 #include "GoldSortAssembler.hpp"
+#include <iostream>
 
 int GoldSortAssembler::run() {
   this->consumeForever();
   produce(std::vector<Numbers_t*>());
+  std::cout << "/* gold */" << std::endl;
   return EXIT_SUCCESS;
 }
 
@@ -55,14 +57,21 @@ void GoldSortAssembler::consume(Numbers_t* data) {
 
 void GoldSortAssembler::consumeForever() {
   assert(this->consumingQueue);
+  int64_t stop = std::thread::hardware_concurrency();
   while (true) {
     // Get the next data to consume, or block while queue is empty
     Numbers_t* data = this->consumingQueue->dequeue();
     // If data is the stop condition, stop the loop
     if (data->id == 0) {
-      break;
+      stop--;
+      
+
+      if (stop == 0) {
+        break;
+      }
+    } else {
+      // Process this data
+      this->consume(data);
     }
-    // Process this data
-    this->consume(data);
   }
 }

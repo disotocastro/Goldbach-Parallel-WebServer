@@ -56,8 +56,14 @@ class HttpDispatcher : public Dispatcher<std::string, RequestResponseStruct_t> {
    */
   std::string extractKey(const RequestResponseStruct_t& data) const override;
 
-  bool serveHomepage(RequestResponseStruct_t data);
-
+  /**
+   * @brief Continuamente consume datos de la cola.
+   *
+   * Este método consume datos de la cola de manera continua hasta
+   * encontrar una condición de detención.
+   *
+   * @note Asume que la cola de consumo está inicializada.
+   */
   void consumeForever() override;
 };
 

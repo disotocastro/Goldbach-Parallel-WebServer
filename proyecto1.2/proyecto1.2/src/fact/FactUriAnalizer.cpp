@@ -12,7 +12,6 @@ int FactUriAnalizer::run() {
     FactNumber temp = FactNumber();
     produce(&temp);
   }
-
   return EXIT_SUCCESS;
 }
 

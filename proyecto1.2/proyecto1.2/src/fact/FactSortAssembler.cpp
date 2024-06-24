@@ -4,10 +4,12 @@
 #include "FactSortAssembler.hpp"
 
 #include <map>
+#include <iostream>
 
 int FactSortAssembler::run() {
   this->consumeForever();
   produce(std::vector<FactNumber*>());
+  std::cout << "/* fact */" << std::endl;
   return EXIT_SUCCESS;
 }
 
@@ -59,14 +61,20 @@ void FactSortAssembler::consume(FactNumber* data) {
 
 void FactSortAssembler::consumeForever() {
   assert(this->consumingQueue);
+  int64_t stop = std::thread::hardware_concurrency();
   while (true) {
     // Get the next data to consume, or block while queue is empty
     FactNumber* data = this->consumingQueue->dequeue();
     // If data is the stop condition, stop the loop
     if (data->id == 0) {
-      break;
+      stop--;
+      std::cout << stop << std::endl;
+      if (stop == 0) {
+        break;
+      }
+    } else {
+      // Process this data
+      this->consume(data);
     }
-    // Process this data
-    this->consume(data);
   }
 }

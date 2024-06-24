@@ -103,7 +103,6 @@ std::vector<int64_t> GoldUriAnalizer::getNumbersFromURI(
 
   size_t pos = httpRequest.getURI().find("number=");
   std::string str = "";
-  int64_t longitud = 0;
 
   std::string numbersString = httpRequest.getURI().substr(pos + 7);
   // Uniformar el URI para que el separador sea espacio
@@ -117,7 +116,6 @@ std::vector<int64_t> GoldUriAnalizer::getNumbersFromURI(
   // Buscar números en el URI modificado
   while (std::regex_search(ini, fin, matches, patron)) {
     str = matches.str();
-    longitud = str.size();
     int valor = std::stoll(matches[0].str());
     numbersVector.push_back(valor);
     ini = matches.suffix().first;

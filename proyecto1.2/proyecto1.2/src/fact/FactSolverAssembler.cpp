@@ -2,11 +2,13 @@
 // Universidad de Costa Rica. CC BY 4.0
 
 #include "FactSolverAssembler.hpp"
+#include <iostream>
 
 int FactSolverAssembler::run() {
   this->consumeForever();
   FactNumber temp = FactNumber();
   produce(&temp);
+
   return EXIT_SUCCESS;
 }
 

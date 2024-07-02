@@ -1,36 +1,59 @@
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
 
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <string>
 
+/**
+ * @class Matrix
+ * @brief Representa una matriz bidimensional de números de punto flotante.
+ *
+ * Esta clase proporciona una implementación básica de una matriz 2D
+ * utilizando memoria dinámica para almacenar los datos.
+ */
 class Matrix {
  public:
-  unsigned long long rows;
-  unsigned long long cols;
-  double** data;
+  int64_t rows;  ///< Número de filas en la matriz
+  int64_t cols;  ///< Número de columnas en la matriz
+  double** data;  ///< Puntero a puntero que almacena los datos de la matriz
 
-  // Default constructor
+  /**
+   * @brief Constructor por defecto.
+   *
+   * Inicializa una matriz vacía con 0 filas, 0 columnas y sin datos.
+   */
   Matrix() : rows(0), cols(0), data(nullptr) {}
 
-  // Parameterized constructor
-  Matrix(unsigned long long r, unsigned long long c) : rows(r), cols(c) {
+  /**
+   * @brief Constructor parametrizado.
+   *
+   * @param r Número de filas de la matriz.
+   * @param c Número de columnas de la matriz.
+   *
+   * Crea una matriz con las dimensiones especificadas y asigna memoria para los
+   * datos.
+   */
+  Matrix(int64_t r, int64_t c) : rows(r), cols(c) {
     data = new double*[rows];
-    for (unsigned long long i = 0; i < rows; ++i) {
+    for (int64_t i = 0; i < rows; ++i) {
       data[i] = new double[cols];
     }
   }
 
-  // Destructor
+  /**
+   * @brief Destructor.
+   *
+   * Libera la memoria asignada para los datos de la matriz.
+   */
   ~Matrix() {
     if (data) {
-      for (unsigned long long i = 0; i < rows; ++i) {
+      for (int64_t i = 0; i < rows; ++i) {
         delete[] data[i];
       }
       delete[] data;
     }
   }
 };
-#endif  // MATRIX_HPP
 
+#endif  // MATRIX_HPP

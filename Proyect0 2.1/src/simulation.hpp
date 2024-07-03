@@ -8,5 +8,5 @@ void Start_Simulations(std::vector<Simulation*> simulations);
 
 void Run_Simulation(Simulation* sim);
 
-double Caculate_Simulation(Simulation& sim, int64_t row, int64_t col);
+double Caculate_Simulation(Simulation* sim, int64_t row, int64_t col);
 #endif  // SIMULATION_HPP

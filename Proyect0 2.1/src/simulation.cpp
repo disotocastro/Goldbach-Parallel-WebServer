@@ -24,8 +24,8 @@ void Run_Simulation(Simulation* sim) {
   do {
     for (int64_t i = 1; i < sim->matrix->rows - 1; i++) {
       for (int64_t j = 1; j < sim->matrix->cols - 1; j++) {
-        // temp[i][j] =
-        //     Caculate_Simulation(sim, sim->matrix->rows, sim->matrix->cols);
+        temp[i][j] =
+            Caculate_Simulation(sim, sim->matrix->rows, sim->matrix->cols);
       }
     }
     sim->matrix->data = temp;

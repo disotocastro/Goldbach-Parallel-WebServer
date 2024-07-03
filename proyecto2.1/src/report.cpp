@@ -65,7 +65,7 @@ void save_matrix_to_file(const Matrix* matrix,
 
 std::string RegexTabName(const std::string& file_name) {
   /**
-   * Esta expresion regular retorna el nombre del archivo, sin la extensión.
+   * Esta expresión regular retorna el nombre del archivo, sin la extensión.
    * Ejemplo: ./test/jobs/jobXXX.txt
    * Retorna: jobXXX.
    *
@@ -83,17 +83,14 @@ std::string RegexTabName(const std::string& file_name) {
   return name;
 }
 
-static std::string format_time(const time_t seconds) {
-  // TODO(any): Using C until C++20 std::format() is implemented by compilers
-  char text[48];  // YYYY/MM/DD hh:mm:ss
-  const std::tm& gmt = *std::gmtime(&seconds);
-  snprintf(text, sizeof text, "%04d/%02d/%02d\t%02d:%02d:%02d",
-           gmt.tm_year - 70, gmt.tm_mon, gmt.tm_mday - 1, gmt.tm_hour,
-           gmt.tm_min, gmt.tm_sec);
-  return text;
-}
-
 std::string RegexPlatename(const std::string& original_plate_name, int64_t k) {
+  /**
+   * Esta expresión regular retorna el nombre de la placa, y le agrega el
+   * número K, con un -.
+   * Ejemplo: plate001.bin
+   * Retorna: plate001-2.bin
+   *
+   */
   std::regex pattern(R"((plate\d{3})\.bin)");
   std::smatch match;
   std::string file_name;
@@ -107,4 +104,13 @@ std::string RegexPlatename(const std::string& original_plate_name, int64_t k) {
   }
 
   return file_name;
+}
+
+std::string format_time(const time_t seconds) {
+  char text[48];  // YYYY/MM/DD hh:mm:ss
+  const std::tm& gmt = *std::gmtime(&seconds);
+  snprintf(text, sizeof text, "%04d/%02d/%02d\t%02d:%02d:%02d",
+           gmt.tm_year - 70, gmt.tm_mon, gmt.tm_mday - 1, gmt.tm_hour,
+           gmt.tm_min, gmt.tm_sec);
+  return text;
 }

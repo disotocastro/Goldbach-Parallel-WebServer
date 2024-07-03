@@ -1,43 +1,23 @@
 #include "load_data.hpp"
 
-#include <regex>
-
 std::vector<Simulation*> LoadData(std::string file_name) {
-  // Crear un objeto ifstream para leer el archivo
-
   std::ifstream file(file_name);
   if (!file.is_open()) {
     std::cerr << "Error: No se pudo abrir el archivo " << file_name
               << std::endl;
   }
 
-  // Vector para almacenar todas las simulaciones
   std::vector<Simulation*> simulations;
 
   std::string line;
   while (std::getline(file, line)) {
     Simulation* sim = new Simulation();
 
-    // Crear un objeto istringstream a partir de la línea leída
     std::istringstream iss(line);
-    // Extraer los valores de la línea
     iss >> sim->plate_name >> sim->delta_time >> sim->thermal_diffusivity >>
         sim->h >> sim->sensitivity;
 
-    // Añadir la simulación al vecto
-
-    /**
-      Esta expresion regular retorna la ruta del archivo, menos el jobXXX.txt
-      Ejemplo: ./test/jobs/jobXXX.txt
-      Retorna: ./test/jobs/
-     */
-    std::string file_root = "";
-    std::regex patron(R"((.+?)job\d+\.txt)");
-    std::smatch coincidencia;
-
-    if (std::regex_search(file_name, coincidencia, patron)) {
-      file_root = coincidencia[1].str();
-    }
+    std::string file_root = RegexFileRoot(file_name);
 
     std::string temp = file_root + sim->plate_name;
     sim->file_name = file_name;
@@ -47,7 +27,6 @@ std::vector<Simulation*> LoadData(std::string file_name) {
     simulations.push_back(sim);
   }
   file.close();
-
 
   for (int64_t i = 0; i < simulations[0]->matrix->rows; i++) {
     for (int64_t j = 0; j < simulations[0]->matrix->cols; j++) {
@@ -88,4 +67,21 @@ Matrix* read_matrix_from_file(const std::string& plate_name) {
 
   file.close();
   return matrix;
+}
+
+std::string RegexFileRoot(const std::string& file_name) {
+  /**
+   * Esta expresión regular retorna la ruta del archivo, menos el jobXXX.txt
+   * Ejemplo: ./test/jobs/jobXXX.txt
+   * Retorna: ./test/jobs/
+   */
+  std::string file_root = "";
+  std::regex patron(R"((.+?)job\d+\.txt)");
+  std::smatch coincidencia;
+
+  if (std::regex_search(file_name, coincidencia, patron)) {
+    file_root = coincidencia[1].str();
+  }
+
+  return file_root;
 }

@@ -6,13 +6,13 @@
 #include "matrix.hpp"
 #include "report.hpp"
 
-void Start_Simulations(std::vector<Simulation*> simulations) {
+void StartSimulation(std::vector<Simulation*> simulations) {
   for (size_t i = 0; i < simulations.size(); ++i) {
-    Run_Simulation(simulations[i]);
+    RunSimulation(simulations[i]);
   }
 }
 
-void Run_Simulation(Simulation* sim) {
+void RunSimulation(Simulation* sim) {
   double sensitivity = sim->sensitivity;  // e
   double C;
   sim->k = 0;
@@ -30,7 +30,7 @@ void Run_Simulation(Simulation* sim) {
     C = 0.0;
     for (int64_t i = 1; i < sim->matrix->rows - 1; i++) {
       for (int64_t j = 1; j < sim->matrix->cols - 1; j++) {
-        temp[i][j] = Caculate_Simulation(sim, i, j);
+        temp[i][j] = CaculateSimulation(sim, i, j);
         double diff = std::abs((sim->matrix->data[i][j]) - (temp[i][j]));
         if (diff > C) {
           C = diff;
@@ -48,7 +48,7 @@ void Run_Simulation(Simulation* sim) {
   } while (C > sensitivity);
 }
 
-double Caculate_Simulation(Simulation* sim, int64_t row, int64_t col) {
+double CaculateSimulation(Simulation* sim, int64_t row, int64_t col) {
   double delta_time = sim->delta_time;
   double thermal_diffusivity = sim->thermal_diffusivity;
   double h = sim->h;

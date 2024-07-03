@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
 
   std::vector<Simulation*> simulations = LoadData(job_file);
 
-  Start_Simulations(simulations);
+  StartSimulation(simulations);
   Report(simulations);
   return EXIT_SUCCESS;
 }

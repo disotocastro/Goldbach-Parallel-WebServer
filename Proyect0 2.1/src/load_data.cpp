@@ -50,8 +50,10 @@ std::vector<Simulation*> LoadData(std::string file_name) {
       std::cout << simulations[0]->matrix->data[i][j]<< ", ";
     }
     std::cout << std::endl;
+    
   }
-
+  std::cout << std::endl;
+    std::cout << std::endl;
   return simulations;
 }
 

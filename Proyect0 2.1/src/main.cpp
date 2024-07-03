@@ -34,13 +34,13 @@ int main(int argc, char* argv[]) {
   Start_Simulations(simulations);
 
 
-  for (int64_t i = 0; i < simulations[0]->matrix->rows; i++){
-    for (int64_t j = 0; j < simulations[0]->matrix->cols; j++)
-    {
-      std::cout << simulations[0]->matrix->data[i][j]<< ", ";
-    }
-    std::cout << std::endl;
-  }
+  // for (int64_t i = 0; i < simulations[0]->matrix->rows; i++){
+  //   for (int64_t j = 0; j < simulations[0]->matrix->cols; j++)
+  //   {
+  //     std::cout << simulations[0]->matrix->data[i][j]<< ", ";
+  //   }
+  //   std::cout << std::endl;
+  // }
   
 
   return EXIT_SUCCESS;

@@ -19,6 +19,7 @@
  */
 struct Simulation {
   Matrix* matrix;           ///< Puntero a la matriz que contiene las temperaturas
+  std::string plate_name;    ///< Nombre del archivo de la simulación
   std::string file_name;    ///< Nombre del archivo de la simulación
   double delta_time;          /// < Δtiempo
   double thermal_diffusivity; ///< Coeficiente de difusividad térmica
@@ -30,10 +31,11 @@ struct Simulation {
  * @brief Carga los datos de simulación desde un archivo.
  *
  * @param file_name Nombre del archivo que contiene los datos de la simulación.
- * @return int Código de retorno. 0 si la carga fue exitosa, otro valor en caso de error.
+ * @return int Código de retorno. 0 si la carga fue exitosa, otro valor en caso
+ * de error.
  *
- * Esta función lee los datos de simulación desde el archivo especificado y los almacena
- * en las estructuras de datos correspondientes.
+ * Esta función lee los datos de simulación desde el archivo especificado y los
+ * almacena en las estructuras de datos correspondientes.
  */
 std::vector<Simulation*> LoadData(std::string file_name);
 
@@ -43,9 +45,9 @@ std::vector<Simulation*> LoadData(std::string file_name);
  * @param file_name Nombre del archivo binario que contiene la matriz.
  * @return Matrix* Puntero a la matriz leída. Retorna nullptr en caso de error.
  *
- * Esta función lee una matriz de temperaturas desde un archivo binario con un formato específico.
- * El archivo debe contener primero las dimensiones de la matriz (filas y columnas) seguidas por
- * los datos de la matriz.
+ * Esta función lee una matriz de temperaturas desde un archivo binario con un
+ * formato específico. El archivo debe contener primero las dimensiones de la
+ * matriz (filas y columnas) seguidas por los datos de la matriz.
  */
 Matrix* read_matrix_from_file(const std::string& file_name);
 

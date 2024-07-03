@@ -1,7 +1,8 @@
 #include "simulation.hpp"
-
 #include "load_data.hpp"
 #include "matrix.hpp"
+#include "report.hpp"
+
 
 void Start_Simulations(std::vector<Simulation*> simulations) {
   for (size_t i = 0; i < simulations.size(); ++i) {
@@ -42,17 +43,10 @@ void Run_Simulation(Simulation* sim) {
     }
 
     k++;
-
-    std::cout << "" << std::endl;
-
-    for (int64_t i = 0; i < sim->matrix->rows; i++) {
-      for (int64_t j = 0; j < sim->matrix->cols; j++) {
-        std::cout << sim->matrix->data[i][j] << ", ";
-      }
-      std::cout << std::endl;
-    }
-
   } while (C > sensitivity);
+
+  Report(sim, k);
+  
 }
 
 double Caculate_Simulation(Simulation* sim, int64_t row, int64_t col) {

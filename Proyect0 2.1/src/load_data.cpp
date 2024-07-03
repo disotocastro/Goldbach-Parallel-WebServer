@@ -1,5 +1,7 @@
 #include "load_data.hpp"
 
+#include <regex>
+
 std::vector<Simulation*> LoadData(std::string file_name) {
   // Crear un objeto ifstream para leer el archivo
 
@@ -19,48 +21,50 @@ std::vector<Simulation*> LoadData(std::string file_name) {
     // Crear un objeto istringstream a partir de la línea leída
     std::istringstream iss(line);
     // Extraer los valores de la línea
-    iss >> sim->file_name >> sim->delta_time >> sim->thermal_diffusivity >>
+    iss >> sim->plate_name >> sim->delta_time >> sim->thermal_diffusivity >>
         sim->h >> sim->sensitivity;
-    // Añadir la simulación al vector
 
-    std::string temp = "./jobs/" + sim->file_name;
+    // Añadir la simulación al vecto
 
-    sim->file_name = temp;
-    // Llamar
-    sim->matrix = read_matrix_from_file(sim->file_name);
+    /**
+      Esta expresion regular retorna la ruta del archivo, menos el jobXXX.txt
+      Ejemplo: ./test/jobs/jobXXX.txt
+      Retorna: ./test/jobs/
+     */
+    std::string file_root = "";
+    std::regex patron(R"((.+?)job\d+\.txt)");
+    std::smatch coincidencia;
+
+    if (std::regex_search(file_name, coincidencia, patron)) {
+      file_root = coincidencia[1].str();
+    }
+
+    std::string temp = file_root + sim->plate_name;
+    sim->plate_name = temp;
+    sim->file_name = file_name;
+
+    sim->matrix = read_matrix_from_file(sim->plate_name);
 
     simulations.push_back(sim);
   }
-  // Cerrar el archivo
   file.close();
 
-  // //Imprimir los datos leídos
-  // for (const auto& sim : simulations) {
-  //   std::cout << "Archivo: " << sim.file_name << ", Valor 1: " <<
-  //   sim.duration
-  //             << ", Valor 2: " << sim.thermal_diffusivity
-  //             << ", Valor 3: " << sim.size << ", Valor 4: " <<
-  //             sim.sensitivity
-  //             << std::endl << std::endl;
-  // }
 
-  for (int64_t i = 0; i < simulations[0]->matrix->rows; i++){
-    for (int64_t j = 0; j < simulations[0]->matrix->cols; j++)
-    {
-      std::cout << simulations[0]->matrix->data[i][j]<< ", ";
+  for (int64_t i = 0; i < simulations[0]->matrix->rows; i++) {
+    for (int64_t j = 0; j < simulations[0]->matrix->cols; j++) {
+      std::cout << simulations[0]->matrix->data[i][j] << ", ";
     }
     std::cout << std::endl;
-    
   }
   std::cout << std::endl;
-    std::cout << std::endl;
+  std::cout << std::endl;
   return simulations;
 }
 
-Matrix* read_matrix_from_file(const std::string& file_name) {
-  std::ifstream file(file_name, std::ios::binary);
+Matrix* read_matrix_from_file(const std::string& plate_name) {
+  std::ifstream file(plate_name, std::ios::binary);
   if (!file.is_open()) {
-    std::cerr << "Error: No se pudo abrir el archivo " << file_name
+    std::cerr << "Error: No se pudo abrir el archivo " << plate_name
               << std::endl;
     return nullptr;
   }

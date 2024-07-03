@@ -35,6 +35,15 @@ int main(int argc, char* argv[]) {
   std::vector<Simulation*> simulations = LoadData(job_file);
 
   StartSimulation(simulations);
+
   Report(simulations);
+
+  for (size_t i = 0; i < simulations.size(); i++) {
+    if (simulations[i] && simulations[i]->matrix) {
+      delete simulations[i]->matrix;  // Elimina el objeto matrix
+    }
+    delete simulations[i];  // Elimina el objeto simulation
+  }
+
   return EXIT_SUCCESS;
 }

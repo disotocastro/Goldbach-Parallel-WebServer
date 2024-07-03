@@ -3,13 +3,13 @@
 #ifndef REPORT_HPP
 #define REPORT_HPP
 
+#include <string>
+#include <vector>
 #include <cstdio>
 #include <ctime>
 #include <load_data.hpp>
 #include <matrix.hpp>
 #include <simulation.hpp>
-#include <string>
-#include <vector>
 
 /**
  * @file report.hpp

@@ -5,39 +5,34 @@
 std::vector<Simulation*> LoadData(std::string file_name) {
   std::ifstream file(file_name);
   if (!file.is_open()) {
+    // Si no se puede abrir el archivo, muestra un mensaje de error y termina la
+    // función.
     std::cerr << "Error: No se pudo abrir el archivo " << file_name
               << std::endl;
   }
-
+  // Vector que almacenará punteros a objetos Simulation.
   std::vector<Simulation*> simulations;
 
   std::string line;
+  // Lee el archivo línea por línea.
   while (std::getline(file, line)) {
+    // Crea un nuevo objeto Simulation dinámicamente.
     Simulation* sim = new Simulation();
-
+    // Utiliza un string stream para extraer los valores de la línea.
     std::istringstream iss(line);
     iss >> sim->plate_name >> sim->delta_time >> sim->thermal_diffusivity >>
         sim->h >> sim->sensitivity;
-
+    // Obtiene la raíz del nombre del archivo usando una función RegexFileRoot.
     std::string file_root = RegexFileRoot(file_name);
-
+    // Construye el nombre del archivo para leer la matriz de datos.
     std::string temp = file_root + sim->plate_name;
     sim->file_name = file_name;
-
+    // Lee la matriz de datos desde el archivo construido.
     sim->matrix = read_matrix_from_file(temp);
-
+    // Agrega el objeto Simulation al vector.
     simulations.push_back(sim);
   }
   file.close();
-
-  for (int64_t i = 0; i < simulations[0]->matrix->rows; i++) {
-    for (int64_t j = 0; j < simulations[0]->matrix->cols; j++) {
-      std::cout << simulations[0]->matrix->data[i][j] << ", ";
-    }
-    std::cout << std::endl;
-  }
-  std::cout << std::endl;
-  std::cout << std::endl;
   return simulations;
 }
 

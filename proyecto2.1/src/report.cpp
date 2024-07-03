@@ -5,22 +5,28 @@
 #include <regex>
 
 void Report(std::vector<Simulation*> simulations) {
+  // Verifica si el vector de simulaciones está vacío.
   if (simulations.empty()) {
     std::cerr << "No hay simulaciones para reportar." << std::endl;
     return;
   }
-
+  // Genera un nuevo nombre de archivo utilizando una función RegexTabName.
   std::string new_file_name = RegexTabName(simulations[0]->file_name);
-
+  // Abre un archivo para escribir los reportes.
   std::ofstream outFile(new_file_name);
+  // Si no se puede abrir el archivo, muestra un mensaje de error y termina la
+  // función.
   if (!outFile) {
     std::cerr << "Error al abrir el archivo para escritura: " << new_file_name
               << std::endl;
     return;
   }
-
+  // Recorre cada simulación en el vector.
   for (const auto& sim : simulations) {
+    // Guarda la matriz en un archivo utilizando una función
+    // save_matrix_to_file.
     save_matrix_to_file(sim->matrix, sim->plate_name, sim->k);
+    // Formatea el tiempo de la simulación.
     std::string time = format_time(sim->k * sim->delta_time);
 
     // Escribir los datos en formato TSV

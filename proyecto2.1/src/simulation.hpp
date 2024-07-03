@@ -3,9 +3,10 @@
 #ifndef SIMULATION_HPP
 #define SIMULATION_HPP
 
+#include <vector>
 #include <load_data.hpp>
 #include <matrix.hpp>
-#include <vector>
+
 
 /**
  * @brief Inicia todas las simulaciones en el vector proporcionado.

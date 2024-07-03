@@ -1,3 +1,5 @@
+// Copyright [2024] <Diego Soto, William Morales, Migueledo Núñez>
+
 #include "report.hpp"
 
 #include <regex>

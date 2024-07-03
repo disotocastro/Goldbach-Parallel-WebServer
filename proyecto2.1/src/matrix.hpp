@@ -1,3 +1,5 @@
+// Copyright [2024] <Diego Soto, William Morales, Migueledo Núñez>
+
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
 
@@ -14,8 +16,8 @@
  */
 class Matrix {
  public:
-  int64_t rows;  ///< Número de filas en la matriz
-  int64_t cols;  ///< Número de columnas en la matriz
+  int64_t rows;   ///< Número de filas en la matriz
+  int64_t cols;   ///< Número de columnas en la matriz
   double** data;  ///< Puntero a puntero que almacena los datos de la matriz
 
   /**

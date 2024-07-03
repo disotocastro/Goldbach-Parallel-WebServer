@@ -1,3 +1,5 @@
+// Copyright [2024] <Diego Soto, William Morales, Migueledo Núñez>
+
 #ifndef LOAD_DATA_HPP
 #define LOAD_DATA_HPP
 
@@ -69,4 +71,5 @@ Matrix* read_matrix_from_file(const std::string& file_name);
  * Salida: "./test/jobs/"
  */
 std::string RegexFileRoot(const std::string& file_name);
+
 #endif  // LOAD_DATA_HPP

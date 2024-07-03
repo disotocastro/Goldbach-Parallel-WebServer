@@ -1,3 +1,5 @@
+// Copyright [2024] <Diego Soto, William Morales, Migueledo Núñez>
+
 #include "load_data.hpp"
 
 std::vector<Simulation*> LoadData(std::string file_name) {

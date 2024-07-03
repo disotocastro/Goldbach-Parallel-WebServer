@@ -1,8 +1,11 @@
+// Copyright [2024] <Diego Soto, William Morales, Migueledo Núñez>
+
 #ifndef SIMULATION_HPP
 #define SIMULATION_HPP
 
 #include <load_data.hpp>
 #include <matrix.hpp>
+#include <vector>
 
 /**
  * @brief Inicia todas las simulaciones en el vector proporcionado.

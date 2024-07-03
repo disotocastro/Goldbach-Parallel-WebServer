@@ -1,3 +1,5 @@
+// Copyright [2024] <Diego Soto, William Morales, Migueledo Núñez>
+
 #ifndef REPORT_HPP
 #define REPORT_HPP
 
@@ -7,6 +9,7 @@
 #include <matrix.hpp>
 #include <simulation.hpp>
 #include <string>
+#include <vector>
 
 /**
  * @file report.hpp

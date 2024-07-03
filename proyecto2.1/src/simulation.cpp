@@ -1,8 +1,10 @@
+// Copyright [2024] <Diego Soto, William Morales, Migueledo Núñez>
+
 #include "simulation.hpp"
+
 #include "load_data.hpp"
 #include "matrix.hpp"
 #include "report.hpp"
-
 
 void Start_Simulations(std::vector<Simulation*> simulations) {
   for (size_t i = 0; i < simulations.size(); ++i) {

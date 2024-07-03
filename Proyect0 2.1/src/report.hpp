@@ -8,7 +8,9 @@
 #include <simulation.hpp>
 #include <string>
 
-void Report(Simulation* sim);
+void Report(std::vector<Simulation*> simulations);
 static std::string format_time(const time_t seconds);
+bool save_matrix_to_file(const Matrix* matrix, const std::string& original_plate_name, int64_t k);
+
 
 #endif  // REPORT_HPP

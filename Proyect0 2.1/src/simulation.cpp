@@ -15,6 +15,7 @@ void Run_Simulation(Simulation* sim) {
   int64_t k = 0;
 
   double** temp = new double*[sim->matrix->rows];
+
   for (int64_t i = 0; i < sim->matrix->rows; ++i) {
     temp[i] = new double[sim->matrix->cols];
     for (int64_t j = 0; j < sim->matrix->cols; ++j) {
@@ -43,8 +44,7 @@ void Run_Simulation(Simulation* sim) {
     k++;
 
     std::cout << "" << std::endl;
-    std::cout << "" << std::endl;
-    std::cout << "" << std::endl;
+
     for (int64_t i = 0; i < sim->matrix->rows; i++) {
       for (int64_t j = 0; j < sim->matrix->cols; j++) {
         std::cout << sim->matrix->data[i][j] << ", ";
@@ -67,6 +67,5 @@ double Caculate_Simulation(Simulation* sim, int64_t row, int64_t col) {
   double neighbors = (tmatrix[row - 1][col] + tmatrix[row + 1][col] +
                       tmatrix[row][col - 1] + tmatrix[row][col + 1]);
 
-  // Cambiar la fórmula aquí:
   return tmatrix[row][col] + transfer * (neighbors - 4 * tmatrix[row][col]);
 }

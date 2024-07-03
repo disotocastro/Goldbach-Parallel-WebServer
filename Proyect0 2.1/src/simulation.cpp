@@ -13,7 +13,7 @@ void Start_Simulations(std::vector<Simulation*> simulations) {
 void Run_Simulation(Simulation* sim) {
   double sensitivity = sim->sensitivity;  // e
   double C;
-  int64_t k = 0;
+  sim->k = 0;
 
   double** temp = new double*[sim->matrix->rows];
 
@@ -42,11 +42,8 @@ void Run_Simulation(Simulation* sim) {
       }
     }
 
-    k++;
+    sim->k++;
   } while (C > sensitivity);
-
-  Report(sim, k);
-  
 }
 
 double Caculate_Simulation(Simulation* sim, int64_t row, int64_t col) {

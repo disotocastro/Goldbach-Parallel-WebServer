@@ -40,10 +40,9 @@ std::vector<Simulation*> LoadData(std::string file_name) {
     }
 
     std::string temp = file_root + sim->plate_name;
-    sim->plate_name = temp;
     sim->file_name = file_name;
 
-    sim->matrix = read_matrix_from_file(sim->plate_name);
+    sim->matrix = read_matrix_from_file(temp);
 
     simulations.push_back(sim);
   }

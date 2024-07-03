@@ -5,6 +5,7 @@
 
 #include "load_data.hpp"
 #include "simulation.hpp"
+#include "report.hpp"
 
 int main(int argc, char* argv[]) {
   // Verificar si se proporciona el nombre del archivo como argumento
@@ -35,6 +36,8 @@ int main(int argc, char* argv[]) {
 
 
   Start_Simulations(simulations);
+  Report(simulations[0]);
+
 
 
   return EXIT_SUCCESS;

@@ -25,6 +25,7 @@ struct Simulation {
   double thermal_diffusivity; ///< Coeficiente de difusividad térmica
   double h;                   ///< Tamaño de la placa
   double sensitivity;       ///< Sensibilidad de la simulación
+  int64_t k;
 };
 
 /**

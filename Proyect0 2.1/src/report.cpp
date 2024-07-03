@@ -2,12 +2,12 @@
 
 #include <regex>
 
-void Report(Simulation* sim, int k) {
+void Report(Simulation* sim) {
   /**
       Esta expresion regular retorna el nombre del archivo, sin la extension.
       Ejemplo: ./test/jobs/jobXXX.txt
       Retorna: jobXXX.
-     */
+  */
 
   std::string name = "";
   std::regex patron_nombre_archivo(R"(job\d{3}\.)");
@@ -27,10 +27,12 @@ void Report(Simulation* sim, int k) {
     return;
   }
 
+  std::string time = format_time((sim->k) * (sim->delta_time));
+
   // Escribir los datos en formato TSV
-  outFile << name << "\t" << sim->delta_time << "\t"
+  outFile << sim->plate_name << "\t" << sim->delta_time << "\t"
           << sim->thermal_diffusivity << "\t" << sim->h << "\t"
-          << sim->sensitivity << std::endl;
+          << sim->sensitivity << "\t" << sim->k << "\t" << time << std::endl;
 
   outFile.close();
 }

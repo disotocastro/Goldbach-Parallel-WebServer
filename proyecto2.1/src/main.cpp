@@ -19,22 +19,22 @@ int main(int argc, char* argv[]) {
   std::string job_file = argv[1];
 
   // Obtener el número de hilos soportados por el sistema
-  // int num_threads = std::thread::hardware_concurrency();
+  int num_threads = std::thread::hardware_concurrency();
   // Si se proporciona un argumento adicional, utilizarlo como número de hilos
-  // if (argc >= 3) {
-  //   try {
-  //     num_threads = std::stoi(argv[2]);
-  //   } catch (const std::invalid_argument& e) {
-  //     std::cerr << "Error: El segundo argumento debe ser un número entero."
-  //               << std::endl;
-  //     return EXIT_FAILURE;
-  //   }
-  // }
+  if (argc >= 3) {
+    try {
+      num_threads = std::stoi(argv[2]);
+    } catch (const std::invalid_argument& e) {
+      std::cerr << "Error: El segundo argumento debe ser un número entero."
+                << std::endl;
+      return EXIT_FAILURE;
+    }
+  }
   // Cargar los datos desde el archivo especificado
 
   std::vector<Simulation*> simulations = LoadData(job_file);
 
-  StartSimulation(simulations);
+  StartSimulation(simulations, num_threads);
 
   Report(simulations);
 

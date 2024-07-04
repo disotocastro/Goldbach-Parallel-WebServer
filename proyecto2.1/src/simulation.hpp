@@ -3,16 +3,18 @@
 #ifndef SIMULATION_HPP
 #define SIMULATION_HPP
 
-#include <vector>
-#include <load_data.hpp>
-#include <matrix.hpp>
+#include <omp.h>
 
+#include <matrix.hpp>
+#include <vector>
+
+#include "load_data.hpp"
 
 /**
  * @brief Inicia todas las simulaciones en el vector proporcionado.
  * @param simulations Vector de punteros a objetos Simulation.
  */
-void StartSimulation(std::vector<Simulation*> simulations);
+void StartSimulation(std::vector<Simulation*> simulations, int num_threads);
 
 /**
  * @brief Ejecuta una simulación individual de manera completa.

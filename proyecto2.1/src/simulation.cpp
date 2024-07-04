@@ -2,13 +2,13 @@
 
 #include "simulation.hpp"
 
-#include "load_data.hpp"
-#include "matrix.hpp"
-#include "report.hpp"
 
-void StartSimulation(std::vector<Simulation*> simulations) {
-  // Inicia la simulación para cada objeto Simulation en el vector.
+void StartSimulation(std::vector<Simulation*> simulations, int num_threads) {
+// Inicia la simulación para cada objeto Simulation en el vector.
+#pragma omp parallel for num_threads(num_threads) \
+    schedule(dynamic) default(none) shared(simulations, std::cout)
   for (size_t i = 0; i < simulations.size(); ++i) {
+    std::cout << omp_get_thread_num() << std::endl;
     RunSimulation(simulations[i]);
   }
 }

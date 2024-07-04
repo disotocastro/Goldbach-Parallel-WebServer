@@ -18,19 +18,23 @@ int main(int argc, char* argv[]) {
 
     int sensibilidad = std::stoi(argv[3]);
 
+    // Leer las matrices desde los archivos especificados
     Matrix* matrix_1 = read_matrix_from_file(Matrix_name_1);
     Matrix* matrix_2 = read_matrix_from_file(Matrix_name_2);
 
+    // Verificar si las matrices se leyeron correctamente
     if (matrix_1 == nullptr || matrix_2 == nullptr) {
         std::cerr << "Error: No se pudieron leer las matrices desde los archivos." << std::endl;
         return EXIT_FAILURE;
     }
 
+     // Verificar si las matrices tienen las mismas dimensiones
     if (matrix_1->rows != matrix_2->rows || matrix_1->cols != matrix_2->cols) {
         std::cout << "Las matrices son de dimensiones diferentes." << std::endl;
         return EXIT_FAILURE;
     }
 
+    // Comparar las matrices dentro de la sensibilidad especificada
     bool son_iguales = true;
     for (int i = 0; i < matrix_1->rows; i++) {
         for (int j = 0; j < matrix_1->cols; j++) {
@@ -45,6 +49,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    // Imprimir el resultado de la comparación
     if (son_iguales) {
         std::cout << "Las matrices son iguales dentro de la sensibilidad especificada." << std::endl;
     } else {

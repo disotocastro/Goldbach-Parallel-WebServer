@@ -24,7 +24,7 @@
  */
 struct Simulation {
   Matrix* matrix;  ///< Puntero a la matriz que contiene las temperaturas
-  std::string plate_name;      ///< Nombre del archivo de la simulación
+  std::string plate_name;      ///< Nombre del plate de la simulación
   std::string file_name;       ///< Nombre del archivo de la simulación
   double delta_time;           /// < Δtiempo
   double thermal_diffusivity;  ///< Coeficiente de difusividad térmica

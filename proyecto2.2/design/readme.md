@@ -17,7 +17,12 @@ LoadData genera un vector de Simulaciones. Cada estructura "Simulación" contien
 Además, LoadData se encarga de leer los datos binarios de la Matrix que viene en la estructura de datos "Simulación".
 
 ## 3. StartSimulation
-StartSimulation llama al método RunSimulation de manera concurrente, creando varios hilos de ejecución para cada placa. Cada hilo se encargará de trabajar en su placa correspondiente[i].
+StartSimulation ahora utiliza MPI para distribuir las simulaciones entre múltiples procesos. Dentro de cada proceso, se utiliza OpenMP para paralelizar aún más el trabajo:
+
+1. Se divide el número total de simulaciones entre los procesos MPI.
+2. Cada proceso MPI maneja un subconjunto de simulaciones.
+3. Dentro de cada proceso, se utiliza OpenMP para crear múltiples hilos y distribuir las simulaciones locales entre estos hilos.
+4. Se utiliza una programación dinámica (`schedule(dynamic)`) para balancear la carga de trabajo entre los hilos.
 
 RunSimulation crea una copia temporal de la matrix. En un ciclo Do-While, llama a la función "CalculateSimulation" con la estructura de datos simulación y los valores i, j que le corresponden.
 
@@ -29,3 +34,13 @@ Recibe un vector de estructuras de datos "Simulación" ya resueltas. Imprime los
 
 ## 6. SaveMatrixFile
 Guarda el archivo de la placa, pero añade a su nombre "-" + "K iteración". Luego, guarda este archivo binario en la raíz del proyecto.
+
+## 7. Main
+El main ha sido modificado para incorporar MPI:
+
+1. Se inicializa MPI al principio del programa.
+2. Se obtiene el rango y tamaño de los procesos MPI.
+3. La carga de datos y el inicio de las simulaciones ahora tienen en cuenta el uso de MPI.
+4. Solo el proceso principal (rank 0) se encarga de generar el reporte final.
+
+Estas modificaciones permiten una ejecución paralela tanto a nivel de procesos (MPI) como a nivel de hilos (OpenMP), lo que puede mejorar significativamente el rendimiento en sistemas con múltiples nodos y/o múltiples núcleos.

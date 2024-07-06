@@ -2,14 +2,32 @@
 
 #include "simulation.hpp"
 
-void StartSimulation(std::vector<Simulation*> simulations, int num_threads) {
-// Inicia la simulación para cada objeto Simulation en el vector.
-#if 0
+#include <mpi.h>
+
+void StartSimulation(std::vector<Simulation*> simulations, int num_threads,
+                     int rank, int size) {
+  int num_simulations = simulations.size();
+
+  // Dividir las simulaciones entre los procesos MPI
+  int local_start = (num_simulations / size) * rank;
+  int local_end;
+  if (rank == size - 1) {
+    local_end = num_simulations;
+  } else {
+    local_end = (num_simulations / size) * (rank + 1);
+  }
+
+  // Marcar la variable como usada para evitar el warning
+  (void)local_start;
+
+#if 1
 #pragma omp parallel for num_threads(num_threads) \
-    schedule(dynamic) default(none) shared(simulations, std::cout)
+    schedule(dynamic) default(none)               \
+    shared(simulations, std::cout, local_start, local_end, rank)
 #endif
-  for (size_t i = 0; i < simulations.size(); ++i) {
-    std::cout << omp_get_thread_num() << std::endl;
+  for (int i = local_start; i < local_end; ++i) {
+    std::cout << "Process " << rank << ", thread " << omp_get_thread_num()
+              << " handling simulation " << i << std::endl;
     RunSimulation(simulations[i]);
   }
 }

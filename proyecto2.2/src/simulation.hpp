@@ -14,8 +14,8 @@
  * @brief Inicia todas las simulaciones en el vector proporcionado.
  * @param simulations Vector de punteros a objetos Simulation.
  */
-void StartSimulation(std::vector<Simulation*> simulations, int num_threads);
-
+void StartSimulation(std::vector<Simulation*> simulations, int num_threads,
+                     int rank, int size);
 /**
  * @brief Ejecuta una simulación individual de manera completa.
  * @param sim Puntero al objeto Simulation a ejecutar.
